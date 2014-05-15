@@ -1,0 +1,78 @@
+URLs
+--- Usuario ---
+GET localhost:8080/sos-api/usuario
+
+POST localhost:8080/sos-api/usuario
+{
+	"nome": "Diogo Peixoto",
+	"email": "peixotoo@gmail.com",
+	"senha": "12345"
+}
+
+--- Prestador ---
+GET localhost:8080/sos-api/prestador
+
+POST localhost:8080/sos-api/prestador	
+{
+	"nome": "Diogo Peixoto",
+	"email": "peixotoo@gmail.com",
+	"senha": "12345",
+	"cpf": "000.000.000-00",
+	"logradouro": "Rua Fulaninho de tal",
+	"numero": xxx,
+	"complemento": "apartamento x",
+	"cep": "xxxxx-xxx",
+	"telefone": "XX XXXX-XXXX",
+}
+
+DELETE localhost:8080/sos-api/prestador/{ID_PRESTADOR}
+
+PUT localhost:8080/sos-api/prestador{ID_PRESTADOR}
+{
+	"nome": "Diogo Peixoto",
+	"email": "peixotoo@gmail.com",
+	"senha": "12345",
+	"cpf": "000.000.000-00",
+	"logradouro": "Rua Fulaninho de tal",
+	"numero": xxx,
+	"complemento": "apartamento x",
+	"cep": "xxxxx-xxx",
+	"telefone": "XX XXXX-XXXX",
+}
+
+--- Tipo Servico ---
+GET localhost:8080/sos-api/tipo-servico
+
+POST localhost:8080/sos-api/tipo-servico	
+{
+	"nome": "Mecânico",
+	"valorado": true | false
+}
+
+DELETE localhost:8080/sos-api/tipo-servico/{ID_TIPO_SERVICO}
+
+PUT localhost:8080/sos-api/tipo-servico/{ID_TIPO_SERVICO}
+{
+	"nome": "Mecânico",
+	"valorado": true | false
+}
+
+
+--- Servico ---
+GET localhost:8080/sos-api/servico
+
+POST localhost:8080/sos-api/servico	
+{
+	"valor": 3000.00,
+	"descricao": "Uma breve descrição do que é o serviço",
+	"id_tipo_servico": 1
+}
+
+DELETE localhost:8080/sos-api/servico/{ID_SERVICO}
+
+PUT localhost:8080/sos-api/servico/{ID_SERVICO}
+{
+	"valor": 3000.00,
+	"descricao": "Uma breve descrição do que é o serviço",
+	"id_tipo_servico": 1
+}

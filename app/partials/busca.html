@@ -1,0 +1,36 @@
+<!-- Pagina de busca -->
+<div class="container-fluid">
+	<div class="row">
+	  <div class="col-md-3">
+
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+        	    <h3 class="panel-title">{{labels.prestadores_encontrados}}</h3>
+            </div>
+            <div class="panel-body">
+            	<!--Prestadores de servico encontrados-->
+			    <p><span class="badge">{{prestadores.length}}</span> _tipo-servico_ encontrados à _distancia_ km de distância de _endereco_</p>
+			    
+			    <input ng-model="query" placeholder="{{labels.filtrar_resultado}}">
+			    <div class="list-group">
+			        <a href="#" class="list-group-item" ng-repeat="prestador in prestadores">
+			        	<h4 class="list-group-item-heading">{{prestador.nome}}</h4>
+						<rating ng-model="prestador.avaliacao" max="maxRate" readonly="true"></rating>	
+			         	<p class="list-group-item-text">{{prestador.email + " " + prestador.telefone}}</p>
+			        </a>
+		        </div>
+            </div>
+        </div>
+        
+
+	  </div>
+	  <div class="col-md-9">
+	    <!--Mapa-->
+
+	    <p>Mapa!!</p>
+
+	  </div>
+	</div>
+</div>
+

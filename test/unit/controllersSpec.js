@@ -1,20 +1,18 @@
 'use strict';
 
 /* jasmine specs for controllers go here */
+describe('SoSWeb controllers', function() {
 
-describe('controllers', function(){
-  beforeEach(module('myApp.controllers'));
+  describe('PrestadoresCtrl', function(){
 
+    beforeEach(module('sosWeb'));
 
-  it('should ....', inject(function($controller) {
-    //spec body
-    var myCtrl1 = $controller('MyCtrl1', { $scope: {} });
-    expect(myCtrl1).toBeDefined();
-  }));
+    it('should create "prestadores" model with 3 prestadores', inject(function($controller) {
+      var scope = {},
+          ctrl = $controller('PrestadoresCtrl', {$scope:scope});
 
-  it('should ....', inject(function($controller) {
-    //spec body
-    var myCtrl2 = $controller('MyCtrl2', { $scope: {} });
-    expect(myCtrl2).toBeDefined();
-  }));
+      expect(scope.prestadores.length).toBe(3);
+    }));
+
+  });
 });

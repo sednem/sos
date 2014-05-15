@@ -1,9 +1,9 @@
 {
-  "name": "angular-seed",
+  "name": "sos-web",
   "private": true,
-  "version": "0.0.0",
-  "description": "A starter project for AngularJS",
-  "repository": "https://github.com/angular/angular-seed",
+  "version": "0.0.1",
+  "description": "The SoS (System of Services) is a search engine that allows you to locate service providers such as plumbers, masons and laborers, closer to home, with a fair price and good recommendation",
+  "repository": "https://github.com/renato-mendes/sos",
   "license": "MIT",
   "devDependencies": {
     "karma": "~0.10",
