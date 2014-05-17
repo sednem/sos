@@ -23,9 +23,12 @@
             <div class="panel-body">
             	<!--Prestadores de servico encontrados-->
             	<div class="form-group">
-				    <label for="filtro"><span class="badge">{{prestadores.length}}</span> _tipo-servico_ encontrados à _distancia_ km de distância de _endereco</label>
-				    <input type="search" ng-model="query" class="form-control" id="filtro" placeholder="{{labels.filtrar_resultado}}">
-				</div>
+            		<label for="filtro"><span class="badge">{{prestadores.length}}</span> _tipo-servico_ encontrados à _distancia_ km de distância de _endereco</label>
+            		<div class="right-inner-addon ">
+            			<span class="glyphicon glyphicon-filter text-muted"></span>
+            			<input type="search" ng-model="query" class="form-control" id="filtro" placeholder="{{labels.filtrar_resultado}}"/>
+            		</div>
+            	</div>
 
 			    <div class="list-group">
 			        <a href="#" class="list-group-item" ng-repeat="prestador in prestadores | filter:query | orderBy:orderProp">
@@ -42,6 +45,9 @@
 	  <div class="col-md-9">
 	    <div id="map_canvas" ui-map="myMap" ui-options="mapOptions" ui-event="{'map-idle' : 'onMapIdle()'}">
 	    </div>
+
+	    <br />
+	    {{prestadores | json}}
 	  </div>
 	</div>
 </div>
