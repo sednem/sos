@@ -9,14 +9,14 @@
         	    <!-- Split button -->
 			    <div class="btn-group pull-right" dropdown>
 					<button type="button" class="btn btn-info dropdown-toggle"><span class="glyphicon glyphicon-sm glyphicon-cog"></span></button>
-					<ul class="dropdown-menu  btn-sm" role="menu">
-						<li role="presentation" class="dropdown-header"><span class="glyphicon glyphicon-sort" /></li>
-						<li><a href ng-click="orderBy('avaliacao')">Avaliação <span class="glyphicon glyphicon-sort-by-attributes"></a></li>
-						<li><a href ng-click="orderBy('-avaliacao')">Avaliação <span class="glyphicon glyphicon-sort-by-attributes-alt"></a></li>
-						<li><a href ng-click="orderBy('nome')">Nome <span class="glyphicon glyphicon-sort-by-alphabet"></a></li>
-						<li><a href ng-click="orderBy('-nome')">Nome <span class="glyphicon glyphicon-sort-by-alphabet-alt"></a></li>
+					<ul class="dropdown-menu" role="menu">
+						<li role="presentation" class="dropdown-header"><span class="glyphicon glyphicon-sort small" /></li>
+						<li><a href ng-click="orderBy('avaliacao')" class="small">Avaliação <span class="glyphicon glyphicon-sort-by-attributes"></a></li>
+						<li><a href ng-click="orderBy('-avaliacao')" class="small">Avaliação <span class="glyphicon glyphicon-sort-by-attributes-alt"></a></li>
+						<li><a href ng-click="orderBy('nome')" class="small">Nome <span class="glyphicon glyphicon-sort-by-alphabet"></a></li>
+						<li><a href ng-click="orderBy('-nome')" class="small">Nome <span class="glyphicon glyphicon-sort-by-alphabet-alt"></a></li>
 						<li role="presentation" class="divider"></li>
-						<li><a href="#">Separated link</a></li>
+						<li><a href="#" class="small">Separated link</a></li>
 					</ul>
 			    </div>
             </div>
@@ -43,11 +43,17 @@
 	  </div>
 
 	  <div class="col-md-9">
+	  	<alert ng-repeat="alert in mensagens" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
 	    <div id="map_canvas" ui-map="myMap" ui-options="mapOptions" ui-event="{'map-idle' : 'onMapIdle()'}">
 	    </div>
 
 	    <br />
+	    JSON local:
 	    {{prestadores | json}}
+
+	    <br />
+	    JSONP (http://soservices.vsnepomuceno.cloudbees.net/prestador):
+	    {{prestadores_jsonp | json}}
 	  </div>
 	</div>
 </div>

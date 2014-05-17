@@ -47,8 +47,17 @@ angular.module('sosWeb.controllers', ['ui.bootstrap','ui.map','ui.event'])
 	};
 }])
 .controller('PrestadoresCtrl', ['$scope', '$http', function($scope, $http) {
+	$scope.mensagens = [];
+	$scope.addAlert = function (strMsg, type) {
+		$scope.mensagens.push({"msg": strMsg, "type": type});
+	};
+
+	$scope.closeAlert = function(index) {
+		$scope.mensagens.splice(index, 1);
+	};
+
 	$scope.maxRate = 10;
-	//var urlPrestadores = 'http://soservices.vsnepomuceno.cloudbees.net/prestador?callback=JSON_CALLBACK';
+	var urlPrestadores = 'http://soservices.vsnepomuceno.cloudbees.net/prestador?callback=JSON_CALLBACK';
 
 	//Filter and order
 	$scope.orderProp = '-avaliacao';
@@ -66,14 +75,25 @@ angular.module('sosWeb.controllers', ['ui.bootstrap','ui.map','ui.event'])
 	};
 
 	$scope.prestadores = [];
+	$scope.prestadores_jsonp = [];
 
 	$http.get('json/prestadores.json').success(function(data) {
 
     	$scope.prestadores = data;
 
+    	//TODO: Alterar variaveis quando realizar link com paginacao
 		$scope.bigTotalItems = $scope.prestadores.length;
 		$scope.bigCurrentPage = 1;
 	});
+
+	$http({method: 'JSONP', url: urlPrestadores}).
+    success(function(data, status, headers, config) {
+      $scope.prestadores_jsonp = data;
+      $scope.addAlert('Prestadores de serviços encontrados', 'success');
+    }).
+    error(function(data, status, headers, config) {
+      $scope.addAlert('Erro: ' + status +' '+ headers, 'danger');
+    });
 
 	//Map
 	// function createMarker(prest) {
