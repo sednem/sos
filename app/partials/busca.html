@@ -1,8 +1,7 @@
 <!-- Pagina de busca -->
-<div class="container-fluid">
+<div class="container-fluid well" style="wi">
 	<div class="row">
 	  <div class="col-md-3">
-
 
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -19,17 +18,20 @@
 						<rating ng-model="prestador.avaliacao" max="maxRate" readonly="true"></rating>	
 			         	<p class="list-group-item-text">{{prestador.email + " " + prestador.telefone}}</p>
 			        </a>
+			        <a href="#" class="list-group-item" ng-repeat="prestador in prestadores">
+			        	<h4 class="list-group-item-heading">{{prestador.nome}}</h4>
+						<rating ng-model="prestador.avaliacao" max="maxRate" readonly="true"></rating>	
+			         	<p class="list-group-item-text">{{prestador.email + " " + prestador.telefone}}</p>
+			        </a>
 		        </div>
+		        <pagination total-items="bigTotalItems" ng-model="bigCurrentPage" items-per-page="itemsPerPage" num-pages="numPages" class="pagination-sm" style="margin: 0;"></pagination>
             </div>
-        </div>
-        
-
+        </div>        
 	  </div>
+
 	  <div class="col-md-9">
-	    <!--Mapa-->
-
-	    <p>Mapa!!</p>
-
+	    <div id="map_canvas" ui-map="myMap" ui-options="mapOptions" ui-event="{'map-idle' : 'onMapIdle()'}">
+	    </div>
 	  </div>
 	</div>
 </div>

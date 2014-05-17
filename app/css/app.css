@@ -40,6 +40,8 @@ code {
   font-size: 80%;
 }
 
-.container{
-  margin-left: 0;
+#map_canvas{
+  min-height: 200px;
+  height: 400px;
+  width: 100%;
 }
