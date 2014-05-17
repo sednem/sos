@@ -1,5 +1,5 @@
 <!-- Pagina de busca -->
-<div class="container-fluid well">
+<div class="container-fluid well well-lg">
 	<div class="row">
 	  <div class="col-md-3">
 
@@ -33,8 +33,10 @@
 			    <div class="list-group">
 			        <a href="#" class="list-group-item" ng-repeat="prestador in prestadores | filter:query | orderBy:orderProp">
 			        	<h4 class="list-group-item-heading">{{prestador.nome}}</h4>
-						<rating ng-model="prestador.avaliacao" max="maxRate" readonly="true"></rating>	
-			         	<p class="list-group-item-text">{{prestador.email + " " + prestador.telefone}}</p>
+						<rating ng-model="prestador.avaliacao" max="maxRate" readonly="true"></rating>	<!-- TODO recuperar avaliacao -->
+			         	<p class="list-group-item-text">{{prestador.endereco.logradouro}}  {{prestador.endereco.complemento}}, {{prestador.endereco.cidade}}, {{prestador.endereco.estado}} - {{prestador.endereco.cep}}</p>
+			         	<p class="list-group-item-text">{{prestador.email}}</p>
+			         	<p class="list-group-item-text">{{prestador.telefone}}</p>
 			        </a>
 		        </div>
 		        <pagination total-items="bigTotalItems" ng-model="bigCurrentPage" items-per-page="itemsPerPage" num-pages="numPages" class="pagination-sm" style="margin: 0;"></pagination>
@@ -48,12 +50,8 @@
 	    </div>
 
 	    <br />
-	    JSON local:
+	    JSON:
 	    {{prestadores | json}}
-
-	    <br />
-	    JSONP (http://soservices.vsnepomuceno.cloudbees.net/prestador):
-	    {{prestadores_jsonp | json}}
 	  </div>
 	</div>
 </div>
