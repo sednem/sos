@@ -48,6 +48,11 @@ angular.module('sosWeb.controllers', ['ui.bootstrap','ui.map','ui.event'])
 }])
 .controller('PrestadoresCtrl', ['$scope', function($scope) {
 	$scope.maxRate = 10;
+	//var urlPrestadores = 'http://soservices.vsnepomuceno.cloudbees.net/prestador?callback=JSON_CALLBACK';
+	$scope.orderProp = '-avaliacao';
+	$scope.orderBy = function (orderProp) {
+		$scope.orderProp = orderProp;
+	};
 
 	$scope.prestadores = [
 	    {

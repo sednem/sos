@@ -1,11 +1,24 @@
 <!-- Pagina de busca -->
-<div class="container-fluid well" style="wi">
+<div class="container-fluid well">
 	<div class="row">
 	  <div class="col-md-3">
 
         <div class="panel panel-default">
-            <div class="panel-heading">
-        	    <h3 class="panel-title">{{labels.prestadores_encontrados}}</h3>
+            <div class="panel-heading clearfix">
+        	    <span class="panel-title pull-left" style="padding-top: 7.5px;">{{labels.prestadores_encontrados}}</span>
+        	    <!-- Split button -->
+			    <div class="btn-group pull-right" dropdown>
+					<button type="button" class="btn btn-info dropdown-toggle"><span class="glyphicon glyphicon-sm glyphicon-cog"></span></button>
+					<ul class="dropdown-menu  btn-sm" role="menu">
+						<li role="presentation" class="dropdown-header"><span class="glyphicon glyphicon-sort" /></li>
+						<li><a href ng-click="orderBy('avaliacao')">Avaliação <span class="glyphicon glyphicon-sort-by-attributes"></a></li>
+						<li><a href ng-click="orderBy('-avaliacao')">Avaliação <span class="glyphicon glyphicon-sort-by-attributes-alt"></a></li>
+						<li><a href ng-click="orderBy('nome')">Nome <span class="glyphicon glyphicon-sort-by-alphabet"></a></li>
+						<li><a href ng-click="orderBy('-nome')">Nome <span class="glyphicon glyphicon-sort-by-alphabet-alt"></a></li>
+						<li role="presentation" class="divider"></li>
+						<li><a href="#">Separated link</a></li>
+					</ul>
+			    </div>
             </div>
             <div class="panel-body">
             	<!--Prestadores de servico encontrados-->
@@ -13,8 +26,9 @@
 				    <label for="filtro"><span class="badge">{{prestadores.length}}</span> _tipo-servico_ encontrados à _distancia_ km de distância de _endereco</label>
 				    <input type="search" ng-model="query" class="form-control" id="filtro" placeholder="{{labels.filtrar_resultado}}">
 				</div>
+
 			    <div class="list-group">
-			        <a href="#" class="list-group-item" ng-repeat="prestador in prestadores | filter:query">
+			        <a href="#" class="list-group-item" ng-repeat="prestador in prestadores | filter:query | orderBy:orderProp">
 			        	<h4 class="list-group-item-heading">{{prestador.nome}}</h4>
 						<rating ng-model="prestador.avaliacao" max="maxRate" readonly="true"></rating>	
 			         	<p class="list-group-item-text">{{prestador.email + " " + prestador.telefone}}</p>
