@@ -97,6 +97,30 @@ angular.module('sosWeb.controllers', ['ui.bootstrap','ui.map','ui.event'])
 			"cep": "54678-309",
 			"telefone": "81 3443-4554",
 			"avaliacao": 3,
+		},
+		{
+			"nome": "Karina Oliveira",
+			"email": "vkoliveira@hotmail.com",
+			"senha": "asdasd",
+			"cpf": "222.222.222-22",
+			"logradouro": "Rua XYZ",
+			"numero": 987,
+			"complemento": "aptº 303",
+			"cep": "54678-009",
+			"telefone": "81 4444-4554",
+			"avaliacao": 5,
+		},
+		{
+			"nome": "Tiago Alencar",
+			"email": "tiago@hotmail.com",
+			"senha": "10101970",
+			"cpf": "333.333.333-33",
+			"logradouro": "Rua da esquina",
+			"numero": 1212,
+			"complemento": "",
+			"cep": "54678-309",
+			"telefone": "81 3443-4554",
+			"avaliacao": 7,
 		}
 	];
 

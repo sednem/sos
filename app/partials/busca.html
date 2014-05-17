@@ -9,16 +9,12 @@
             </div>
             <div class="panel-body">
             	<!--Prestadores de servico encontrados-->
-			    <p><span class="badge">{{prestadores.length}}</span> _tipo-servico_ encontrados à _distancia_ km de distância de _endereco_</p>
-			    
-			    <input ng-model="query" placeholder="{{labels.filtrar_resultado}}">
+            	<div class="form-group">
+				    <label for="filtro"><span class="badge">{{prestadores.length}}</span> _tipo-servico_ encontrados à _distancia_ km de distância de _endereco</label>
+				    <input type="search" ng-model="query" class="form-control" id="filtro" placeholder="{{labels.filtrar_resultado}}">
+				</div>
 			    <div class="list-group">
-			        <a href="#" class="list-group-item" ng-repeat="prestador in prestadores">
-			        	<h4 class="list-group-item-heading">{{prestador.nome}}</h4>
-						<rating ng-model="prestador.avaliacao" max="maxRate" readonly="true"></rating>	
-			         	<p class="list-group-item-text">{{prestador.email + " " + prestador.telefone}}</p>
-			        </a>
-			        <a href="#" class="list-group-item" ng-repeat="prestador in prestadores">
+			        <a href="#" class="list-group-item" ng-repeat="prestador in prestadores | filter:query">
 			        	<h4 class="list-group-item-heading">{{prestador.nome}}</h4>
 						<rating ng-model="prestador.avaliacao" max="maxRate" readonly="true"></rating>	
 			         	<p class="list-group-item-text">{{prestador.email + " " + prestador.telefone}}</p>
