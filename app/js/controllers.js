@@ -1,22 +1,36 @@
 'use strict';
 
 /* Controllers */
+var SoSCtrls = angular.module('sosWeb.controllers', ['ui.bootstrap','ui.map','ui.event']);
 
-angular.module('sosWeb.controllers', ['ui.bootstrap','ui.map','ui.event'])
-.controller('MainCtrl', ['$scope', '$modal',
-	'$log',  function($scope, $modal, $log) {
+/* Main page Ctrl */
+SoSCtrls.controller('MainCtrl', ['$scope', '$http', '$modal', 'Alerts',
+	'$log',  function($scope, $http, $modal, Alerts, $log) {
+	$scope.logado = true;
+	$scope.gPlace;
+
+	//Alerts na pagina principal
+	$scope.alerts = Alerts.getAll();
+	$scope.closeAlert = function(index) {Alerts.removeAlert(index);};
+
+	$scope.tiposServicos = [];
+	$http({
+		method: 'JSONP',
+		url: 'http://soservices.vsnepomuceno.cloudbees.net/tipo-servico?callback=JSON_CALLBACK'}).
+    	success(function(data, status, headers, config) {
+			$scope.tiposServicos = data.list.tiposServicos;
+	    }).
+	    error(function(data, status, headers, config) {
+	     	Alerts.addAlert('Erro: ' + status +' '+ headers, 'danger');
+	    });
+
 	$scope.labels = {
 		"filtrar_resultado": "Filtrar prestadores...",
 		"prestadores_encontrados": "Prestadores encontrados",
 		"endereco": "Endereço",
 		"buscar": "Buscar",
 	}
-
-	$scope.logado = true;
-
 	$scope.items = ['item1', 'item2', 'item3'];
-
-
 	$scope.open = function (size) {
 		var modalInstance;
 		if($scope.logado){
@@ -42,24 +56,21 @@ angular.module('sosWeb.controllers', ['ui.bootstrap','ui.map','ui.event'])
 			  size: size
 			});
 		}
-
-		
 	};
-}])
-.controller('PrestadoresCtrl', ['$scope', '$http', function($scope, $http) {
+}]);
+
+/* Ctrl Busca de prestadores */
+SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeParams', 'Alerts',
+ function($scope, $http, $location, $routeParams, Alerts) {
+
+ 	$scope.tipoServico = $routeParams.tipoServico;
+	$scope.endereco = $routeParams.endereco;
+	$scope.raio = $routeParams.raio;
+
+	$scope.prestadores = [];
 
 	$scope.maxRate = 10;
 	var urlPrestadores = 'http://soservices.vsnepomuceno.cloudbees.net/prestador?callback=JSON_CALLBACK';
-
-	//Alerts/Messages
-	$scope.mensagens = [];
-	$scope.addAlert = function (strMsg, type) {
-		$scope.mensagens.push({"msg": strMsg, "type": type});
-	};
-
-	$scope.closeAlert = function(index) {
-		$scope.mensagens.splice(index, 1);
-	};
 
 	//Filter and order
 	$scope.orderProp = '-avaliacao';
@@ -76,19 +87,25 @@ angular.module('sosWeb.controllers', ['ui.bootstrap','ui.map','ui.event'])
 		$scope.currentPage
 	};
 
-	$scope.prestadores = [];
 
-	$http({method: 'JSONP', url: urlPrestadores}).
-    	success(function(data, status, headers, config) {
-	      $scope.prestadores = data.list.prestadores;
-	    	//TODO: Alterar variaveis quando realizar link com paginacao
-			$scope.bigTotalItems = $scope.prestadores.length;
-			$scope.bigCurrentPage = 1;
-	     	$scope.addAlert('Prestadores de serviços encontrados', 'success');
-	    }).
-	    error(function(data, status, headers, config) {
-	     	$scope.addAlert('Erro: ' + status +' '+ headers, 'danger');
-	    });
+	$scope.search = function() {
+		$location.path('/busca/tipoServico/'+$scope.tipoServico+'/endereco/'+$scope.endereco+'/raio/'+$scope.raio);
+	};
+
+	$scope.getPesquisadores = function() {
+		$http({method: 'JSONP', url: urlPrestadores}).
+	    	success(function(data, status, headers, config) {
+				$scope.prestadores = data.list.prestadores;
+		    	//TODO: Alterar variaveis quando realizar link com paginacao
+				$scope.bigTotalItems = $scope.prestadores.length;
+				$scope.bigCurrentPage = 1;
+		    }).
+		    error(function(data, status, headers, config) {
+		     	Alerts.addAlert('Erro: ' + status +' '+ headers, 'danger');
+		    });
+	};
+
+	$scope.getPesquisadores();
 
 	//Map
 	// function createMarker(prest) {
@@ -101,6 +118,26 @@ angular.module('sosWeb.controllers', ['ui.bootstrap','ui.map','ui.event'])
 
 	var ll = new google.maps.LatLng(-18.8800397, -47.05878999999999);
 	
+    // var geo = new google.maps.Geocoder;
+    // var userLocation;
+    // //var ll = new google.maps.LatLng(-18.8800397, -47.05878999999999);
+    // geo.geocode({'address':'Rua santana, Jardim atlantico, Olinda - PE, Brasil'},function(results, status){
+    //       if (status == google.maps.GeocoderStatus.OK) {
+    //         userLocation = results[0].geometry.location;
+    //         ll = new google.maps.LatLng(userLocation.lat(), userLocation.lng());
+
+    //         $scope.mapOptions = {
+    //             center: ll,
+    //             zoom: 15,
+    //             mapTypeId: google.maps.MapTypeId.ROADMAP
+    //         };
+
+    //       } else {
+    //         alert("Geocode was not successful for the following reason: " + status);
+    //       }
+
+    // });
+
     $scope.mapOptions = {
         center: ll,
         zoom: 15,
@@ -120,8 +157,9 @@ angular.module('sosWeb.controllers', ['ui.bootstrap','ui.map','ui.event'])
     $scope.markerClicked = function(m) {
         window.alert("clicked");
     };
-}])
-.controller('MyCtrl2', ['$scope', function($scope) {
+}]);
+
+SoSCtrls.controller('MyCtrl2', ['$scope', function($scope) {
 }]);
 
 
