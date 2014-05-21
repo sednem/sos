@@ -18,10 +18,11 @@ SoSCtrls.controller('MainCtrl', ['$scope', '$http', '$modal', 'Alerts',
 		method: 'JSONP',
 		url: 'http://soservices.vsnepomuceno.cloudbees.net/tipo-servico?callback=JSON_CALLBACK'}).
     	success(function(data, status, headers, config) {
-			$scope.tiposServicos = data.list.tiposServicos;
+			$scope.tiposServicos = data;
+
 	    }).
 	    error(function(data, status, headers, config) {
-	     	Alerts.addAlert('Erro: ' + status +' '+ headers, 'danger');
+	     	Alerts.addAlert('Erro: ' + status +' '+ data, 'danger');
 	    });
 
 	$scope.labels = {
@@ -95,13 +96,13 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeP
 	$scope.getPesquisadores = function() {
 		$http({method: 'JSONP', url: urlPrestadores}).
 	    	success(function(data, status, headers, config) {
-				$scope.prestadores = data.list.prestadores;
+				$scope.prestadores = data;
 		    	//TODO: Alterar variaveis quando realizar link com paginacao
 				$scope.bigTotalItems = $scope.prestadores.length;
 				$scope.bigCurrentPage = 1;
 		    }).
 		    error(function(data, status, headers, config) {
-		     	Alerts.addAlert('Erro: ' + status +' '+ headers, 'danger');
+		     	Alerts.addAlert('Erro: ' + status +' '+ data, 'danger');
 		    });
 	};
 

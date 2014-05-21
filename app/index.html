@@ -10,13 +10,10 @@
   <title>SoS Web</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <link rel="stylesheet" href="bower_components/html5-boilerplate/css/normalize.css">
-  <link rel="stylesheet" href="bower_components/html5-boilerplate/css/main.css">
   <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"> <!--Gerar versão customizada -->
-  <script src="bower_components/html5-boilerplate/js/vendor/modernizr-2.6.2.min.js"></script> <!--Gerar versão customizada -->
   <link rel="stylesheet" href="css/app.css"/>
 
-  <link rel="shortcut icon" href="/bootstrap/img/favicon.ico">
+  <link rel="shortcut icon" href="img/favicon.ico">
   <link rel="apple-touch-icon" href="/bootstrap/img/apple-touch-icon.png">
   <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
   <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
@@ -25,7 +22,7 @@
   <!-- Wrap all page content here -->
   <div id="wrap">
     <!-- Fixed navbar -->
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation" style="border-bottom: 1px solid black">
       <div class="container-fluid">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse"
@@ -34,39 +31,50 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">SoS</a>
+          <a class="navbar-brand" href="#" title="System of Services">
+            <img ng-src="img/logo.png" alt="System of Services" />
+          </a>
         </div>
         <div class="collapse navbar-collapse navbar-right">
           <ul class="nav navbar-nav">
             <li><a href="#/busca">Login <span class="glyphicon glyphicon-log-in"></span></a></li>
             <li><a href="#/view2">Cadastre-se <span class="glyphicon glyphicon-user"></span></a></li>
-            <li><button class='btn btn-success navbar-btn' ng-click="open()"><span class="glyphicon glyphicon-bullhorn"></span> Anuncie aqui!</button></li>
+            <li>
+              <button class='btn btn-warning navbar-btn' ng-click="open()">
+                <span class="glyphicon glyphicon-bullhorn"></span> Anuncie aqui!
+              </button>
+            </li>
           </ul>
         </div>
         <!--/.nav-collapse -->
       </div>
     </div>
     <!-- Begin page content -->
-    <div class="center-container">
+    <div class="center-container bg-one">
       <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
-      <div class="center-row" ng-view>
-      </div>
+      <div class="center-row" ng-view></div>
     </div>
     <div id="footer">
       <div class="container">
-        <p>&nbsp;</p>
-        <p class="text-muted"> 
-          SoS Web : v<span app-version></span>
-        </p>
+        <img ng-src="img/sos.png" alt="System of Services" />
+        <span class="text-muted" style="float: right"> 
+           v<span app-version></span>
+        </span>
       </div>
     </div>
   </div>
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-route.min.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-resource.min.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script> <!-- Procurar alternativa usando ui-bootstrap.min.js para menu responsivo -->
-  <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.0.js"></script>  <!--Gerar versão customizada -->
+  <!--script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script-->
+  <script src="bower_components/angular/angular.min.js"></script>
+  <!--script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-route.min.js"></script-->
+  <script src="bower_components/angular-route/angular-route.min.js"></script>
+  <!--script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-resource.min.js"></script-->
+  <script src="bower_components/angular-resource/angular-resource.min.js"></script>
+  <!--script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script-->
+  <script src="bower_components/jquery/dist/jquery.min.js"></script>
+  <!--script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script--> <!-- Procurar alternativa usando ui-bootstrap.min.js para menu responsivo -->
+  <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <!--script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.0.min.js"></script-->  <!--Gerar versão customizada -->
+  <script src="js/ui-bootstrap-tpls-0.11.0.min.js"></script> 
   <script src="bower_components/angular-ui-utils/ui-utils.min.js"></script>  <!--Usar CDN ? -->
   <script src="bower_components/angular-ui-map/ui-map.min.js"></script>  <!--Usar CDN ? -->
   <script src="http://maps.googleapis.com/maps/api/js?sensor=false&.js&libraries=places"></script>

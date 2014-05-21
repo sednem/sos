@@ -7,11 +7,7 @@
 					<div class="panel-heading clearfix">
 						<div class="row">
 							<div class="col-md-3">
-								<select id="tpServico" class="form-control input-sm"
-									ng-model="tipoServico">
-									<option value="" disabled selected>Serviço desejado</option>
-									<option ng-repeat="tipo in tiposServicos">{{tipo.nome}}</option>
-								</select>
+								<input type="text" ng-model="tipoServico" typeahead="tipo.nome for tipo in tiposServicos | filter:$viewValue | limitTo:8" class="form-control" placeholder="Serviço desejado" >
 							</div>
 							<div class="col-md-4">
 								<input id="endereco" type="text" class="form-control input-sm"
@@ -37,7 +33,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="panel-body">
+					<div class="panel-body" style="padding: 0;">
 						<div id="map_canvas" ui-map="myMap" ui-options="mapOptions"
 							ui-event="{'map-idle' : 'onMapIdle()'}"></div>
 					</div>
