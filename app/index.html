@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html lang="en" ng-app="sosWeb" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html lang="en" ng-app="sosWeb" class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html lang="en" ng-app="sosWeb" class="no-js lt-ie9"> <![endif]-->
+<!--[if lt IE 7]>      <html lang="en" data-ng-app="sosWeb" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html lang="en" data-ng-app="sosWeb" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="en" data-ng-app="sosWeb" class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> 
-<html lang="en" ng-app="sosWeb" class="no-js"> <!--<![endif]-->
+<html lang="en" data-ng-app="sosWeb" class="no-js"> <!--<![endif]-->
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8"> 
   <meta charset="utf-8">
@@ -18,7 +18,7 @@
   <link rel="apple-touch-icon" sizes="72x72" href="/bootstrap/img/apple-touch-icon-72x72.png">
   <link rel="apple-touch-icon" sizes="114x114" href="/bootstrap/img/apple-touch-icon-114x114.png">
 </head>
-<body ng-controller="MainCtrl">
+<body data-ng-controller="MainCtrl">
   <!-- Wrap all page content here -->
   <div id="wrap">
     <!-- Fixed navbar -->
@@ -32,7 +32,7 @@
             <span class="icon-bar"></span>
           </button>
           <a class="navbar-brand" href="#" title="System of Services">
-            <img ng-src="img/logo.png" alt="System of Services" />
+            <img data-ng-src="img/logo.png" alt="System of Services" />
           </a>
         </div>
         <div class="collapse navbar-collapse navbar-right">
@@ -40,7 +40,7 @@
             <li><a href="#/busca">Login <span class="glyphicon glyphicon-log-in"></span></a></li>
             <li><a href="#/view2">Cadastre-se <span class="glyphicon glyphicon-user"></span></a></li>
             <li>
-              <button class='btn btn-warning navbar-btn' ng-click="open()">
+              <button class='btn btn-warning navbar-btn' data-ng-click="open()">
                 <span class="glyphicon glyphicon-bullhorn"></span> Anuncie aqui!
               </button>
             </li>
@@ -51,12 +51,12 @@
     </div>
     <!-- Begin page content -->
     <div class="center-container bg-one">
-      <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
-      <div class="center-row" ng-view></div>
+      <alert data-ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+      <div class="center-row" data-ng-view></div>
     </div>
     <div id="footer">
       <div class="container">
-        <img ng-src="img/sos.png" alt="System of Services" />
+        <img data-ng-src="img/sos.png" alt="System of Services" />
         <span class="text-muted" style="float: right"> 
            v<span app-version></span>
         </span>

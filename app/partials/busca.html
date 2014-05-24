@@ -1,21 +1,21 @@
 <!-- Pagina de busca -->
 <div class="bg-one">
-	<div class="container well text-justify" style="margin-top: 15px;">
+	<div class="container well text-justify" style="margin-top: 15px; width: 99%;">
 		<div class="row">
 			<div class="col-md-8">
 				<div class="panel panel-default">
 					<div class="panel-heading clearfix">
-						<div class="row">
+						<div class="row"> <!-- TODO código duplicado no arquivo home.html. Verificar como resolver duplicacao. -->
 							<div class="col-md-3">
-								<input type="text" ng-model="tipoServico" typeahead="tipo.nome for tipo in tiposServicos | filter:$viewValue | limitTo:8" class="form-control" placeholder="Serviço desejado" >
+								<input type="text" data-ng-model="tipoServico" typeahead="tipo.nome for tipo in tiposServicos | filter:$viewValue | limitTo:8" class="form-control input-sm" placeholder="Serviço" required>
 							</div>
-							<div class="col-md-4">
+							<div class="col-md-5">
 								<input id="endereco" type="text" class="form-control input-sm"
-									placeholder="{{labels.endereco}}" ng-model="endereco"
+									placeholder="{{labels.endereco}}" data-ng-model="endereco"
 									googleplace>
 							</div>
 							<div class="col-md-2">
-								<select id="raio" class="form-control input-sm" ng-model="raio">
+								<select id="raio" class="form-control input-sm" data-ng-model="raio">
 									<option value="" disabled selected>Distância máx.</option>
 									<option value="1">1KM</option>
 									<option value="2">2KM</option>
@@ -24,9 +24,9 @@
 									<option value="50">50KM</option>
 								</select>
 							</div>
-							<div class="col-md-3">
-								<button class='btn btn-info form-control input-sm	'
-									ng-click="search();">
+							<div class="col-md-2">
+								<button class='btn btn-success form-control input-sm'
+									data-ng-click="getPesquisadores()">
 									<span class="glyphicon glyphicon-search"></span>
 									{{labels.buscar}}
 								</button>
@@ -34,7 +34,7 @@
 						</div>
 					</div>
 					<div class="panel-body" style="padding: 0;">
-						<div id="map_canvas" ui-map="myMap" ui-options="mapOptions"
+						<div id="map_canvas" ui-map="sosMap" ui-options="mapOptions"
 							ui-event="{'map-idle' : 'onMapIdle()'}"></div>
 					</div>
 				</div>
@@ -42,7 +42,7 @@
 			<div class="col-md-4">
 				<div class="panel panel-default">
 					<div class="panel-heading clearfix">
-						<span class="panel-title pull-left" style="padding-top: 7.5px;"><span
+						<span class="panel-title pull-left" style="paddidata-ng-top: 7.5px;"><span
 							class="badge">{{prestadores.length}}</span>
 							{{labels.prestadores_encontrados}}</span>
 						<!-- Split button -->
@@ -53,16 +53,16 @@
 							<ul class="dropdown-menu" role="menu">
 								<li role="presentation" class="dropdown-header"><span
 									class="glyphicon glyphicon-sort small" /></li>
-								<li><a href ng-click="orderBy('avaliacao')" class="small">Avaliação
+								<li><a href data-ng-click="orderBy('avaliacao')" class="small">Avaliação
 										<span class="glyphicon glyphicon-sort-by-attributes" />
 								</a></li>
-								<li><a href ng-click="orderBy('-avaliacao')" class="small">Avaliação
+								<li><a href data-ng-click="orderBy('-avaliacao')" class="small">Avaliação
 										<span class="glyphicon glyphicon-sort-by-attributes-alt" />
 								</a></li>
-								<li><a href ng-click="orderBy('nome')" class="small">Nome
+								<li><a href data-ng-click="orderBy('nome')" class="small">Nome
 										<span class="glyphicon glyphicon-sort-by-alphabet" />
 								</a></li>
-								<li><a href ng-click="orderBy('-nome')" class="small">Nome
+								<li><a href data-ng-click="orderBy('-nome')" class="small">Nome
 										<span class="glyphicon glyphicon-sort-by-alphabet-alt" />
 								</a></li>
 								<li role="presentation" class="divider"></li>
@@ -75,16 +75,16 @@
 						<div class="form-group">
 							<div class="right-inner-addon ">
 								<span class="glyphicon glyphicon-filter text-muted"></span> 
-								<input type="search" ng-model="query" class="form-control" id="filtro"
+								<input type="search" data-ng-model="query" class="form-control input-sm" id="filtro"
 									placeholder="{{labels.filtrar_resultado}}" />
 							</div>
 						</div>
 
 						<div class="list-group">
 							<a href class="list-group-item"
-								ng-repeat="prestador in prestadores | filter:query | orderBy:orderProp">
+								data-ng-repeat="prestador in prestadores | filter:query | orderBy:orderProp">
 								<h4 class="list-group-item-heading">{{prestador.nome}}</h4> 
-								<rating ng-model="prestador.avaliacao" max="maxRate" readonly="true"></rating>
+								<rating data-ng-model="prestador.avaliacao" max="maxRate" readonly="true"></rating>
 								<!-- TODO recuperar avaliacao -->
 								<p class="list-group-item-text small">{{prestador.endereco.logradouro}}
 									{{prestador.endereco.complemento}},
@@ -94,7 +94,7 @@
 								<p class="list-group-item-text small">{{prestador.telefone}}</p>
 							</a>
 						</div>
-						<pagination total-items="bigTotalItems" ng-model="bigCurrentPage"
+						<pagination total-items="bigTotalItems" data-ng-model="bigCurrentPage"
 							items-per-page="itemsPerPage" num-pages="numPages"
 							class="pagination-sm" style="margin: 0;"></pagination>
 					</div>

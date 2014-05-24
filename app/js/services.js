@@ -8,15 +8,6 @@
 var SoServices = angular.module('sosWeb.services', ['ngResource']);
 
 SoServices.value('version', '0.0.0');
-/*.factory('prestadoresFactory', function($resource) {
-	return $resource('json/prestadores.json');
-})*/
-// SoServices.factory('Prestadores', ['$resource',
-//   function($resource){
-//     return $resource('http://soservices.vsnepomuceno.cloudbees.net/prestador?callback=JSON_CALLBACK', {}, {
-//       query: {method:'JSONP', params:{/*param1:'prestadores'*/}, isArray:true}
-//     });
-//   }]);
 
 SoServices.service('Alerts', function () { //Alerts/Messages	
 	var alerts = [];
@@ -32,7 +23,7 @@ SoServices.service('Alerts', function () { //Alerts/Messages
 		return alerts;
 	};
 
-	this.addAlert('Teste Danger', 'danger');
-	this.addAlert('Teste Success', 'success');
+	// this.addAlert('Teste Danger', 'danger');
+	// this.addAlert('Teste Success', 'success');
 	// this.addAlert('Teste Info', 'info');
 });

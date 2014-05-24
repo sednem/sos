@@ -30,3 +30,10 @@ SoSDirectives.directive('googleplace', function() {
 		}
 	};
 });
+
+SoSDirectives.directive('frmBuscaServico', function () {
+	return {
+		restrict: 'E',
+		templateUrl: 'templates/frm-busca-servico.html'
+	};
+});

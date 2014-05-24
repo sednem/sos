@@ -1,17 +1,28 @@
 'use strict';
 
+/* Global Object */
+//var sosMap;
+//var mapOptions;
+var geo = new google.maps.Geocoder; //Posicao inicial do mapa
+
 /* Controllers */
 var SoSCtrls = angular.module('sosWeb.controllers', ['ui.bootstrap','ui.map','ui.event']);
 
 /* Main page Ctrl */
-SoSCtrls.controller('MainCtrl', ['$scope', '$http', '$modal', 'Alerts',
-	'$log',  function($scope, $http, $modal, Alerts, $log) {
+SoSCtrls.controller('MainCtrl', ['$scope', '$http', '$location', '$modal', 'Alerts',
+	'$log',  function($scope, $http, $location, $modal, Alerts, $log) {
 	$scope.logado = true;
 	$scope.gPlace;
+	$scope.tipoServico;
+	$scope.endereco;
+	$scope.raio;
 
-	//Alerts na pagina principal
-	$scope.alerts = Alerts.getAll();
-	$scope.closeAlert = function(index) {Alerts.removeAlert(index);};
+	$scope.search = function() {
+		$location.path(
+			'/busca/tipoServico/'+$scope.tipoServico+
+			'/endereco/'+$scope.endereco+
+			'/raio/'+$scope.raio);
+	};
 
 	$scope.tiposServicos = [];
 	$http({
@@ -31,6 +42,11 @@ SoSCtrls.controller('MainCtrl', ['$scope', '$http', '$modal', 'Alerts',
 		"endereco": "Endereço",
 		"buscar": "Buscar",
 	}
+
+	//Alerts na pagina principal
+	$scope.alerts = Alerts.getAll();
+	$scope.closeAlert = function(index) {Alerts.removeAlert(index);};
+
 	$scope.items = ['item1', 'item2', 'item3'];
 	$scope.open = function (size) {
 		var modalInstance;
@@ -63,7 +79,7 @@ SoSCtrls.controller('MainCtrl', ['$scope', '$http', '$modal', 'Alerts',
 /* Ctrl Busca de prestadores */
 SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeParams', 'Alerts',
  function($scope, $http, $location, $routeParams, Alerts) {
-
+ 	//alert("Inicializando PrestadoresCtrl")
  	$scope.tipoServico = $routeParams.tipoServico;
 	$scope.endereco = $routeParams.endereco;
 	$scope.raio = $routeParams.raio;
@@ -88,10 +104,13 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeP
 		$scope.currentPage
 	};
 
-
-	$scope.search = function() {
-		$location.path('/busca/tipoServico/'+$scope.tipoServico+'/endereco/'+$scope.endereco+'/raio/'+$scope.raio);
-	};
+	//Inicializa o mapa
+	var ll = new google.maps.LatLng(-7.9712137, -34.839565100000016);
+    $scope.mapOptions = {
+        center: ll,
+        zoom: 15,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
 
 	$scope.getPesquisadores = function() {
 		$http({method: 'JSONP', url: urlPrestadores}).
@@ -100,11 +119,30 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeP
 		    	//TODO: Alterar variaveis quando realizar link com paginacao
 				$scope.bigTotalItems = $scope.prestadores.length;
 				$scope.bigCurrentPage = 1;
+
+				// alert('Chamando carrega mapa..');
+			    $scope.carregarMapa();
 		    }).
 		    error(function(data, status, headers, config) {
 		     	Alerts.addAlert('Erro: ' + status +' '+ data, 'danger');
 		    });
 	};
+
+	$scope.carregarMapa = function() {
+		// alert('Executando carrega mapa..');
+		geo.geocode({'address':$scope.endereco},function(results, status){
+		    var userLocation;
+          	if (status == google.maps.GeocoderStatus.OK) {
+				// alert('Atualizando posição no mapa..');
+            	userLocation = results[0].geometry.location;
+            	var ll = new google.maps.LatLng(userLocation.lat(), userLocation.lng());
+            	// alert('Posicao: ' + ll);
+            	$scope.sosMap.panTo(ll);
+          	} else {
+            	alert("Geocode was not successful for the following reason: " + status);
+          	}
+	    });
+	}
 
 	$scope.getPesquisadores();
 
@@ -115,44 +153,37 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeP
 	//         title: prest.nome,
 	//         map: map,
 	//         icon: '../img/map_icon_prest.png',
-	//     }); 
-
-	var ll = new google.maps.LatLng(-18.8800397, -47.05878999999999);
+	//     });
 	
-    // var geo = new google.maps.Geocoder;
-    // var userLocation;
-    // //var ll = new google.maps.LatLng(-18.8800397, -47.05878999999999);
-    // geo.geocode({'address':'Rua santana, Jardim atlantico, Olinda - PE, Brasil'},function(results, status){
-    //       if (status == google.maps.GeocoderStatus.OK) {
-    //         userLocation = results[0].geometry.location;
-    //         ll = new google.maps.LatLng(userLocation.lat(), userLocation.lng());
-
-    //         $scope.mapOptions = {
-    //             center: ll,
-    //             zoom: 15,
-    //             mapTypeId: google.maps.MapTypeId.ROADMAP
-    //         };
-
-    //       } else {
-    //         alert("Geocode was not successful for the following reason: " + status);
-    //       }
-
-    // });
-
-    $scope.mapOptions = {
-        center: ll,
-        zoom: 15,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
+    
     //Markers should be added after map is loaded
     $scope.onMapIdle = function() {
-        if ($scope.myMarkers === undefined){    
+        // if ($scope.myMarkers === undefined){ 
             var marker = new google.maps.Marker({
-                map: $scope.myMap,
+                map: $scope.sosMap,
                 position: ll
             });
             $scope.myMarkers = [marker, ];
-        }
+      //   }else{
+    		// var marker = new google.maps.Marker({
+      //           map: $scope.sosMap,
+      //           position: ll
+      //       });
+      //       $scope.myMarkers = [marker, ];
+      //   	var i;
+      //   	for (i = 0; i < $scope.prestadores.length; ++i) {
+			// 	var nerMarkerPosition = 
+			// 		new google.maps.LatLng(
+			// 			$scope.prestadores[i].latitude,
+			// 			$scope.prestadores[i].longitude);
+
+			// 	var newMarker = new google.maps.Marker({
+	  //               map: $scope.sosMap,
+	  //               position: nerMarkerPosition
+	  //           });
+	  //           $scope.myMarkers.push(newMarker);
+			// }
+   //      }
     };
 
     $scope.markerClicked = function(m) {
@@ -160,6 +191,7 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeP
     };
 }]);
 
+//Controler Example
 SoSCtrls.controller('MyCtrl2', ['$scope', function($scope) {
 }]);
 

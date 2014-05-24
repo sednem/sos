@@ -1,28 +1,26 @@
 <!-- Pagina principal -->
 <div class="bg-one">
 	<div class="col-xs-12">
-		<div class="row">
-			<form role="form">
-				<div class="col-md-3 form-group">
-					<input type="text" ng-model="tipoServico" typeahead="tipo.nome for tipo in tiposServicos | filter:$viewValue | limitTo:8" class="form-control input-lg" placeholder="Serviço desejado">
-				</div>
-				<div class="col-md-4 form-group">
-					<input id="endereco" type="text" class="form-control input-lg" placeholder="{{labels.endereco}}" ng-model="endereco" googleplace required>
-				</div>
-				<div class="col-md-2 form-group">
-					<select id="raio" class="form-control input-lg" ng-model="raio" required>
-						<option value="" disabled selected>Distância máx.</option>
-						<option value="1">1KM</option>
-						<option value="2">2KM</option>
-						<option value="5">5KM</option>
-						<option value="10">10KM</option>
-						<option value="50">50KM</option>
-					</select>
-				</div>
-				<div class="col-md-3 form-group">
-					<button class='btn btn-info form-control input-lg' ng-click="search();"><span class="glyphicon glyphicon-search"></span> {{labels.buscar}}</button>
-				</div>
-			</form>
+		<div class="row"> <!-- TODO código duplicado no arquivo busca.html. Verificar como resolver duplicacao. -->
+			<div class="col-xs-3 form-group">
+				<input type="text" data-ng-model="tipoServico" typeahead="tipo.nome for tipo in tiposServicos | filter:$viewValue | limitTo:8" class="form-control input-lg" placeholder="Serviço" required>
+			</div>
+			<div class="col-xs-5 form-group">
+				<input id="endereco" type="text" class="form-control input-lg" placeholder="{{labels.endereco}}" data-ng-model="endereco" googleplace required>
+			</div>
+			<div class="col-xs-2 form-group">
+				<select id="raio" class="form-control input-lg" data-ng-model="raio" required>
+					<option value="" disabled selected>Distância máx.</option>
+					<option value="1">1KM</option>
+					<option value="2">2KM</option>
+					<option value="5">5KM</option>
+					<option value="10">10KM</option>
+					<option value="50">50KM</option>
+				</select>
+			</div>
+			<div class="col-xs-2 form-group">
+				<button class='btn btn-success form-control input-lg' data-ng-click="search();"><span class="glyphicon glyphicon-search"></span> {{labels.buscar}}</button>
+			</div>
 		</div>
 	</div>
 </div>

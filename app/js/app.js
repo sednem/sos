@@ -10,7 +10,7 @@ var SoSApp = angular.module('sosWeb', [
 ]);
 
 SoSApp.config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/home', {templateUrl: 'partials/home.html', controller: 'PrestadoresCtrl'});
+  $routeProvider.when('/home', {templateUrl: 'partials/home.html', controller: 'MainCtrl'});
   $routeProvider.when('/busca', {templateUrl: 'partials/busca.html', controller: 'PrestadoresCtrl'});
   $routeProvider.when('/busca/tipoServico/:tipoServico/endereco/:endereco/raio/:raio',
     {templateUrl: 'partials/busca.html', controller: 'PrestadoresCtrl'});
