@@ -54,7 +54,11 @@ html,body {
 }
 
 .bg-two {
-  background: #efefef;
+  background: #CEECF5;
+  background-size:100% auto;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url('../img/bg-home/jardineiro.png');
 }
 
 .bg-three {

@@ -33,3 +33,29 @@ SoSApp.constant('paginationConfig', {
 
 // '\u2713' : ✓
 // '\u2718' : ✘
+
+function changeImage()
+{
+    $('#bg-home')/*.fadeTo('slow', 0.3, function()
+    {
+        $(this)*/.css('background-image', 'url('+images[x]+')');
+    /*}).delay(1000).fadeTo('slow', 1);*/
+
+    x++;
+
+    if(x >= images.length){
+        x = 0;
+    } 
+
+    // fadeImg(img, 100, true);
+    setTimeout("changeImage()", 30000);
+}
+
+var images = [], x = 0;
+
+images[0] = "img/bg-home/diarista.png";
+images[1] = "img/bg-home/empreiteiro.png";
+images[2] = "img/bg-home/jardineiro.png";
+images[3] = "img/bg-home/marceneiro.png";
+images[4] = "img/bg-home/pintor.png";
+setTimeout("changeImage()", 1000);
