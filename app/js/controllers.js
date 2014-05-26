@@ -24,7 +24,7 @@ SoSCtrls.controller('MainCtrl', ['$scope', '$http', '$location', '$modal', 'Aler
 			'/raio/'+$scope.raio);
 	};
 
-	$scope.tiposServicos = [];
+	$scope.tiposServicos = new Array();
 	$http({
 		method: 'JSONP',
 		url: 'http://soservices.vsnepomuceno.cloudbees.net/tipo-servico?callback=JSON_CALLBACK'}).
@@ -77,119 +77,121 @@ SoSCtrls.controller('MainCtrl', ['$scope', '$http', '$location', '$modal', 'Aler
 }]);
 
 /* Ctrl Busca de prestadores */
-SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeParams', 'Alerts',
- function($scope, $http, $location, $routeParams, Alerts) {
- 	//alert("Inicializando PrestadoresCtrl")
- 	$scope.tipoServico = $routeParams.tipoServico;
-	$scope.endereco = $routeParams.endereco;
-	$scope.raio = $routeParams.raio;
+SoSCtrls.controller('PrestadoresCtrl', 
+	['$scope', '$http', '$location', '$routeParams', 'Alerts',
+	function($scope, $http, $location, $routeParams, Alerts) {
+	 	//alert("Inicializando PrestadoresCtrl")
+	 	$scope.tipoServico = $routeParams.tipoServico;
+		$scope.endereco = $routeParams.endereco;
+		$scope.raio = $routeParams.raio;
 
-	$scope.prestadores = [];
+		$scope.prestadores = [];
 
-	$scope.maxRate = 10;
-	var urlPrestadores = 'http://soservices.vsnepomuceno.cloudbees.net/prestador?callback=JSON_CALLBACK';
+		$scope.maxRate = 10;
+		var urlPrestadores = 
+		'http://soservices.vsnepomuceno.cloudbees.net/prestador?callback=JSON_CALLBACK';
+		// 'http://soservices.vsnepomuceno.cloudbees.net/prestador/query?callback=JSON_CALLBACK';
 
-	//Filter and order
-	$scope.orderProp = '-avaliacao';
-	$scope.orderBy = function (orderProp) {
-		$scope.orderProp = orderProp;
-	};
+		//Filter and order
+		$scope.orderProp = '-avaliacao';
+		$scope.orderBy = function (orderProp) {
+			$scope.orderProp = orderProp;
+		};
 
-	//Pagination
-	$scope.itemsPerPage = 1;
-	$scope.setPage = function (pageNo) {
-		$scope.currentPage = pageNo;
-	};
-	$scope.pageChanged = function() {
-		$scope.currentPage
-	};
+		//Pagination
+		$scope.itemsPerPage = 1;
+		$scope.setPage = function (pageNo) {
+			$scope.currentPage = pageNo;
+		};
+		$scope.pageChanged = function() {
+			$scope.currentPage
+		};
 
-	//Inicializa o mapa
-	var ll = new google.maps.LatLng(-7.9712137, -34.839565100000016);
-    $scope.mapOptions = {
-        center: ll,
-        zoom: 15,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
+		//Inicializa o mapa
+		$scope.userLocation;
+		var ll = new google.maps.LatLng(-7.9712137, -34.839565100000016);
+	    $scope.mapOptions = {
+	        center: ll,
+	        zoom: 15,
+	        mapTypeId: google.maps.MapTypeId.ROADMAP
+	    };
 
-	$scope.getPesquisadores = function() {
-		$http({method: 'JSONP', url: urlPrestadores}).
-	    	success(function(data, status, headers, config) {
-				$scope.prestadores = data;
-		    	//TODO: Alterar variaveis quando realizar link com paginacao
-				$scope.bigTotalItems = $scope.prestadores.length;
-				$scope.bigCurrentPage = 1;
+		
+		$scope.getPesquisadores = function() {
 
-				// alert('Chamando carrega mapa..');
-			    $scope.carregarMapa();
-		    }).
-		    error(function(data, status, headers, config) {
-		     	Alerts.addAlert('Erro: ' + status +' '+ data, 'danger');
+			geo.geocode({'address':$scope.endereco},function(results, status){
+	          	if (status == google.maps.GeocoderStatus.OK) {
+					$scope.userLocation = results[0].geometry.location;
+	        		ll = new google.maps.LatLng($scope.userLocation.lat(), $scope.userLocation.lng());
+
+				    /*$scope.prestParams = 
+					    {
+				    		"tipo_servico_id" : 3,
+							"latitude" : $scope.userLocation.lat(),
+							"longitude" : $scope.userLocation.lng(),
+							"distancia" : $scope.raio
+						}*/
+
+					$http({method: 'JSONP', url: urlPrestadores/*, params: $scope.prestParams*/}).
+				    	success(function(data, status, headers, config) {
+							$scope.prestadores = data;
+					    	//TODO: Alterar variaveis quando realizar link com paginacao
+								$scope.bigTotalItems = $scope.prestadores.length;
+							$scope.bigCurrentPage = 1;
+
+							// alert('Chamando carrega mapa..');
+						    $scope.carregarMapa();
+					    }).
+					    error(function(data, status, headers, config) {
+					     	Alerts.addAlert('Erro: ' + status +' '+ data, 'danger');
+					    });
+	          	} else {
+	            	alert("Geocode was not successful for the following reason: " + status);
+	          	}
 		    });
-	};
+		};
 
-	$scope.carregarMapa = function() {
-		// alert('Executando carrega mapa..');
-		geo.geocode({'address':$scope.endereco},function(results, status){
-		    var userLocation;
-          	if (status == google.maps.GeocoderStatus.OK) {
-				// alert('Atualizando posição no mapa..');
-            	userLocation = results[0].geometry.location;
-            	var ll = new google.maps.LatLng(userLocation.lat(), userLocation.lng());
-            	// alert('Posicao: ' + ll);
-            	$scope.sosMap.panTo(ll);
-          	} else {
-            	alert("Geocode was not successful for the following reason: " + status);
-          	}
-	    });
+		$scope.carregarMapa = function() {
+        	$scope.myMarkers = new Array();
+	        //Adiciona marcadores para cada prestador encontrado
+	        var i;
+	    	for (i = 0; i < $scope.prestadores.length; ++i) {
+				var newMarker = 
+		            $scope.myMarkers.push(
+		            	new google.maps.Marker({
+			                map: $scope.sosMap,
+			                position: new google.maps.LatLng(
+								$scope.prestadores[i].endereco.latitude,
+								$scope.prestadores[i].endereco.longitude),
+			                icon: 'img/map_icon_prest.png'
+		            	})
+		            );
+			}
+
+	        $scope.myMarkers.push(
+	        	new google.maps.Marker({
+		            map: $scope.sosMap,
+		            position: ll
+	        	})
+	        );
+	        $scope.myMarkers.push($scope.newMarkers); //Adiciona novos marcadores.
+        	$scope.sosMap.panTo(ll); //Centraliza o mapa no endereço informado.
+		}
+
+		if($scope.tipoServico && $scope.endereco && $scope.raio){
+			$scope.getPesquisadores();
+		}	
+	    
+	    //Markers should be added after map is loaded
+	    $scope.onMapIdle = function() {
+	        
+	    };
+
+	    $scope.markerClicked = function(m) {
+	        window.alert("clicked");
+	    };
 	}
-
-	$scope.getPesquisadores();
-
-	//Map
-	// function createMarker(prest) {
-	// 	var marker_prest = new google.maps.Marker({
-	//         position: new google.maps.LatLng(prest.endereco.latitude,prest.endereco.longitude),
-	//         title: prest.nome,
-	//         map: map,
-	//         icon: '../img/map_icon_prest.png',
-	//     });
-	
-    
-    //Markers should be added after map is loaded
-    $scope.onMapIdle = function() {
-        // if ($scope.myMarkers === undefined){ 
-            var marker = new google.maps.Marker({
-                map: $scope.sosMap,
-                position: ll
-            });
-            $scope.myMarkers = [marker, ];
-      //   }else{
-    		// var marker = new google.maps.Marker({
-      //           map: $scope.sosMap,
-      //           position: ll
-      //       });
-      //       $scope.myMarkers = [marker, ];
-      //   	var i;
-      //   	for (i = 0; i < $scope.prestadores.length; ++i) {
-			// 	var nerMarkerPosition = 
-			// 		new google.maps.LatLng(
-			// 			$scope.prestadores[i].latitude,
-			// 			$scope.prestadores[i].longitude);
-
-			// 	var newMarker = new google.maps.Marker({
-	  //               map: $scope.sosMap,
-	  //               position: nerMarkerPosition
-	  //           });
-	  //           $scope.myMarkers.push(newMarker);
-			// }
-   //      }
-    };
-
-    $scope.markerClicked = function(m) {
-        window.alert("clicked");
-    };
-}]);
+]);
 
 //Controler Example
 SoSCtrls.controller('MyCtrl2', ['$scope', function($scope) {

@@ -34,6 +34,7 @@ SoSApp.constant('paginationConfig', {
 // '\u2713' : ✓
 // '\u2718' : ✘
 
+//Muda o background da home dinamicamente
 function changeImage()
 {
     $('#bg-home')/*.fadeTo('slow', 0.3, function()
@@ -50,9 +51,7 @@ function changeImage()
     // fadeImg(img, 100, true);
     setTimeout("changeImage()", 30000);
 }
-
 var images = [], x = 0;
-
 images[0] = "img/bg-home/diarista.png";
 images[1] = "img/bg-home/empreiteiro.png";
 images[2] = "img/bg-home/jardineiro.png";
