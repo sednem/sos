@@ -11,6 +11,15 @@ POST localhost:8080/sos-api/usuario
 
 --- Prestador ---
 GET localhost:8080/sos-api/prestador
+GET/POST http://localhost:8080/sos-api/prestador/query
+{
+	"query": {
+		"tipo_servico_id" : 3,
+		"latitude" : -8.039080, 
+		"longitude" : -34.909146,
+		"distancia" : 10
+	}
+}
 
 POST localhost:8080/sos-api/prestador	
 {

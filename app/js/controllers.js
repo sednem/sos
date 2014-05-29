@@ -9,8 +9,9 @@ var geo = new google.maps.Geocoder; //Posicao inicial do mapa
 var SoSCtrls = angular.module('sosWeb.controllers', ['ui.bootstrap','ui.map','ui.event']);
 
 /* Main page Ctrl */
-SoSCtrls.controller('MainCtrl', ['$scope', '$http', '$location', '$modal', 'Alerts',
-	'$log',  function($scope, $http, $location, $modal, Alerts, $log) {
+SoSCtrls.controller('MainCtrl', ['$scope', '$http', '$location', '$modal',
+	'Alerts', 'ServiceTpServico', '$log',
+function($scope, $http, $location, $modal, Alerts, ServiceTpServico, $log) {
 	$scope.logado = true;
 	$scope.gPlace;
 	$scope.tipoServico;
@@ -25,16 +26,9 @@ SoSCtrls.controller('MainCtrl', ['$scope', '$http', '$location', '$modal', 'Aler
 	};
 
 	$scope.tiposServicos = new Array();
-	$http({
-		method: 'JSONP',
-		url: 'http://soservices.vsnepomuceno.cloudbees.net/tipo-servico?callback=JSON_CALLBACK'}).
-    	success(function(data, status, headers, config) {
-			$scope.tiposServicos = data;
-
-	    }).
-	    error(function(data, status, headers, config) {
-	     	Alerts.addAlert('Erro: ' + status +' '+ data, 'danger');
-	    });
+	ServiceTpServico.getTiposServicos().then(
+		function(data) { $scope.tiposServicos = data; }
+	);
 
 	$scope.labels = {
 		"filtrar_resultado": "Filtrar prestadores...",
@@ -78,8 +72,8 @@ SoSCtrls.controller('MainCtrl', ['$scope', '$http', '$location', '$modal', 'Aler
 
 /* Ctrl Busca de prestadores */
 SoSCtrls.controller('PrestadoresCtrl', 
-	['$scope', '$http', '$location', '$routeParams', 'Alerts',
-	function($scope, $http, $location, $routeParams, Alerts) {
+	['$scope', '$http', '$location', '$routeParams', 'Alerts', 'ServicePrestadores',
+	function($scope, $http, $location, $routeParams, Alerts, ServicePrestadores) {
 	 	//alert("Inicializando PrestadoresCtrl")
 	 	$scope.tipoServico = $routeParams.tipoServico;
 		$scope.endereco = $routeParams.endereco;
@@ -88,9 +82,6 @@ SoSCtrls.controller('PrestadoresCtrl',
 		$scope.prestadores = [];
 
 		$scope.maxRate = 10;
-		var urlPrestadores = 
-		'http://soservices.vsnepomuceno.cloudbees.net/prestador?callback=JSON_CALLBACK';
-		// 'http://soservices.vsnepomuceno.cloudbees.net/prestador/query?callback=JSON_CALLBACK';
 
 		//Filter and order
 		$scope.orderProp = '-avaliacao';
@@ -116,37 +107,32 @@ SoSCtrls.controller('PrestadoresCtrl',
 	        mapTypeId: google.maps.MapTypeId.ROADMAP
 	    };
 
-		
 		$scope.getPesquisadores = function() {
-
 			geo.geocode({'address':$scope.endereco},function(results, status){
 	          	if (status == google.maps.GeocoderStatus.OK) {
 					$scope.userLocation = results[0].geometry.location;
 	        		ll = new google.maps.LatLng($scope.userLocation.lat(), $scope.userLocation.lng());
 
-				    /*$scope.prestParams = 
-					    {
-				    		"tipo_servico_id" : 3,
-							"latitude" : $scope.userLocation.lat(),
-							"longitude" : $scope.userLocation.lng(),
-							"distancia" : $scope.raio
-						}*/
-
-					$http({method: 'JSONP', url: urlPrestadores/*, params: $scope.prestParams*/}).
-				    	success(function(data, status, headers, config) {
+	        		//Busca os prestadores de servicos
+	        		ServicePrestadores.getPrestadores(
+	        			1, //Encontrar maneira de trocar nome para id
+	        			$scope.userLocation.lat(), 
+	        			$scope.userLocation.lng(),
+	        			$scope.raio,
+	        			function(data) {
 							$scope.prestadores = data;
+
 					    	//TODO: Alterar variaveis quando realizar link com paginacao
-								$scope.bigTotalItems = $scope.prestadores.length;
+							$scope.bigTotalItems = $scope.prestadores.length;
 							$scope.bigCurrentPage = 1;
 
 							// alert('Chamando carrega mapa..');
 						    $scope.carregarMapa();
-					    }).
-					    error(function(data, status, headers, config) {
-					     	Alerts.addAlert('Erro: ' + status +' '+ data, 'danger');
-					    });
+					    }
+					);
 	          	} else {
-	            	alert("Geocode was not successful for the following reason: " + status);
+	          		Alerts.addAlert(
+	          			"Geocode was not successful for the following reason: " + status, 'danger');
 	          	}
 		    });
 		};
