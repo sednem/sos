@@ -329,8 +329,6 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeP
 	        	})
 	        );
 
-        	alert($scope.myMarkers);
-
         	$scope.sosMap.panTo(center); //Centraliza o mapa no endereço informado.
 
 		}
@@ -456,7 +454,7 @@ var anuncioCtrl = function ($scope, $http,$modalInstance, Alerts, servico, tipos
 		if ($scope.servico.descricao != '' && $scope.servico.nome_tipo_servico != '') {
 			$http({
 				method : 'POST',
-				url : 'http://localhost:6652/sos-api/servico',
+				url : 'http://soservices.vsnepomuceno.cloudbees.net/servico',
 				data : $scope.servico,
 				headers: {'Content-Type': 'application/json'}
 			}).
@@ -499,7 +497,7 @@ SoSCtrls.controller('PrestadoresAnunciosCtrl', [ '$scope', '$route', '$http', '$
 			$scope.servicos = new Array();
 			$http({
 				method: 'GET',
-				url: 'http://localhost:6652/sos-api/servico/email?email='+ $scope.email}).
+				url: 'http://soservices.vsnepomuceno.cloudbees.net/servico/email?email='+ $scope.email}).
 		    	success(function(data, status, headers, config) {
 					$scope.servicos = data;
 
@@ -532,7 +530,7 @@ SoSCtrls.controller('PrestadoresAnunciosCtrl', [ '$scope', '$route', '$http', '$
 			$scope.remover = function (id) {
 				$http({
 					method : 'DELETE',
-					url : 'http://localhost:6652/sos-api/servico/'+id,
+					url : 'http://soservices.vsnepomuceno.cloudbees.net/servico/'+id,
 					headers: {'Content-Type': 'application/json'}
 				}).
 				success(function(data, status, headers, config) {
@@ -579,7 +577,7 @@ var editarAnuncioCtrl = function ($scope, $http,$modalInstance, Alerts, servico,
 		if ($scope.servico.descricao != '' && $scope.servico.nome_tipo_servico != '') {
 			$http({
 				method : 'PUT',
-				url : 'http://localhost:6652/sos-api/servico/'+$scope.servico.id,
+				url : 'http://soservices.vsnepomuceno.cloudbees.net/servico/'+$scope.servico.id,
 				data : $scope.servico,
 				headers: {'Content-Type': 'application/json'}
 			}).
