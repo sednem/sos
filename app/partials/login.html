@@ -1,17 +1,26 @@
 <div>
-       <div class="modal-header">
-            <h3>Acesso ao SoS!</h3>
-        </div>
-        <form ng-submit="submit()">
-          <div class="modal-body">
-            <label>Email:</label><br>
-            <input type="email" ng-model="user.email" required /><br>
-            <label>Senha:</label><br>
-            <input type="password" ng-model="user.senha" required/>
-          </div>
-          <div class="modal-footer">
-              <button class="btn btn-primary" data-ng-click="logar()">Logar</button>
-              <button class="btn btn-warning" ng-click="cancel()">Cancelar</button>
-          </div>
-        </form>
+	<div class="modal-header">
+		<h3>Acesso ao SoS!</h3>
+	</div>
+	<form ng-submit="submit()">
+		<div class="modal-body">
+			<div class="row">
+				<div class="col-xs-8">
+					<label>Email:</label><br> <input type="email"
+						class="form-control" ng-model="user.email" required />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-5">
+					<label>Senha:</label><br> 
+					<input type="password" class="form-control"
+						ng-model="user.senha" required />
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-primary" data-ng-click="logar()">Logar</button>
+			<button class="btn btn-warning" ng-click="cancel()">Cancelar</button>
+		</div>
+	</form>
 </div>

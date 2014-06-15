@@ -1,0 +1,42 @@
+
+<div class="container text-justify">
+
+	<div data-ng-show="(servicos.length > 0)" class="row">
+
+		<div class="col-lg-12">
+			<h1 class="page-header">
+				Serviços <br> <small>Atualize seus an&uacute;ncios!!</small>
+			</h1>
+		</div>
+
+	</div>
+	<div data-ng-show="(servicos.length == 0)" class="row">
+
+		<div class="col-lg-12">
+			<h1 class="page-header">
+				Voc&ecirc; ainda n&atilde;o possui an&uacute;ncios!!
+			</h1>
+		</div>
+
+	</div>
+	
+	<div class="list-group">
+		<div class="list-group-item row"
+			data-ng-repeat="servico in servicos | filter:query | orderBy:orderProp">
+		   		<div class="col-lg-1 col-md-1"></div>
+				<div class="col-lg-10 col-md-10">
+					<h3>Serviço: {{servico.tipoServico.nome}}</h3>
+					<h4>Valor: {{servico.valor}}</h4>
+					<p>{{servico.descricao}}</p>
+				    <button class="btn btn-primary" data-ng-click="editar(servico.id, servico.tipoServico.nome,servico.valor, servico.descricao)">Editar <span
+						class="glyphicon glyphicon-chevron-right"></span></button> 
+					<button class="btn btn-danger" data-ng-click="remover(servico.id)">Remover <span
+						class="glyphicon glyphicon-remove"></span></button>
+					
+				</div>
+			<hr>
+		</div>
+	</div>
+	
+
+</div>

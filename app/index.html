@@ -37,7 +37,7 @@
         </div>
         <div class="collapse navbar-collapse navbar-right">
           <ul class="nav navbar-nav">
-            <li data-ng-show="user.logado"><span class="label label-default">Bem vindo, {{user.email}}</span></li>
+          <li data-ng-show="user.logado"><h4><span class="label label-default">Bem vindo, {{user.email}}</span></h4></li>
             <li data-ng-show="user.logado"><a href="" data-ng-click="logout()">Logout <span class="glyphicon glyphicon-log-out"></span></a></li>
             <li data-ng-hide="user.logado"><a href="" data-ng-click="openLogin()">Login <span class="glyphicon glyphicon-log-in"></span></a></li>
             <li data-ng-hide="user.logado"><a href="" data-ng-click="openCadastro()">Cadastre-se <span class="glyphicon glyphicon-user"></span></a></li>
@@ -46,6 +46,13 @@
                 <span class="glyphicon glyphicon-bullhorn"></span> Anuncie aqui!
               </button>
             </li>
+             <li>&nbsp;&nbsp;</li>
+            <li data-ng-show="user.logado">
+              <button class='btn btn-info navbar-btn' data-ng-click="openPrestadorAnuncios()">
+                <span class="glyphicon glyphicon-folder-close"></span> Ver An&uacute;ncios!
+              </button>
+            </li>
+            
           </ul>
         </div>
         <!--/.nav-collapse -->

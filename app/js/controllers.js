@@ -8,10 +8,31 @@ var geo = new google.maps.Geocoder; //Posicao inicial do mapa
 /* Controllers */
 var SoSCtrls = angular.module('sosWeb.controllers', ['ui.bootstrap','ui.map','ui.event']);
 
+window.fbAsyncInit = function() {
+	FB.init({
+		appId : '1421756051420526',
+		cookie : true, // enable cookies to allow the server to access 
+		// the session
+		xfbml : true, // parse social plugins on this page
+		version : 'v2.0' // use version 2.0
+	});
+};
+
+// Load the SDK asynchronously
+(function(d, s, id) {
+	var js, fjs = d.getElementsByTagName(s)[0];
+	if (d.getElementById(id))
+		return;
+	js = d.createElement(s);
+	js.id = id;
+	js.src = "//connect.facebook.net/en_US/sdk.js";
+	fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
+
 /* Main page Ctrl */
-SoSCtrls.controller('MainCtrl', ['$scope', '$http', '$location', '$modal',
+SoSCtrls.controller('MainCtrl', ['$scope', '$route', '$http', '$location', '$modal',
 	'Alerts', 'ServiceTpServico',  'Authentication', '$log',
-function($scope, $http, $location, $modal, Alerts, ServiceTpServico, Authentication, $log) {
+function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico, Authentication, $log) {
 	$scope.gPlace;
 	$scope.tipoServico;
 	$scope.endereco;
@@ -42,6 +63,10 @@ function($scope, $http, $location, $modal, Alerts, ServiceTpServico, Authenticat
 			'/busca/tipoServico/'+$scope.tipoServico+
 			'/endereco/'+$scope.endereco+
 			'/raio/'+$scope.raio);
+	};
+	
+	$scope.openPrestadorAnuncios = function() {
+		$location.path('/prest/email/'+$scope.user.email);
 	};
 
 	$scope.tiposServicos = new Array();
@@ -124,6 +149,7 @@ function($scope, $http, $location, $modal, Alerts, ServiceTpServico, Authenticat
 			$scope.user.apiKey = '';
 			Authentication.logout($scope.user);
 			$scope.$apply();
+			$location.path('/home');
 
 		}).error(function(data, status, headers, config) {
 			Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
@@ -194,6 +220,7 @@ function($scope, $http, $location, $modal, Alerts, ServiceTpServico, Authenticat
 			  }
 			});
 			modalInstance.result.then(function () {
+				$route.reload();
 				Alerts.addAlert('Anuncio cadastrado com sucesso!', 'success');
 			}, 
 			function () {
@@ -329,7 +356,8 @@ var LoginCtrl = function ($scope, $http, $modalInstance, Alerts, user) {
 			
   $scope.logar = function () {	 
 	  
-	    if ( $scope.user.email != '' && $scope.user.senha != null) {
+	    if ( $scope.user.email != '' && $scope.user.email != null &&
+	    		 $scope.user.senha != '' && $scope.user.senha != null) {
 			$http({
 				method : 'POST',
 				url : 'http://soservices.vsnepomuceno.cloudbees.net/token/login',
@@ -358,9 +386,10 @@ var cadastrarCtrl = function ($scope, $http, $modalInstance, Alerts, user) {
 			
   $scope.cadastrar = function () {	 
 	  
-	 if ( $scope.user.email != '' && $scope.user.senha != null && 
-			 $scope.user.nome != '' && $scope.user.confirmarsenha != null && 
-			 $scope.user.senha != '' && $scope.user.confirmarsenha != '') {
+	 if ( $scope.user.email != '' && $scope.user.email != null && 
+			 $scope.user.nome != '' && $scope.user.nome != '' && 
+			 $scope.user.senha != '' && $scope.user.senha != '' && 
+			 $scope.user.confirmarsenha != '' && $scope.user.confirmarsenha != null ) {
 		 if (angular.equals($scope.user.senha, $scope.user.confirmarsenha) ) {
 			$http({
 				method : 'POST',
@@ -375,7 +404,7 @@ var cadastrarCtrl = function ($scope, $http, $modalInstance, Alerts, user) {
 				Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
 			});    
 		 }else {
-		    	Alerts.addAlert('Senha e confirmação diferentes!');
+		    	Alerts.addAlert('Senha e confirmaç&atilde;o diferentes!');
 	      }
 	  }
   };
@@ -393,7 +422,11 @@ var cadastroPrestadorCtrl = function ($scope, $http, $modalInstance, Alerts, pre
 			
   $scope.cadastrar = function () {	 
 	  
-	 if ($scope.prestador.cpf != '' && $scope.prestador.cpf != null ) {
+	 if ($scope.prestador.cpf != '' && $scope.prestador.cpf != null &&
+			 $scope.prestador.logradouro != '' && $scope.prestador.logradouro != null &&
+			 $scope.prestador.cep != '' && $scope.prestador.cep != null &&
+			 $scope.prestador.cidade != '' && $scope.prestador.cidade != null &&
+			 $scope.prestador.estado != '' && $scope.prestador.estado != null) {
 		 $http({
 				method : 'PUT',
 				url : 'http://soservices.vsnepomuceno.cloudbees.net/prestador',
@@ -420,18 +453,20 @@ var anuncioCtrl = function ($scope, $http,$modalInstance, Alerts, servico, tipos
 	$scope.tiposServicos = tiposServicos;
 	
 	$scope.cadastrar = function () {
-		$http({
-			method : 'POST',
-			url : 'http://soservices.vsnepomuceno.cloudbees.net/servico',
-			data : $scope.servico,
-			headers: {'Content-Type': 'application/json'}
-		}).
-		success(function(data, status, headers, config) {
-			$modalInstance.close(data);
-		
-		}).error(function(data, status, headers, config) {
-			Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
-		});    
+		if ($scope.servico.descricao != '' && $scope.servico.nome_tipo_servico != '') {
+			$http({
+				method : 'POST',
+				url : 'http://localhost:6652/sos-api/servico',
+				data : $scope.servico,
+				headers: {'Content-Type': 'application/json'}
+			}).
+			success(function(data, status, headers, config) {
+				$modalInstance.close(data);
+			
+			}).error(function(data, status, headers, config) {
+				Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+			});    
+		}
 	};
 	
 	$scope.cancel = function () {
@@ -444,4 +479,120 @@ var limparUsuario = function(user) {
 	user.email='';
 	user.senha='';
 	user.confirmarsenha='';
+};
+
+/* Ctrl Busca de prestadores */
+SoSCtrls.controller('PrestadoresAnunciosCtrl', [ '$scope', '$route', '$http', '$location', '$modal',
+		'$routeParams', 'Alerts',
+		function($scope, $route, $http, $location, $modal, $routeParams, Alerts) {
+			
+			$scope.servico = {
+					id: 0,
+					descricao: '',
+				    valor: 0.0,
+				    nome_tipo_servico: '',
+				    usuario_email: ''
+			};
+			$scope.tiposServicos = new Array();
+			$scope.email = $routeParams.email;
+			$scope.orderProp = '-id';
+			$scope.servicos = new Array();
+			$http({
+				method: 'GET',
+				url: 'http://localhost:6652/sos-api/servico/email?email='+ $scope.email}).
+		    	success(function(data, status, headers, config) {
+					$scope.servicos = data;
+
+			    }).
+			    error(function(data, status, headers, config) {
+			     	Alerts.addAlert('Erro: ' + status +' '+ data, 'danger');
+			    });
+
+			
+			$http({
+				method: 'GET',
+				url: 'http://soservices.vsnepomuceno.cloudbees.net/tipo-servico'}).
+		    	success(function(data, status, headers, config) {
+					$scope.tiposServicos = data;
+
+			    }).
+			    error(function(data, status, headers, config) {
+			     	Alerts.addAlert('Erro: ' + status +' '+ data, 'danger');
+			    });
+			
+			$scope.editar = function (id, tipoServico, valor, descricao) {
+				$scope.servico.id = id;
+				$scope.servico.descricao=descricao;
+				$scope.servico.valor = valor;
+				$scope.servico.nome_tipo_servico=tipoServico;
+				$scope.servico.usuario_email = $scope.email;
+				$scope.openEditarAnuncio();
+			};
+		
+			$scope.remover = function (id) {
+				$http({
+					method : 'DELETE',
+					url : 'http://localhost:6652/sos-api/servico/'+id,
+					headers: {'Content-Type': 'application/json'}
+				}).
+				success(function(data, status, headers, config) {
+					$route.reload();
+					Alerts.addAlert('Serviço removido com sucesso', 'success');
+				}).error(function(data, status, headers, config) {
+					Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+				});    
+			};
+			
+			$scope.openEditarAnuncio = function () {
+				var modalInstance;
+				modalInstance = $modal.open({
+					  templateUrl: 'partials/editarAnuncio.html',
+					  controller: 'editarAnuncioCtrl',
+					  resolve: {
+						servico: function () {
+							 return $scope.servico;
+					    },
+					    tiposServicos: function () {
+					        return $scope.tiposServicos;
+					    }
+					  }
+					});
+					modalInstance.result.then(function () {
+						$route.reload();
+						Alerts.addAlert('Anuncio atualizado com sucesso!', 'success');
+					}, 
+					function () {
+
+				});
+					
+			};			
+		
+		} 
+]);
+
+//Controla o dialog de anuncio de servicos
+var editarAnuncioCtrl = function ($scope, $http,$modalInstance, Alerts, servico, tiposServicos) {
+	$scope.servico = servico;
+	$scope.tiposServicos = tiposServicos;
+	
+	$scope.salvar = function () {
+		if ($scope.servico.descricao != '' && $scope.servico.nome_tipo_servico != '') {
+			$http({
+				method : 'PUT',
+				url : 'http://localhost:6652/sos-api/servico/'+$scope.servico.id,
+				data : $scope.servico,
+				headers: {'Content-Type': 'application/json'}
+			}).
+			success(function(data, status, headers, config) {
+				$modalInstance.close(data);
+			
+			}).error(function(data, status, headers, config) {
+				Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+			});    
+		}
+	};
+	
+	$scope.cancel = function () {
+		 $modalInstance.dismiss('cancel');
+	};
 };

@@ -1,29 +1,57 @@
 <div>
-        <div class="modal-header">
-            <h3>Torne-se um prestador!</h3>
-        </div>
-        <form ng-submit="submit()">
-          <div class="modal-body">
-            <label>CPF:</label><br>
-            <input type="text" ng-model="prestador.cpf" required /><br>
-            <label>Telefone:</label><br>
-            <input type="text" ng-model="prestador.telefone" required /><br>
-            <label>Logradouro:</label><br>
-            <input type="text" ng-model="prestador.logradouro" required /><br>
-            <label>Numero:</label><br>
-            <input type="number" ng-model="prestador.numero" required /><br>
-            <label>Complemento:</label><br>
-            <input type="text" ng-model="prestador.complemento" required /><br>
-            <label>CEP:</label><br>
-            <input type="text" ng-model="prestador.cep" required /><br>
-            <label>Cidade:</label><br>
-            <input type="text" ng-model="prestador.cidade" required /><br>
-            <label>Estado:</label><br>
-            <input type="text" ng-model="prestador.estado" required /><br>            
-          </div>
-          <div class="modal-footer">
-              <button class="btn btn-primary" data-ng-click="cadastrar()">Cadastrar</button>
-              <button class="btn btn-warning" ng-click="cancel()">Cancelar</button>
-          </div>
-        </form>
+	<div class="modal-header">
+		<h3>Torne-se um prestador!</h3>
+	</div>
+	<form ng-submit="submit()">
+		<div class="modal-body">
+			<div class="row">
+				<div class="col-xs-5">
+					<label>CPF:</label><br> <input type="text" maxlength="11" class="form-control"
+						ng-model="prestador.cpf" required />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-5">
+					<label>Telefone:</label><br> <input type="text" maxlength="12" class="form-control"
+						ng-model="prestador.telefone" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-7"> 
+					<label>Logradouro:</label><br> <input type="text" class="form-control"
+						ng-model="prestador.logradouro" required />
+				</div>
+				<div class="col-xs-2">
+					<label>Numero:</label><br> <input type="number" class="form-control"
+						ng-model="prestador.numero" />
+				</div>
+				<div class="col-xs-3">
+					<label>Complemento:</label><br> <input type="text" class="form-control"
+						ng-model="prestador.complemento" />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-4">
+					<label>CEP:</label><br> <input type="text" maxlength="9" class="form-control"
+						ng-model="prestador.cep" required />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-5">
+					<label>Cidade:</label><br> <input type="text" class="form-control"
+						ng-model="prestador.cidade" required />
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-5">
+					<label>Estado:</label><br> <input type="text" class="form-control"
+						ng-model="prestador.estado" required />
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-primary" data-ng-click="cadastrar()">Cadastrar</button>
+			<button class="btn btn-warning" ng-click="cancel()">Cancelar</button>
+		</div>
+	</form>
 </div>

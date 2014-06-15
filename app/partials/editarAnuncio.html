@@ -1,6 +1,6 @@
 <div>
 	<div class="modal-header">
-		<h3>Qual serviço voc&ecirc; quer oferecer?</h3>
+		<h3>Atualizar serviço!</h3>
 	</div>
 	<form ng-submit="submit()">
 		<div class="modal-body">
@@ -22,13 +22,13 @@
 			</div>
 			<div class="row">
 				<div class="col-xs-3">
-					<label>Valor:</label><br> <input type="number" class="form-control"
+					<label>Valor:</label><br> <input type="number"  class="form-control"
 						ng-model="servico.valor" /><br>
 				</div>
 			</div>
 		</div>
 		<div class="modal-footer">
-			<button class="btn btn-primary" data-ng-click="cadastrar()">Anunciar</button>
+			<button class="btn btn-primary" data-ng-click="salvar()">Salvar</button>
 			<button class="btn btn-warning" ng-click="cancel()">Cancelar</button>
 		</div>
 	</form>
