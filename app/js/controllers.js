@@ -274,6 +274,11 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeP
 		};
 
 		$scope.carregarMapa = function(center) {
+			//Clean old markers
+			angular.forEach($scope.myMarkers, function(marker) {
+			    marker.setMap(null);
+			});
+
         	$scope.myMarkers = new Array();
 	        //Adiciona marcadores para cada prestador encontrado
 	        var i;
@@ -296,17 +301,16 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeP
 		            position: center
 	        	})
 	        );
+
+        	alert($scope.myMarkers);
+
         	$scope.sosMap.panTo(center); //Centraliza o mapa no endereço informado.
+
 		}
 
 		if($scope.tipoServico && $scope.endereco && $scope.raio){
 			$scope.getPesquisadores();
 		}	
-	    
-	    //Markers should be added after map is loaded
-	    $scope.onMapIdle = function() {
-	        
-	    };
 
 	    $scope.markerClicked = function(m) {
 	        window.alert("clicked");
