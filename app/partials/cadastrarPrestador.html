@@ -1,0 +1,29 @@
+<div>
+        <div class="modal-header">
+            <h3>Torne-se um prestador!</h3>
+        </div>
+        <form ng-submit="submit()">
+          <div class="modal-body">
+            <label>CPF:</label><br>
+            <input type="text" ng-model="prestador.cpf" required /><br>
+            <label>Telefone:</label><br>
+            <input type="text" ng-model="prestador.telefone" required /><br>
+            <label>Logradouro:</label><br>
+            <input type="text" ng-model="prestador.logradouro" required /><br>
+            <label>Numero:</label><br>
+            <input type="number" ng-model="prestador.numero" required /><br>
+            <label>Complemento:</label><br>
+            <input type="text" ng-model="prestador.complemento" required /><br>
+            <label>CEP:</label><br>
+            <input type="text" ng-model="prestador.cep" required /><br>
+            <label>Cidade:</label><br>
+            <input type="text" ng-model="prestador.cidade" required /><br>
+            <label>Estado:</label><br>
+            <input type="text" ng-model="prestador.estado" required /><br>            
+          </div>
+          <div class="modal-footer">
+              <button class="btn btn-primary" data-ng-click="cadastrar()">Cadastrar</button>
+              <button class="btn btn-warning" ng-click="cancel()">Cancelar</button>
+          </div>
+        </form>
+</div>

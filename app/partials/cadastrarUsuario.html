@@ -1,0 +1,21 @@
+<div>
+       <div class="modal-header">
+            <h3>Cadastre-se no SoS, e torne sua vida mais fácil!</h3>
+        </div>
+        <form ng-submit="submit()">
+          <div class="modal-body">
+            <label>Nome Completo:</label><br>
+            <input type="text" ng-model="user.nome" required /><br>
+            <label>Email:</label><br>
+            <input type="email" ng-model="user.email" required/><br>
+            <label>Senha:</label><br>
+            <input type="password" ng-model="user.senha" required/><br>
+            <label>Confirmar Senha:</label><br>
+            <input type="password" ng-model="user.confirmarsenha" required />
+          </div>
+          <div class="modal-footer">
+              <button class="btn btn-primary" data-ng-click="cadastrar()">Cadastrar</button>
+              <button class="btn btn-warning" ng-click="cancel()">Cancelar</button>
+          </div>
+        </form>
+</div>
