@@ -5,7 +5,7 @@
 
 // Demonstrate how to register services
 // In this case it is a simple value service.
-var SoServices = angular.module('sosWeb.services', ['ngResource']);
+var SoServices = angular.module('sosWeb.services', ['ngResource', 'ngStorage']);
 
 SoServices.value('version', '0.0.0');
 
@@ -13,8 +13,8 @@ SoServices.factory('ServiceTpServico', ['$http', 'Alerts',
 	function($http, Alerts){
 		return {
 			getTiposServicos: function() {
-				var url = 'http://soservices.vsnepomuceno.cloudbees.net/tipo-servico?callback=JSON_CALLBACK';
-       			return $http.jsonp(url).
+				var url = 'http://soservices.vsnepomuceno.cloudbees.net/tipo-servico';
+       			return $http.get(url).
 				error(function(data, status) {
 			     	Alerts.addAlert('ServiceTpServico Erro: ' + status +' '+ data, 'danger');
 			    }).
@@ -32,19 +32,13 @@ SoServices.factory('ServicePrestadores', ['$http', 'Alerts',
 			getPrestadores: function(idTipoServico, lat, lng, raio, successCallback) {
        			$http(
 				{
-					method: 'JSONP',//POST ??
-					url: 'http://soservices.vsnepomuceno.cloudbees.net/prestador?callback=JSON_CALLBACK',
-						//'http://soservices.vsnepomuceno.cloudbees.net/prestador/query/?callback=JSON_CALLBACK',
-					headers: {'Content-Type': 'application/jsonp'},//jsonp
-					data: JSON.stringify(
-						{	query :
-							{
-								'tipo_servico_id' : idTipoServico, //Encontrar maneira de trocar nome para id
-								'latitude' : lat, 
-								'longitude' : lng,
-								'distancia' : raio
-							}
-						})
+					method: 'GET',//POST ??
+					url: 'http://soservices.vsnepomuceno.cloudbees.net/prestador/'/*query?'+
+					'tipo_servico_id='+idTipoServico+
+					'&latitude='+lat+
+					'&longitude='+lng+
+					'&distancia='+raio*/,
+					headers: {'Content-Type': 'application/jsonp'}
 				}).
 		    	success(successCallback).
 			    error(function(data, status, headers, config) {
@@ -68,8 +62,47 @@ SoServices.service('Alerts', function () { //Alerts/Messages
 	this.getAll = function() {
 		return alerts;
 	};
+	
+	this.closeAll = function() {
+		while (alerts.length > 0) {
+			alerts.splice(0, 1);
+		}		
+	};
 
 	// this.addAlert('Teste Danger', 'danger');
 	// this.addAlert('Teste Success', 'success');
 	// this.addAlert('Teste Info', 'info');
+});
+
+SoServices.factory('Authentication', function($localStorage){		
+	
+	var userAuth = {
+			nome: '',
+		    email: '',
+		    senha: null,
+		    apiKey: '',
+		    logado: false,
+		    confirmarsenha: null
+	};
+	
+	if ($localStorage.currentUserJson == null) {
+		$localStorage.currentUserJson = angular.toJson(userAuth);
+	} 
+
+  return {
+    login: function(userLogin) { 
+    	userAuth = userLogin;
+    	$localStorage.currentUserJson = angular.toJson(userAuth);
+    },
+    logout: function(userLogout) { 
+    	userAuth = userLogout;
+    	$localStorage.currentUserJson = angular.toJson(userAuth);
+    	delete $localStorage.currentUserJson;
+    },
+    isLoggedIn: function() { userAuth.logado; },
+    currentUser: function() { 
+    	userAuth = angular.fromJson($localStorage.currentUserJson);
+    	return userAuth;
+    }
+  };
 });

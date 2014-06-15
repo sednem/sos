@@ -10,13 +10,32 @@ var SoSCtrls = angular.module('sosWeb.controllers', ['ui.bootstrap','ui.map','ui
 
 /* Main page Ctrl */
 SoSCtrls.controller('MainCtrl', ['$scope', '$http', '$location', '$modal',
-	'Alerts', 'ServiceTpServico', '$log',
-function($scope, $http, $location, $modal, Alerts, ServiceTpServico, $log) {
-	$scope.logado = true;
+	'Alerts', 'ServiceTpServico',  'Authentication', '$log',
+function($scope, $http, $location, $modal, Alerts, ServiceTpServico, Authentication, $log) {
 	$scope.gPlace;
 	$scope.tipoServico;
 	$scope.endereco;
 	$scope.raio;
+	$scope.user = Authentication.currentUser();
+	$scope.prestador = {
+			email: '',
+			cpf: '',
+		    telefone: '',
+		    logradouro: '',
+		    numero: 0,
+		    complemento: '',
+		    cep: '',
+		    cidade: '',
+		    estado: ''
+	};
+	
+	$scope.servico = {
+			descricao: '',
+		    valor: 0.0,
+		    nome_tipo_servico: '',
+		    usuario_email: ''
+	};
+	
 
 	$scope.search = function() {
 		$location.path(
@@ -35,38 +54,151 @@ function($scope, $http, $location, $modal, Alerts, ServiceTpServico, $log) {
 		"prestadores_encontrados": "Prestadores encontrados",
 		"endereco": "Endereço",
 		"buscar": "Buscar",
-	}
+	};
 
 	//Alerts na pagina principal
 	$scope.alerts = Alerts.getAll();
 	$scope.closeAlert = function(index) {Alerts.removeAlert(index);};
 
-	$scope.items = ['item1', 'item2', 'item3'];
-	$scope.open = function (size) {
+	$scope.openAnuncio = function () {
+		
+		if($scope.user.logado){	
+			$http({
+				method: 'GET',
+				url: 'http://soservices.vsnepomuceno.cloudbees.net/prestador/email?email='+$scope.user.email}).
+		    	success(function(data, status, headers, config, prest) {
+		    		if (data.cpf != data.email) {
+		    			$scope.openCadastroAnuncio();
+		    		} else {
+		    			$scope.openCadastroPrestador();
+		    		}
+			    }).
+			    error(function(data, status, headers, config) {		
+			    	Alerts.addAlert('Erro: ' + status +' '+ data, 'danger');
+			    });			
+		}else{
+			$scope.openLogin(true);
+		}
+	};
+	
+	$scope.openLogin = function (fromAnuncio) {
 		var modalInstance;
-		if($scope.logado){
-			modalInstance = $modal.open({
-			  templateUrl: 'partials/anunciar.html',
-			  controller: 'AnuncioCtrl',
-			  size: size,
+		modalInstance = $modal.open({
+			  templateUrl: 'partials/login.html',
+			  controller: 'LoginCtrl',
 			  resolve: {
-			    items: function () {
-			      return $scope.items;
+			    user: function () {
+			      return $scope.user;
+			    }
+			  }
+		});
+		modalInstance.result.then(function(data) {
+			if (data != '') {
+				$scope.user.logado = true;
+				$scope.user.senha='';
+				$scope.user.apiKey = data.apiKey;
+				Authentication.login($scope.user);
+				Alerts.closeAll();
+				$scope.$apply();
+				if (fromAnuncio) {
+					$scope.openAnuncio();
+				}
+				
+			}
+		}, function() {
+		});
+	};
+	
+	$scope.logout = function () {
+		$http({
+			method : 'DELETE',
+			url : 'http://soservices.vsnepomuceno.cloudbees.net/token/logout/'+$scope.user.email,
+			data : $scope.user,
+			headers: {'Content-Type': 'application/json'}
+		}).
+		success(function(data, status, headers, config) {
+			$scope.user.nome='';
+			$scope.user.email='';
+			$scope.user.senha='';
+			$scope.user.logado = false;
+			$scope.user.apiKey = '';
+			Authentication.logout($scope.user);
+			$scope.$apply();
+
+		}).error(function(data, status, headers, config) {
+			Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+		});    	  
+	};
+	
+	$scope.openCadastro = function () {
+		var modalInstance;
+		modalInstance = $modal.open({
+			  templateUrl: 'partials/cadastrarUsuario.html',
+			  controller: 'cadastrarCtrl',
+			  resolve: {
+			    user: function () {
+			      return $scope.user;
+			    }
+			  }
+		});
+		modalInstance.result.then(function(data) {
+			if (data != '') {
+				$scope.user.logado = true;
+				$scope.user.senha='';
+				$scope.user.confirmarsenha='';
+				$scope.user.apiKey = data.apiKey;
+				Authentication.login($scope.user);
+				Alerts.closeAll();
+				$scope.$apply();
+				Alerts.addAlert('Usuário cadastrado com sucesso!', 'success');
+				
+			}
+		}, function() {
+		});
+	};
+	
+	$scope.openCadastroPrestador = function () {
+		var modalInstance;
+		modalInstance = $modal.open({
+			  templateUrl: 'partials/cadastrarPrestador.html',
+			  controller: 'cadastroPrestadorCtrl',
+			  resolve: {
+				    prestador: function () {
+				    	$scope.prestador.email = $scope.user.email;
+				        return $scope.prestador;
+				    }
+			  }
+			});
+			modalInstance.result.then(function () {
+				Alerts.addAlert('Prestador cadastrado com sucesso!', 'success');
+				$scope.openCadastroAnuncio();
+			}, 
+			function () {
+
+		});
+	};
+	
+	$scope.openCadastroAnuncio = function () {
+		var modalInstance;
+		modalInstance = $modal.open({
+			  templateUrl: 'partials/anunciar.html',
+			  controller: 'anuncioCtrl',
+			  resolve: {
+				servico: function () {
+					$scope.servico.usuario_email = $scope.user.email;
+			        return $scope.servico;
+			    },
+			    tiposServicos: function () {
+			        return $scope.tiposServicos;
 			    }
 			  }
 			});
-			modalInstance.result.then(function (selectedItem) {
-			  $scope.selected = selectedItem;
-			}, function () {
-			  $log.info('Modal dismissed at: ' + new Date());
-			});
-		}else{
-			modalInstance = $modal.open({
-			  templateUrl: 'partials/login.html',
-			  controller: 'LoginCtrl',
-			  size: size
-			});
-		}
+			modalInstance.result.then(function () {
+				Alerts.addAlert('Anuncio cadastrado com sucesso!', 'success');
+			}, 
+			function () {
+
+		});
 	};
 }]);
 
@@ -183,17 +315,90 @@ SoSCtrls.controller('PrestadoresCtrl',
 SoSCtrls.controller('MyCtrl2', ['$scope', function($scope) {
 }]);
 
-
-//Controla o dialog de anuncio de servicos
-var AnuncioCtrl = function ($scope, $modalInstance, items) {
-
-  $scope.items = items;
-  $scope.selected = {
-    item: $scope.items[0]
+//Controla o dialog de "sign in" / "sign up"
+var LoginCtrl = function ($scope, $http, $modalInstance, Alerts, user) {
+	
+  $scope.user = user;
+			
+  $scope.logar = function () {	 
+	  
+	    if ( $scope.user.email != '' && $scope.user.senha != null) {
+			$http({
+				method : 'POST',
+				url : 'http://soservices.vsnepomuceno.cloudbees.net/token/login',
+				data : $scope.user,
+				headers: {'Content-Type': 'application/json'}
+			}).
+			success(function(data, status, headers, config) {
+				$modalInstance.close(data);
+	
+			}).error(function(data, status, headers, config) {
+				Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+			});    
+	    } 
   };
 
-  $scope.ok = function () {
-    $modalInstance.close($scope.selected.item);
+  $scope.cancel = function () {
+	limparUsuario(user);
+    $modalInstance.dismiss('cancel');
+  };
+};
+
+//Controla o dialog de cadastro
+var cadastrarCtrl = function ($scope, $http, $modalInstance, Alerts, user) {
+	
+  $scope.user = user;
+			
+  $scope.cadastrar = function () {	 
+	  
+	 if ( $scope.user.email != '' && $scope.user.senha != null && 
+			 $scope.user.nome != '' && $scope.user.confirmarsenha != null && 
+			 $scope.user.senha != '' && $scope.user.confirmarsenha != '') {
+		 if (angular.equals($scope.user.senha, $scope.user.confirmarsenha) ) {
+			$http({
+				method : 'POST',
+				url : 'http://soservices.vsnepomuceno.cloudbees.net/prestador/usuario',
+				data : $scope.user,
+				headers: {'Content-Type': 'application/json'}
+			}).
+			success(function(data, status, headers, config) {
+				$modalInstance.close(data);
+			
+			}).error(function(data, status, headers, config) {
+				Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+			});    
+		 }else {
+		    	Alerts.addAlert('Senha e confirmação diferentes!');
+	      }
+	  }
+  };
+
+  $scope.cancel = function () {
+    limparUsuario(user);
+    $modalInstance.dismiss('cancel');
+  };
+};
+
+//Controla o dialog de cadastro
+var cadastroPrestadorCtrl = function ($scope, $http, $modalInstance, Alerts, prestador) {
+	
+  $scope.prestador = prestador;
+			
+  $scope.cadastrar = function () {	 
+	  
+	 if ($scope.prestador.cpf != '' && $scope.prestador.cpf != null ) {
+		 $http({
+				method : 'PUT',
+				url : 'http://soservices.vsnepomuceno.cloudbees.net/prestador',
+				data : $scope.prestador,
+				headers: {'Content-Type': 'application/json'}
+			}).
+			success(function(data, status, headers, config) {
+				$modalInstance.close(data);			
+			}).error(function(data, status, headers, config) {
+				Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+			});
+	  }
   };
 
   $scope.cancel = function () {
@@ -201,14 +406,35 @@ var AnuncioCtrl = function ($scope, $modalInstance, items) {
   };
 };
 
-//Controla o dialog de "sign in" / "sign up"
-var LoginCtrl = function ($scope, $modalInstance) {
 
-  $scope.ok = function () {
-    $modalInstance.close($scope.selected.item);
-  };
+//Controla o dialog de anuncio de servicos
+var anuncioCtrl = function ($scope, $http,$modalInstance, Alerts, servico, tiposServicos) {
+	$scope.servico = servico;
+	$scope.tiposServicos = tiposServicos;
+	
+	$scope.cadastrar = function () {
+		$http({
+			method : 'POST',
+			url : 'http://soservices.vsnepomuceno.cloudbees.net/servico',
+			data : $scope.servico,
+			headers: {'Content-Type': 'application/json'}
+		}).
+		success(function(data, status, headers, config) {
+			$modalInstance.close(data);
+		
+		}).error(function(data, status, headers, config) {
+			Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+		});    
+	};
+	
+	$scope.cancel = function () {
+		 $modalInstance.dismiss('cancel');
+	};
+};
 
-  $scope.cancel = function () {
-    $modalInstance.dismiss('cancel');
-  };
+var limparUsuario = function(user) {
+	user.nome='';
+	user.email='';
+	user.senha='';
+	user.confirmarsenha='';
 };
