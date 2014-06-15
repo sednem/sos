@@ -203,10 +203,9 @@ function($scope, $http, $location, $modal, Alerts, ServiceTpServico, Authenticat
 }]);
 
 /* Ctrl Busca de prestadores */
-SoSCtrls.controller('PrestadoresCtrl', 
-	['$scope', '$http', '$location', '$routeParams', 'Alerts', 'ServicePrestadores',
-	function($scope, $http, $location, $routeParams, Alerts, ServicePrestadores) {
-	 	//alert("Inicializando PrestadoresCtrl")
+SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeParams',
+	'Alerts', 'ServicePrestadores', 'ServiceTpServico',
+	function($scope, $http, $location, $routeParams, Alerts, ServicePrestadores, ServiceTpServico) {
 	 	$scope.tipoServico = $routeParams.tipoServico;
 		$scope.endereco = $routeParams.endereco;
 		$scope.raio = $routeParams.raio;
@@ -244,23 +243,28 @@ SoSCtrls.controller('PrestadoresCtrl',
 	          	if (status == google.maps.GeocoderStatus.OK) {
 					$scope.userLocation = results[0].geometry.location;
 	        		ll = new google.maps.LatLng($scope.userLocation.lat(), $scope.userLocation.lng());
+	        		
+	        		//Recupera o ID do tipo de servico
+	        		ServiceTpServico.getIdByName($scope.tipoServico).then(
+						function(idTpServico) { 
+			        		//Busca os prestadores de servicos
+			        		ServicePrestadores.getPrestadores(
+			        			idTpServico, //Encontrar maneira de trocar nome para id
+			        			$scope.userLocation.lat(), 
+			        			$scope.userLocation.lng(),
+			        			($scope.raio * 1000), //API esta em metros e nao KM.
+			        			function(data) {
+									$scope.prestadores = data;
 
-	        		//Busca os prestadores de servicos
-	        		ServicePrestadores.getPrestadores(
-	        			1, //Encontrar maneira de trocar nome para id
-	        			$scope.userLocation.lat(), 
-	        			$scope.userLocation.lng(),
-	        			$scope.raio,
-	        			function(data) {
-							$scope.prestadores = data;
+							    	//TODO: Alterar variaveis quando realizar link com paginacao
+									$scope.bigTotalItems = $scope.prestadores.length;
+									$scope.bigCurrentPage = 1;
 
-					    	//TODO: Alterar variaveis quando realizar link com paginacao
-							$scope.bigTotalItems = $scope.prestadores.length;
-							$scope.bigCurrentPage = 1;
-
-							// alert('Chamando carrega mapa..');
-						    $scope.carregarMapa();
-					    }
+									// alert('Chamando carrega mapa..');
+								    $scope.carregarMapa(ll);
+							    }
+							);
+						}
 					);
 	          	} else {
 	          		Alerts.addAlert(
@@ -269,7 +273,7 @@ SoSCtrls.controller('PrestadoresCtrl',
 		    });
 		};
 
-		$scope.carregarMapa = function() {
+		$scope.carregarMapa = function(center) {
         	$scope.myMarkers = new Array();
 	        //Adiciona marcadores para cada prestador encontrado
 	        var i;
@@ -289,11 +293,10 @@ SoSCtrls.controller('PrestadoresCtrl',
 	        $scope.myMarkers.push(
 	        	new google.maps.Marker({
 		            map: $scope.sosMap,
-		            position: ll
+		            position: center
 	        	})
 	        );
-	        $scope.myMarkers.push($scope.newMarkers); //Adiciona novos marcadores.
-        	$scope.sosMap.panTo(ll); //Centraliza o mapa no endereço informado.
+        	$scope.sosMap.panTo(center); //Centraliza o mapa no endereço informado.
 		}
 
 		if($scope.tipoServico && $scope.endereco && $scope.raio){

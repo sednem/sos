@@ -11,15 +11,30 @@ SoServices.value('version', '0.0.0');
 
 SoServices.factory('ServiceTpServico', ['$http', 'Alerts',
 	function($http, Alerts){
+		var url = 'http://soservices.vsnepomuceno.cloudbees.net/tipo-servico';
 		return {
 			getTiposServicos: function() {
-				var url = 'http://soservices.vsnepomuceno.cloudbees.net/tipo-servico';
        			return $http.get(url).
 				error(function(data, status) {
 			     	Alerts.addAlert('ServiceTpServico Erro: ' + status +' '+ data, 'danger');
 			    }).
 			    then(function(result) {
            			return result.data;
+			    });
+     		},
+     		getIdByName: function(strName) {
+       			return $http.get(url).
+				error(function(data, status) {
+			     	Alerts.addAlert('ServiceTpServico Erro: ' + status +' '+ data, 'danger');
+			    }).
+			    then(function(result) {
+			    	var tiposServicos = result.data;
+			    	var i;
+			    	for (i = 0; i < tiposServicos.length; ++i) {
+			    		if(tiposServicos[i].nome == strName){
+			    			return tiposServicos[i].id;
+			    		}
+					}
 			    });
      		}
 		}
@@ -33,11 +48,11 @@ SoServices.factory('ServicePrestadores', ['$http', 'Alerts',
        			$http(
 				{
 					method: 'GET',//POST ??
-					url: 'http://soservices.vsnepomuceno.cloudbees.net/prestador/'/*query?'+
+					url: 'http://soservices.vsnepomuceno.cloudbees.net/prestador/query?'+
 					'tipo_servico_id='+idTipoServico+
 					'&latitude='+lat+
 					'&longitude='+lng+
-					'&distancia='+raio*/,
+					'&distancia='+raio,
 					headers: {'Content-Type': 'application/jsonp'}
 				}).
 		    	success(successCallback).
