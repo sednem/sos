@@ -261,7 +261,7 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeP
 		var ll = new google.maps.LatLng(-7.9712137, -34.839565100000016);
 	    $scope.mapOptions = {
 	        center: ll,
-	        zoom: 15,
+	        zoom: 14,
 	        mapTypeId: google.maps.MapTypeId.ROADMAP
 	    };
 
@@ -301,7 +301,7 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeP
 		};
 
 		$scope.carregarMapa = function(center) {
-			//Clean old markers
+			//Remove old markers
 			angular.forEach($scope.myMarkers, function(marker) {
 			    marker.setMap(null);
 			});
@@ -317,9 +317,11 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeP
 			                position: new google.maps.LatLng(
 								$scope.prestadores[i].endereco.latitude,
 								$scope.prestadores[i].endereco.longitude),
-			                icon: 'img/map_icon_prest.png'
+			                icon: 'img/map_icon_prest.png',
+			                prestador: $scope.prestadores[i]
 		            	})
 		            );
+				$scope.prestadores[i].markerIndex = i;
 			}
 
 	        $scope.myMarkers.push(
@@ -335,11 +337,13 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeP
 
 		if($scope.tipoServico && $scope.endereco && $scope.raio){
 			$scope.getPesquisadores();
-		}	
+		}
 
-	    $scope.markerClicked = function(m) {
-	        window.alert("clicked");
-	    };
+	    $scope.openMarkerInfo = function(marker) {
+			$scope.currentMarker = marker;
+			$scope.currentMarkerIsService = (typeof $scope.currentMarker.prestador !== 'undefined');
+			$scope.myInfoWindow.open($scope.sosMap, marker);
+		};
 	}
 ]);
 
