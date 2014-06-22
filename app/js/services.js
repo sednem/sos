@@ -100,6 +100,8 @@ SoServices.factory('Authentication', function($localStorage){
 		    confirmarsenha: null
 	};
 	
+	var logged = false;
+	
 	window.fbAsyncInit = function() {
 		FB.init({
 			appId : '1421756051420526',
@@ -108,6 +110,14 @@ SoServices.factory('Authentication', function($localStorage){
 			xfbml : true, // parse social plugins on this page
 			version : 'v2.0' // use version 2.0
 		});		
+		
+		FB.getLoginStatus(function(response) {
+    		if (response.status === 'connected') {
+    			logged = true;
+    		} else {
+    			logged = false;
+    		}
+    	});
 	};
 
 	// Load the SDK asynchronously
@@ -151,14 +161,8 @@ SoServices.factory('Authentication', function($localStorage){
 		   }
 		 });
     },
-    checkLogged: function() {
-    	FB.getLoginStatus(function(response) {
-    		if (response.status === 'connected') {
-    			return true;
-    		} else {
-    			return false;
-    		}
-    	});
+    checkLogged: function() {    	
+    	return logged;
     }
   };
 });
