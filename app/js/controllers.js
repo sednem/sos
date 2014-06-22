@@ -66,7 +66,8 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico, Aut
 	};
 	
 	$scope.openPrestadorAnuncios = function() {
-		$location.path('/prest/email/'+$scope.user.email);
+		$location.path('/prest/email/'+$scope.user.email+
+				'/apiKey/'+$scope.user.apiKey);
 	};
 
 	$scope.tiposServicos = new Array();
@@ -192,7 +193,11 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico, Aut
 				    prestador: function () {
 				    	$scope.prestador.email = $scope.user.email;
 				        return $scope.prestador;
+				    },
+				    apiKey: function () {
+				    	return $scope.user.apiKey;
 				    }
+				    
 			  }
 			});
 			modalInstance.result.then(function () {
@@ -216,6 +221,9 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico, Aut
 			    },
 			    tiposServicos: function () {
 			        return $scope.tiposServicos;
+			    },
+			    apiKey: function () {
+			    	return $scope.user.apiKey;
 			    }
 			  }
 			});
@@ -418,9 +426,10 @@ var cadastrarCtrl = function ($scope, $http, $modalInstance, Alerts, user) {
 };
 
 //Controla o dialog de cadastro
-var cadastroPrestadorCtrl = function ($scope, $http, $modalInstance, Alerts, prestador) {
+var cadastroPrestadorCtrl = function ($scope, $http, $modalInstance, Alerts, prestador, apiKey) {
 	
   $scope.prestador = prestador;
+  $scope.apiKey = apiKey;
 			
   $scope.cadastrar = function () {	 
 	  
@@ -433,7 +442,8 @@ var cadastroPrestadorCtrl = function ($scope, $http, $modalInstance, Alerts, pre
 				method : 'PUT',
 				url : 'http://soservices.vsnepomuceno.cloudbees.net/prestador',
 				data : $scope.prestador,
-				headers: {'Content-Type': 'application/json'}
+				headers: {'Content-Type': 'application/json', 
+							'token-api': $scope.apiKey}
 			}).
 			success(function(data, status, headers, config) {
 				$modalInstance.close(data);			
@@ -450,9 +460,10 @@ var cadastroPrestadorCtrl = function ($scope, $http, $modalInstance, Alerts, pre
 
 
 //Controla o dialog de anuncio de servicos
-var anuncioCtrl = function ($scope, $http,$modalInstance, Alerts, servico, tiposServicos) {
+var anuncioCtrl = function ($scope, $http,$modalInstance, Alerts, servico, tiposServicos, apiKey) {
 	$scope.servico = servico;
 	$scope.tiposServicos = tiposServicos;
+	$scope.apiKey = apiKey;
 	
 	$scope.cadastrar = function () {
 		if ($scope.servico.descricao != '' && $scope.servico.nome_tipo_servico != '') {
@@ -460,7 +471,8 @@ var anuncioCtrl = function ($scope, $http,$modalInstance, Alerts, servico, tipos
 				method : 'POST',
 				url : 'http://soservices.vsnepomuceno.cloudbees.net/servico',
 				data : $scope.servico,
-				headers: {'Content-Type': 'application/json'}
+				headers: {'Content-Type': 'application/json', 
+							'token-api': $scope.apiKey}
 			}).
 			success(function(data, status, headers, config) {
 				$modalInstance.close(data);
@@ -497,6 +509,7 @@ SoSCtrls.controller('PrestadoresAnunciosCtrl', [ '$scope', '$route', '$http', '$
 			};
 			$scope.tiposServicos = new Array();
 			$scope.email = $routeParams.email;
+			$scope.apiKey = $routeParams.apiKey;
 			$scope.orderProp = '-id';
 			$scope.servicos = new Array();
 			$http({
@@ -535,7 +548,8 @@ SoSCtrls.controller('PrestadoresAnunciosCtrl', [ '$scope', '$route', '$http', '$
 				$http({
 					method : 'DELETE',
 					url : 'http://soservices.vsnepomuceno.cloudbees.net/servico/'+id,
-					headers: {'Content-Type': 'application/json'}
+					headers: {'Content-Type': 'application/json', 
+								'token-api': $scope.apiKey}
 				}).
 				success(function(data, status, headers, config) {
 					$route.reload();
@@ -556,6 +570,9 @@ SoSCtrls.controller('PrestadoresAnunciosCtrl', [ '$scope', '$route', '$http', '$
 					    },
 					    tiposServicos: function () {
 					        return $scope.tiposServicos;
+					    },
+					    apiKey: function () {
+					    	return $scope.apiKey;
 					    }
 					  }
 					});
@@ -573,17 +590,18 @@ SoSCtrls.controller('PrestadoresAnunciosCtrl', [ '$scope', '$route', '$http', '$
 ]);
 
 //Controla o dialog de anuncio de servicos
-var editarAnuncioCtrl = function ($scope, $http,$modalInstance, Alerts, servico, tiposServicos) {
+var editarAnuncioCtrl = function ($scope, $http,$modalInstance, Alerts, servico, tiposServicos, apiKey) {
 	$scope.servico = servico;
 	$scope.tiposServicos = tiposServicos;
-	
+	$scope.apiKey = apiKey;
 	$scope.salvar = function () {
 		if ($scope.servico.descricao != '' && $scope.servico.nome_tipo_servico != '') {
 			$http({
 				method : 'PUT',
 				url : 'http://soservices.vsnepomuceno.cloudbees.net/servico/'+$scope.servico.id,
 				data : $scope.servico,
-				headers: {'Content-Type': 'application/json'}
+				headers: {'Content-Type': 'application/json', 
+							'token-api': $scope.apiKey}
 			}).
 			success(function(data, status, headers, config) {
 				$modalInstance.close(data);
