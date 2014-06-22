@@ -99,3 +99,7 @@ html,body {
     padding: 10px 12px;
     pointer-events: none;
 }
+
+.white, .white a {
+  color: #fff;
+}

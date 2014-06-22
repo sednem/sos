@@ -50,7 +50,8 @@
 			</div>
 		</div>
 		<div class="modal-footer">
-			<button class="btn btn-primary" data-ng-click="cadastrar()">Cadastrar</button>
+			<button data-ng-show="edit" class="btn btn-primary" data-ng-click="cadastrar()">Editar</button>
+			<button data-ng-hide="edit" class="btn btn-primary" data-ng-click="cadastrar()">Cadastrar</button>
 			<button class="btn btn-warning" ng-click="cancel()">Cancelar</button>
 		</div>
 	</form>

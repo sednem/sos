@@ -235,6 +235,87 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico, Aut
 
 		});
 	};
+	
+	$scope.removePrest = function () {
+		var modalInstance;
+		modalInstance = $modal.open({
+			  templateUrl: 'partials/confirmDialog.html',
+			  controller: 'confirmCtrl',
+			  resolve: {				
+			  }
+			});
+			modalInstance.result.then(function () {
+				$http({
+        			method : 'DELETE',
+        			url : 'http://soservices.vsnepomuceno.cloudbees.net/prestador?email='+ $scope.user.email,
+        			data : $scope.user,
+        			headers: {'Content-Type': 'application/json', 
+        						'token-api': $scope.user.apiKey}
+        		}).
+        		success(function(data, status, headers, config) {
+        			$scope.user.nome='';
+        			$scope.user.email='';
+        			$scope.user.senha='';
+        			$scope.user.logado = false;
+        			$scope.user.apiKey = '';
+        			Authentication.logout($scope.user);
+        			$scope.$apply();
+        			$location.path('/home');
+
+        		}).error(function(data, status, headers, config) {
+        			Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+        		});  
+			}, 
+			function () {	});		
+	};
+	
+	$scope.editPrest = function () {
+		$http({
+			method: 'GET',
+			url: 'http://soservices.vsnepomuceno.cloudbees.net/prestador/email?email='+$scope.user.email}).
+	    	success(function(data, status, headers, config, prest) {
+	    		if (data.cpf != data.email) {
+	    			$scope.openEditPrestador(data);
+	    		} else {
+	    			Alerts.addAlert('Você ainda não é um prestador, cadastre um anúncio!', 'warning');
+	    		}
+		    }).
+		    error(function(data, status, headers, config) {		
+		    	Alerts.addAlert('Erro: ' + status +' '+ data, 'danger');
+		    });	
+	};
+	
+	$scope.openEditPrestador = function (data) {
+		var modalInstance;
+		modalInstance = $modal.open({
+			templateUrl: 'partials/cadastrarPrestador.html',
+			  controller: 'editPrestadorCtrl',
+			  resolve: {
+				    prestador: function () {
+				    	$scope.prestador.email = $scope.user.email;
+				    	$scope.prestador.cpf = data.cpf;
+				    	$scope.prestador.telefone = data.telefone;
+				    	$scope.prestador.logradouro = data.endereco.logradouro;
+				    	$scope.prestador.numero = data.endereco.numero;
+				    	$scope.prestador.complemento = data.endereco.complemento;
+				    	$scope.prestador.cep = data.endereco.cep;
+				    	$scope.prestador.cidade = data.endereco.cidade;
+				    	$scope.prestador.estado = data.endereco.estado;
+				        return $scope.prestador;
+				    },
+				    apiKey: function () {
+				    	return $scope.user.apiKey;
+				    }
+				    
+			  }
+			});
+			modalInstance.result.then(function () {
+				Alerts.addAlert('Prestador atualizado com sucesso!', 'success');
+			}, 
+			function () {
+
+		});
+	};
 }]);
 
 /* Ctrl Busca de prestadores */
@@ -430,7 +511,7 @@ var cadastroPrestadorCtrl = function ($scope, $http, $modalInstance, Alerts, pre
 	
   $scope.prestador = prestador;
   $scope.apiKey = apiKey;
-			
+  $scope.edit = false;	
   $scope.cadastrar = function () {	 
 	  
 	 if ($scope.prestador.cpf != '' && $scope.prestador.cpf != null &&
@@ -615,4 +696,49 @@ var editarAnuncioCtrl = function ($scope, $http,$modalInstance, Alerts, servico,
 	$scope.cancel = function () {
 		 $modalInstance.dismiss('cancel');
 	};
+};
+
+//Controla o dialog de anuncio de servicos
+var confirmCtrl = function ($scope, $http,$modalInstance, Alerts) {
+	
+	$scope.confirmar = function () {
+		$modalInstance.close();
+	};
+	
+	$scope.cancel = function () {
+		$modalInstance.dismiss('cancel');
+	};
+};
+
+//Controla o dialog de cadastro
+var editPrestadorCtrl = function ($scope, $http, $modalInstance, Alerts, prestador, apiKey) {
+	
+  $scope.prestador = prestador;
+  $scope.apiKey = apiKey;
+  $scope.edit = true;		
+  $scope.cadastrar = function () {	 
+	  
+	 if ($scope.prestador.cpf != '' && $scope.prestador.cpf != null &&
+			 $scope.prestador.logradouro != '' && $scope.prestador.logradouro != null &&
+			 $scope.prestador.cep != '' && $scope.prestador.cep != null &&
+			 $scope.prestador.cidade != '' && $scope.prestador.cidade != null &&
+			 $scope.prestador.estado != '' && $scope.prestador.estado != null) {
+		 $http({
+				method : 'PUT',
+				url : 'http://soservices.vsnepomuceno.cloudbees.net/prestador',
+				data : $scope.prestador,
+				headers: {'Content-Type': 'application/json', 
+							'token-api': $scope.apiKey}
+			}).
+			success(function(data, status, headers, config) {
+				$modalInstance.close(data);			
+			}).error(function(data, status, headers, config) {
+				Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+			});
+	  }
+  };
+
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
 };

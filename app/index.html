@@ -36,9 +36,21 @@
           </a>
         </div>
         <div class="collapse navbar-collapse navbar-right">
-          <ul class="nav navbar-nav">
-          <li data-ng-show="user.logado"><h4><span class="label label-default">Bem vindo, {{user.email}}</span></h4></li>
-            <li data-ng-show="user.logado"><a href="" data-ng-click="logout()">Logout <span class="glyphicon glyphicon-log-out"></span></a></li>
+        <ul class="nav navbar-nav">
+			<li class="dropdown" data-ng-show="user.logado">		   
+				<h4>					 			
+					<span class="dropdown-toggle label label-default" data-toggle="dropdown">Bem vindo,{{user.email}}
+						<a href="">	
+							<i class="glyphicon glyphicon-user white"></i>				
+						</a>		
+					</span>		
+				</h4> 
+				<ul class="dropdown-menu">
+					<li><a href="" data-ng-click="editPrest()">Editar Prestador</a></li>
+					<li><a href="" data-ng-click="removePrest()">Excluir Conta</a></li>
+				</ul>
+			</li>
+			<li data-ng-show="user.logado"><a href="" data-ng-click="logout()">Logout <span class="glyphicon glyphicon-log-out"></span></a></li>
             <li data-ng-hide="user.logado"><a href="" data-ng-click="openLogin()">Login <span class="glyphicon glyphicon-log-in"></span></a></li>
             <li data-ng-hide="user.logado"><a href="" data-ng-click="openCadastro()">Cadastre-se <span class="glyphicon glyphicon-user"></span></a></li>
             <li>
