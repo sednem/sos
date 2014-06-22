@@ -8,27 +8,6 @@ var geo = new google.maps.Geocoder; //Posicao inicial do mapa
 /* Controllers */
 var SoSCtrls = angular.module('sosWeb.controllers', ['ui.bootstrap','ui.map','ui.event']);
 
-window.fbAsyncInit = function() {
-	FB.init({
-		appId : '1421756051420526',
-		cookie : true, // enable cookies to allow the server to access 
-		// the session
-		xfbml : true, // parse social plugins on this page
-		version : 'v2.0' // use version 2.0
-	});
-};
-
-// Load the SDK asynchronously
-(function(d, s, id) {
-	var js, fjs = d.getElementsByTagName(s)[0];
-	if (d.getElementById(id))
-		return;
-	js = d.createElement(s);
-	js.id = id;
-	js.src = "//connect.facebook.net/en_US/sdk.js";
-	fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));
-
 /* Main page Ctrl */
 SoSCtrls.controller('MainCtrl', ['$scope', '$route', '$http', '$location', '$modal',
 	'Alerts', 'ServiceTpServico',  'Authentication', '$log',
@@ -64,6 +43,7 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico, Aut
 			'/endereco/'+$scope.endereco+
 			'/raio/'+$scope.raio);
 	};
+	
 	
 	$scope.openPrestadorAnuncios = function() {
 		$location.path('/prest/email/'+$scope.user.email+
@@ -441,7 +421,7 @@ SoSCtrls.controller('MyCtrl2', ['$scope', function($scope) {
 }]);
 
 //Controla o dialog de "sign in" / "sign up"
-var LoginCtrl = function ($scope, $http, $modalInstance, Alerts, user) {
+var LoginCtrl = function ($scope, $http, $modalInstance, Authentication, Alerts, user) {
 	
   $scope.user = user;
 			
@@ -462,6 +442,15 @@ var LoginCtrl = function ($scope, $http, $modalInstance, Alerts, user) {
 				Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
 			});    
 	    } 
+  };
+  
+  $scope.logarFace = function () {	
+	  if (Authentication.checkLogged()){
+		  Alerts.addAlert('LOGGED', 'danger');
+	  } else {
+		  Authentication.loginFace();
+		  Alerts.addAlert('NOT LOGGED', 'danger');
+	  }
   };
 
   $scope.cancel = function () {

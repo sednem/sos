@@ -100,6 +100,27 @@ SoServices.factory('Authentication', function($localStorage){
 		    confirmarsenha: null
 	};
 	
+	window.fbAsyncInit = function() {
+		FB.init({
+			appId : '1421756051420526',
+			cookie : true, // enable cookies to allow the server to access 
+			// the session
+			xfbml : true, // parse social plugins on this page
+			version : 'v2.0' // use version 2.0
+		});		
+	};
+
+	// Load the SDK asynchronously
+	(function(d, s, id) {
+		var js, fjs = d.getElementsByTagName(s)[0];
+		if (d.getElementById(id))
+			return;
+		js = d.createElement(s);
+		js.id = id;
+		js.src = "//connect.facebook.net/en_US/sdk.js";
+		fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));
+	
 	if ($localStorage.currentUserJson == null) {
 		$localStorage.currentUserJson = angular.toJson(userAuth);
 	} 
@@ -118,6 +139,26 @@ SoServices.factory('Authentication', function($localStorage){
     currentUser: function() { 
     	userAuth = angular.fromJson($localStorage.currentUserJson);
     	return userAuth;
+    },
+    loginFace: function() { 
+    	FB.login(function(response) {
+		   if (response.authResponse) {
+		     FB.api('/me', function(response) {
+		       console.log('Good to see you, ' + response.name + '.');
+		     });
+		   } else {
+		     console.log('User cancelled login or did not fully authorize.');
+		   }
+		 });
+    },
+    checkLogged: function() {
+    	FB.getLoginStatus(function(response) {
+    		if (response.status === 'connected') {
+    			return true;
+    		} else {
+    			return false;
+    		}
+    	});
     }
   };
 });
