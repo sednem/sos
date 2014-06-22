@@ -535,6 +535,7 @@ var cadastroPrestadorCtrl = function ($scope, $http, $modalInstance, Alerts, pre
   };
 
   $scope.cancel = function () {
+	  limparPrestador(prestador);
     $modalInstance.dismiss('cancel');
   };
 };
@@ -739,6 +740,18 @@ var editPrestadorCtrl = function ($scope, $http, $modalInstance, Alerts, prestad
   };
 
   $scope.cancel = function () {
+	limparPrestador(prestador);
     $modalInstance.dismiss('cancel');
   };
+};
+
+var limparPrestador = function(prestador) {
+	prestador.cpf = '';
+  	prestador.telefone = '';
+  	prestador.logradouro = '';
+  	prestador.numero = '';
+  	prestador.complemento = '';
+  	prestador.cep = '';
+  	prestador.cidade = '';
+  	prestador.estado = '';
 };
