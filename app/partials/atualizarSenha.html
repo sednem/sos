@@ -1,0 +1,33 @@
+<div>
+	<div class="modal-header">
+		<h3>Atualizar Senha!</h3>
+	</div>
+	<form ng-submit="submit()">
+		<div class="modal-body">
+			<div class="row">
+				<div class="col-xs-5">
+					<label>Senha Antiga:</label><br>
+					<input type="password" class="form-control"
+						ng-model="senha.senhaAntiga" />
+						<span class="label label-warning">Aviso: Caso n&atilde;o tenha uma senha definida, deixar em  branco!</span><br><br>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-5">
+					<label>Nova Senha:</label><br> <input type="password" class="form-control"
+						ng-model="senha.novaSenha" required /><br>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-5">
+					<label>Confirmar Nova Senha:</label><br> <input type="password" class="form-control"
+						ng-model="senha.confirmarsenha" required />
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<button class="btn btn-primary" data-ng-click="atualizar()">Atualizar</button>
+			<button class="btn btn-warning" ng-click="cancel()">Cancelar</button>
+		</div>
+	</form>
+</div>

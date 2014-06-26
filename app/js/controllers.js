@@ -299,6 +299,28 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico, Aut
 
 		});
 	};
+	
+	$scope.atualizarSenha = function () {
+		var modalInstance;
+		modalInstance = $modal.open({
+			templateUrl: 'partials/atualizarSenha.html',
+			  controller: 'atualizarSenhaCtrl',
+			  resolve: {				   
+				    apiKey: function () {
+				    	return $scope.user.apiKey;
+				    },
+				    email: function () {
+				    	return $scope.user.email;
+				    }
+			  }
+			});
+			modalInstance.result.then(function () {
+				Alerts.addAlert('Senha atualizada com sucesso!', 'success');
+			}, 
+			function () {
+
+		});
+	};
 }]);
 
 /* Ctrl Busca de prestadores */
@@ -441,6 +463,7 @@ var LoginCtrl = function ($scope, $http, $modalInstance, Authentication, Alerts,
 				headers: {'Content-Type': 'application/json'}
 			}).
 			success(function(data, status, headers, config) {
+				Authentication.login($scope.user);
 				$modalInstance.close(data);
 	
 			}).error(function(data, status, headers, config) {
@@ -775,3 +798,48 @@ var limparPrestador = function(prestador) {
   	prestador.cidade = '';
   	prestador.estado = '';
 };
+
+var atualizarSenhaCtrl = function ($scope, $http, $modalInstance, Alerts, apiKey, email) {
+	
+	  $scope.apiKey = apiKey;
+	  $scope.edit = true;	
+	  $scope.senha = {
+			  senhaAntiga: '',
+			  novaSenha: '',
+			  confirmarsenha: '',
+			  email:''
+	  };
+	  
+	  
+
+	  $scope.atualizar = function() {
+
+		if ($scope.senha.confirmarsenha != ''
+				&& $scope.senha.confirmarsenha != null
+				&& $scope.senha.novaSenha != ''
+				&& $scope.senha.novaSenha != null) {
+			if (angular.equals($scope.senha.novaSenha, $scope.senha.confirmarsenha)) {
+				$scope.senha.email = email;
+				$http({
+					method : 'PUT',
+					url : 'http://soservices.vsnepomuceno.cloudbees.net/prestador/atualizarSenha',
+					data : $scope.senha,
+					headers : {
+						'Content-Type' : 'application/json',
+						'token-api' : $scope.apiKey
+					}
+					}).success(function(data, status, headers, config) {
+						$modalInstance.close(data);
+			        }).error(function(data, status, headers, config) {
+				        Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+			        });
+			}else {
+		    	Alerts.addAlert('Senha e confirma√ß„o diferentes!');
+			}
+		}
+	};
+
+	  $scope.cancel = function () {
+	    $modalInstance.dismiss('cancel');
+	  };
+	};
