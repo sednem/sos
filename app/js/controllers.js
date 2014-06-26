@@ -89,6 +89,7 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico, Aut
 	
 	$scope.openLogin = function (fromAnuncio) {
 		var modalInstance;
+		$route.reload();
 		modalInstance = $modal.open({
 			  templateUrl: 'partials/login.html',
 			  controller: 'LoginCtrl',
@@ -100,6 +101,7 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico, Aut
 		});
 		modalInstance.result.then(function(data) {
 			if (data != '') {
+				$scope.user = Authentication.currentUser();
 				$scope.user.logado = true;
 				$scope.user.senha='';
 				$scope.user.apiKey = data.apiKey;
@@ -128,6 +130,7 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico, Aut
 			$scope.user.senha='';
 			$scope.user.logado = false;
 			$scope.user.apiKey = '';
+			$scope.user.id = '';
 			Authentication.logout($scope.user);
 			$scope.$apply();
 			$location.path('/home');
@@ -424,6 +427,8 @@ SoSCtrls.controller('MyCtrl2', ['$scope', function($scope) {
 var LoginCtrl = function ($scope, $http, $modalInstance, Authentication, Alerts, user) {
 	
   $scope.user = user;
+  $scope.user.email = '';
+  $scope.progress = false;
 			
   $scope.logar = function () {	 
 	  
@@ -444,14 +449,39 @@ var LoginCtrl = function ($scope, $http, $modalInstance, Authentication, Alerts,
 	    } 
   };
   
+  $scope.loginFace = function() {
+	  $scope.faceUser = Authentication.getFacebookUser();
+		$scope.faceUser.then(function(result) { 
+			$http({
+				method : 'POST',
+				url : 'http://soservices.vsnepomuceno.cloudbees.net/token/login/facebook',
+				data : Authentication.currentUser(),
+				headers: {'Content-Type': 'application/json'}
+			}).
+			success(function(data, status, headers, config) {
+				$modalInstance.close(data);
+			}).error(function(data, status, headers, config) {
+				Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+			});  
+		});   
+  };
+  
   $scope.logarFace = function() {
-		if (Authentication.checkLogged()) {
-			Alerts.addAlert('LOGGED', 'danger');
+	  $scope.isLogged = Authentication.checkLogged();
+	  $scope.progress = true;
+	  $scope.$apply();
+	  $scope.isLogged.then(function(result) { 
+		if (Authentication.isFaceLogged()) {
+			$scope.loginFace();
 		} else {
-			Authentication.loginFace();
-			Alerts.addAlert('NOT LOGGED', 'danger');
+			$scope.login = Authentication.loginFace();
+			$scope.login.then(function(result) {
+				$scope.loginFace();
+			});			
 		}
-
+		$scope.progress = false;
+		$scope.$apply();		
+	  });
 	};
 
   $scope.cancel = function () {

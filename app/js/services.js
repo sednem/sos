@@ -89,7 +89,7 @@ SoServices.service('Alerts', function () { //Alerts/Messages
 	// this.addAlert('Teste Info', 'info');
 });
 
-SoServices.factory('Authentication', function($localStorage){		
+SoServices.factory('Authentication', function($localStorage, $rootScope, $q){		
 	
 	var userAuth = {
 			nome: '',
@@ -97,10 +97,14 @@ SoServices.factory('Authentication', function($localStorage){
 		    senha: null,
 		    apiKey: '',
 		    logado: false,
-		    confirmarsenha: null
+		    confirmarsenha: null,
+		    id:''
 	};
 	
 	var logged = false;
+	var login = null;
+	var faceUser = null;
+	var isLogged = null;
 	
 	window.fbAsyncInit = function() {
 		FB.init({
@@ -109,11 +113,12 @@ SoServices.factory('Authentication', function($localStorage){
 			// the session
 			xfbml : true, // parse social plugins on this page
 			version : 'v2.0' // use version 2.0
-		});		
-		
+		});	
 		FB.getLoginStatus(function(response) {
     		if (response.status === 'connected') {
     			logged = true;
+    			userAuth.apiKey = response.authResponse.accessToken;
+    			$localStorage.currentUserJson = angular.toJson(userAuth);
     		} else {
     			logged = false;
     		}
@@ -143,26 +148,63 @@ SoServices.factory('Authentication', function($localStorage){
     logout: function(userLogout) { 
     	userAuth = userLogout;
     	$localStorage.currentUserJson = angular.toJson(userAuth);
-    	delete $localStorage.currentUserJson;
     },
     isLoggedIn: function() { userAuth.logado; },
     currentUser: function() { 
     	userAuth = angular.fromJson($localStorage.currentUserJson);
     	return userAuth;
     },
-    loginFace: function() { 
-    	FB.login(function(response) {
-		   if (response.authResponse) {
-		     FB.api('/me', function(response) {
-		       console.log('Good to see you, ' + response.name + '.');
-		     });
-		   } else {
-		     console.log('User cancelled login or did not fully authorize.');
-		   }
-		 });
+    loginFace : function() {
+    	var deferred = $q.defer(); 
+		FB.login(function(response) {	
+			if (response.authResponse) {
+				FB.getLoginStatus(function(response) {
+		    		if (response.status === 'connected') {
+		    			userAuth.apiKey = response.authResponse.accessToken;
+		    			$localStorage.currentUserJson = angular.toJson(userAuth);
+		    		}
+		    	});
+				$rootScope.$apply(function(){
+		  	         deferred.resolve(login);
+		  	    });
+			} else {
+				console.log('User cancelled login or did not fully authorize.');
+			}
+		}, {scope: 'email'});
+		return deferred.promise;
     },
-    checkLogged: function() {    	
-    	return logged;
+    checkLogged: function() {    
+    	var deferred = $q.defer(); 
+    	FB.getLoginStatus(function(response) {
+    		if (response.status === 'connected') {
+    			logged = true;
+    			userAuth.apiKey = response.authResponse.accessToken;
+    			$localStorage.currentUserJson = angular.toJson(userAuth);
+    		} else {
+    			logged = false;
+    		}
+    		//$rootScope.$apply(function(){
+    	          deferred.resolve(isLogged);
+    	    //});
+    	});
+    	return deferred.promise;
+    },
+    getFacebookUser: function() {  
+    	var deferred = $q.defer(); 
+    	FB.api('/me', {fields: 'name, id, email'}, function(response) {
+    		userAuth = angular.fromJson($localStorage.currentUserJson);
+    		userAuth.nome = response.name;
+    		userAuth.email = response.email;
+    		userAuth.id = response.id;
+    		$localStorage.currentUserJson = angular.toJson(userAuth);
+    		$rootScope.$apply(function(){
+  	          deferred.resolve(faceUser);
+  	        });
+    	});
+    	return deferred.promise;
+    },
+    isFaceLogged : function() {    	
+		return logged;
     }
   };
 });
