@@ -331,7 +331,7 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeP
 		$scope.endereco = $routeParams.endereco;
 		$scope.raio = $routeParams.raio;
 
-		$scope.prestadores = [];
+		$scope.servicos = [];
 
 		$scope.maxRate = 10;
 
@@ -369,16 +369,16 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeP
 	        		ServiceTpServico.getIdByName($scope.tipoServico).then(
 						function(idTpServico) { 
 			        		//Busca os prestadores de servicos
-			        		ServicePrestadores.getPrestadores(
+			        		ServicePrestadores.getServicos(
 			        			idTpServico, //Encontrar maneira de trocar nome para id
 			        			$scope.userLocation.lat(), 
 			        			$scope.userLocation.lng(),
 			        			($scope.raio * 1000), //API esta em metros e nao KM.
 			        			function(data) {
-									$scope.prestadores = data;
+									$scope.servicos = data;
 
 							    	//TODO: Alterar variaveis quando realizar link com paginacao
-									$scope.bigTotalItems = $scope.prestadores.length;
+									$scope.bigTotalItems = $scope.servicos.length;
 									$scope.bigCurrentPage = 1;
 
 									// alert('Chamando carrega mapa..');
@@ -402,30 +402,46 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeP
 
         	$scope.myMarkers = new Array();
 	        //Adiciona marcadores para cada prestador encontrado
-	        var i;
-	    	for (i = 0; i < $scope.prestadores.length; ++i) {
-				var newMarker = 
-		            $scope.myMarkers.push(
-		            	new google.maps.Marker({
-			                map: $scope.sosMap,
-			                position: new google.maps.LatLng(
-								$scope.prestadores[i].endereco.latitude,
-								$scope.prestadores[i].endereco.longitude),
-			                icon: 'img/map_icon_prest.png',
-			                prestador: $scope.prestadores[i]
-		            	})
-		            );
-				$scope.prestadores[i].markerIndex = i;
-			}
 
-	        $scope.myMarkers.push(
-	        	new google.maps.Marker({
-		            map: $scope.sosMap,
-		            position: center
-	        	})
-	        );
 
-        	$scope.sosMap.panTo(center); //Centraliza o mapa no endereço informado.
+	        //TODO Remover apos atualizar do servico
+	        $scope.prestadores = new Array();
+	        ServicePrestadores.getPrestadores( //API esta em metros e nao KM.
+    			function(data) {
+					$scope.prestadores = data;
+	    			//alert(JSON.stringify($scope.prestadores));
+
+	    			/* Inicio manter esta parte*/
+			        var i;
+			    	for (i = 0; i < $scope.servicos.length; ++i) {
+
+			    		$scope.servicos[i].prestador = $scope.prestadores[i];
+
+						var newMarker = 
+				            $scope.myMarkers.push(
+				            	new google.maps.Marker({
+					                map: $scope.sosMap,
+					                position: new google.maps.LatLng(
+										$scope.servicos[i].prestador.endereco.latitude,
+										$scope.servicos[i].prestador.endereco.longitude),
+					                icon: 'img/map_icon_prest.png',
+					                servico: $scope.servicos[i]
+				            	})
+				            );
+						$scope.servicos[i].markerIndex = i;
+					}
+
+			        $scope.myMarkers.push(
+			        	new google.maps.Marker({
+				            map: $scope.sosMap,
+				            position: center
+			        	})
+			        );
+
+		        	$scope.sosMap.panTo(center); //Centraliza o mapa no endereço informado.
+					/* Fim manter esta parte*/
+				}
+			);	
 
 		}
 
@@ -435,7 +451,7 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeP
 
 	    $scope.openMarkerInfo = function(marker) {
 			$scope.currentMarker = marker;
-			$scope.currentMarkerIsService = (typeof $scope.currentMarker.prestador !== 'undefined');
+			$scope.currentMarkerIsService = (typeof $scope.currentMarker.servico !== 'undefined');
 			$scope.myInfoWindow.open($scope.sosMap, marker);
 		};
 	}

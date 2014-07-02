@@ -44,22 +44,34 @@ SoServices.factory('ServiceTpServico', ['$http', 'Alerts',
 SoServices.factory('ServicePrestadores', ['$http', 'Alerts',
 	function($http, Alerts){
 		return {
-			getPrestadores: function(idTipoServico, lat, lng, raio, successCallback) {
+			getServicos: function(idTipoServico, lat, lng, raio, successCallback) {
        			$http(
 				{
-					method: 'GET',//POST ??
-					url: 'http://soservices.vsnepomuceno.cloudbees.net/prestador/query?'+
+					method: 'GET',
+					url: 'http://soservices.vsnepomuceno.cloudbees.net/servico/query?'+
 					'tipo_servico_id='+idTipoServico+
 					'&latitude='+lat+
 					'&longitude='+lng+
 					'&distancia='+raio,
-					headers: {'Content-Type': 'application/jsonp'}
+					headers: {'Content-Type': 'application/json'}
 				}).
 		    	success(successCallback).
 			    error(function(data, status, headers, config) {
 			     	Alerts.addAlert('ServicePrestadores: Erro -> ' + status +' '+ data, 'danger');
 			    });
-     		}
+     		},
+			getPrestadores: function(successCallback) {
+       			$http(
+				{
+					method: 'GET',
+					url: 'http://soservices.vsnepomuceno.cloudbees.net/prestador',
+					headers: {'Content-Type': 'application/json'}
+				}).
+		    	success(successCallback).
+			    error(function(data, status, headers, config) {
+			     	Alerts.addAlert('ServicePrestadores: Erro -> ' + status +' '+ data, 'danger');
+			    });
+			}	
 		}
 	}
 ]);
