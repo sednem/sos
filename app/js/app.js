@@ -17,6 +17,8 @@ SoSApp.config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/anunciar', {templateUrl: 'partials/anunciar.html', controller: 'AnuncioCtrl'});
   $routeProvider.when('/view2', {templateUrl: 'partials/partial2.html', controller: 'MyCtrl2'});
   $routeProvider.when('/prest/email/:email/apiKey/:apiKey', {templateUrl: 'partials/prestPortfolio.html', controller: 'PrestadoresAnunciosCtrl'});
+  $routeProvider.when('/avaliacoesPrest/email/:email/apiKey/:apiKey', {templateUrl: 'partials/avaliacoesPrest.html', controller: 'AvaliacoesPrestCtrl'});
+  $routeProvider.when('/forumPrest/email/:email/apiKey/:apiKey/servicoId/:servicoId', {templateUrl: 'partials/forumPrest.html', controller: 'ForumPrestCtrl'});
   $routeProvider.otherwise({redirectTo: '/home'});
 }]);
 

@@ -1,0 +1,47 @@
+
+<div class="container text-justify">
+
+	<div data-ng-show="(forum.posts.length > 0)" class="row">
+
+		<div class="col-lg-12">
+			<h1 class="page-header">
+				F&oacute;rum
+			</h1>
+		</div>
+
+	</div>
+	<div data-ng-show="(forum.posts.length == 0)" class="row">
+
+		<div class="col-lg-12">
+			<h1 class="page-header">
+				Voc&ecirc; ainda n&atilde;o possui mensagens!!
+			</h1>
+		</div>
+
+	</div>
+	
+	<div class="list-group">
+		<div class="list-group-item row"
+			data-ng-repeat="post in forum.posts | filter:query | orderBy:orderProp">
+		   		<div class="col-lg-1 col-md-1"></div>
+				<div class="col-lg-10 col-md-10">
+					<h3>{{post.usuario.nome}}</h3>
+					<h4>Mensagem: {{post.mensagem}}</h4>
+					<h4 data-ng-show="(post.resposta != '')">Resposta: {{post.resposta}}</p></h4>
+					<div data-ng-show="(post.resposta === '')" class="row">
+						<div class="col-xs-12">
+							<h4>Resposta:</h4>
+							<textarea ng-model="respostaText" rows="3" class="form-control" required></textarea>
+							<br>
+						</div>
+					</div>
+				    <button data-ng-show="(post.resposta === '')" class="btn btn-primary"
+				        data-ng-click="responder(post.id, respostaText)">Responder <span
+						class="glyphicon glyphicon-chevron-right"></span></button> 
+					
+				</div>
+			<hr>
+		</div>
+	</div>
+	
+</div>

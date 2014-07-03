@@ -60,6 +60,18 @@ SoServices.factory('ServicePrestadores', ['$http', 'Alerts',
 			     	Alerts.addAlert('ServicePrestadores: Erro -> ' + status +' '+ data, 'danger');
 			    });
      		},
+			getServicosPrestador: function(email, successCallback) {
+       			$http(
+				{
+					method: 'GET',
+					url: 'http://soservices.vsnepomuceno.cloudbees.net/servico/email?email='+email,
+					headers: {'Content-Type': 'application/json'}
+				}).
+		    	success(successCallback).
+			    error(function(data, status, headers, config) {
+			     	Alerts.addAlert('ServicePrestadores: Erro -> ' + headers +' '+ status, 'danger');
+			    });
+     		},
 			getPrestadores: function(successCallback) {
        			$http(
 				{
@@ -71,7 +83,19 @@ SoServices.factory('ServicePrestadores', ['$http', 'Alerts',
 			    error(function(data, status, headers, config) {
 			     	Alerts.addAlert('ServicePrestadores: Erro -> ' + status +' '+ data, 'danger');
 			    });
-			}	
+			},
+			getPrestador: function(email, successCallback) {
+       			$http(
+				{
+					method: 'GET',
+					url: 'http://soservices.vsnepomuceno.cloudbees.net/prestador/email?email='+email,
+					headers: {'Content-Type': 'application/json'}
+				}).
+		    	success(successCallback).
+			    error(function(data, status, headers, config) {
+			     	Alerts.addAlert('ServicePrestadores: Erro -> ' + status +' '+ data, 'danger');
+			    });
+			}		
 		}
 	}
 ]);

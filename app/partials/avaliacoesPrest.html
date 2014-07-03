@@ -1,0 +1,48 @@
+
+<div class="container text-justify">
+
+	<div data-ng-show="(avaliacoes.length > 0)" class="row">
+
+		<div class="col-lg-12">
+			<h1 class="page-header">
+				Avalia&ccedil;&otilde;es dos Usu&aacute;rios <br><small>Avalia&ccedil;&atilde;o M&eacute;dia: 
+				<rating data-ng-model="media" readonly="true"></rating> - {{media}}</small>
+			</h1>
+		</div>
+
+	</div>
+	<div data-ng-show="(avaliacoes.length == 0)" class="row">
+
+		<div class="col-lg-12">
+			<h1 class="page-header">
+				Voc&ecirc; ainda n&atilde;o possui avalia&ccedil;&otilde;es!!
+			</h1>
+		</div>
+
+	</div>
+	
+	<div class="list-group">
+		<div class="list-group-item row"
+			data-ng-repeat="avaliacao in avaliacoes | filter:query | orderBy:orderProp">
+		   		<div class="col-lg-1 col-md-1"></div>
+				<div class="col-lg-10 col-md-10">
+					<h3>{{avaliacao.usuarioAvaliador.nome}}</h3>
+					<h4>Depoimento: {{avaliacao.depoimento}}</h4>
+					<h4>Avalia&ccedil;&atilde;o: <rating data-ng-model="avaliacao.nota" readonly="true"></rating></h4>
+					<h4 data-ng-show="(avaliacao.replica != '')">Replica: {{avaliacao.replica}}</p></h4>
+					<div data-ng-show="(avaliacao.replica === '')" class="row">
+						<div class="col-xs-12">
+							<h4>Replica:</h4>
+							<textarea ng-model="replicaText" rows="3" class="form-control" required></textarea>
+							<br>
+						</div>
+					</div>
+				    <button data-ng-show="(avaliacao.replica === '')" class="btn btn-primary"
+				        data-ng-click="responder(avaliacao.id, replicaText)">Responder <span
+						class="glyphicon glyphicon-chevron-right"></span></button> 
+					
+				</div>
+			<hr>
+		</div>
+	</div>
+</div>
