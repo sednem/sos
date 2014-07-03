@@ -44,9 +44,11 @@
 								{{endereco}}
 							</div>
 							<div data-ng-show="currentMarkerIsService">
-								<p>{{currentMarker.prestador.nome}}</p>
-								<p><a href="mailto:{{currentMarker.prestador.email}}">{{currentMarker.prestador.email}}</a></p>
-								<p>{{currentMarker.prestador.telefone}}</p>
+								<p>{{currentMarker.servico.prestador.nome}}</p>
+								<p><a href="mailto:{{currentMarker.servico.prestador.email}}">{{currentMarker.servico.prestador.email}}</a>
+								- {{currentMarker.servico.prestador.telefone}}</p>
+								<p>{{currentMarker.servico.descricao}}</p>
+								<p data-ng-show="currentMarker.servico.tipoServico.valorado">R$ {{currentMarker.servico.valor}}</p>
 							</div>
 						</div>
 
@@ -59,7 +61,7 @@
 					<div class="panel-heading clearfix">
 						<span class="panel-title pull-left" style="paddidata-ng-top: 7.5px;">
 							{{labels.prestadores_encontrados}} 
-							<span class="badge">{{prestadores.length}}</span>
+							<span class="badge">{{servicos.length}}</span>
 						</span>
 						<!-- Split button -->
 						<div class="btn-group pull-right" dropdown>
@@ -96,19 +98,21 @@
 							</div>
 						</div>
 
+						<h3>{{tipoServico}}</h3>	
+
 						<div class="list-group">
 							<a href class="list-group-item"
-								ng-click="openMarkerInfo(myMarkers[prestador.markerIndex])"
-								data-ng-repeat="prestador in prestadores | filter:query | orderBy:orderProp">
-								<h4 class="list-group-item-heading">{{prestador.nome}}</h4> 
-								<rating data-ng-model="prestador.avaliacao" max="maxRate" readonly="true"></rating>
+								ng-click="openMarkerInfo(myMarkers[servico.markerIndex])"
+								data-ng-repeat="servico in servicos | filter:query | orderBy:orderProp">
+								<h4 class="list-group-item-heading">{{servico.prestador.nome}}</h4> 
+								<rating data-ng-model="servico.prestador.avaliacao" max="maxRate" readonly="true"></rating>
 								<!-- TODO recuperar avaliacao -->
-								<p class="list-group-item-text small">{{prestador.endereco.logradouro}}
-									{{prestador.endereco.complemento}},
-									{{prestador.endereco.cidade}}, {{prestador.endereco.estado}} -
-									{{prestador.endereco.cep}}</p>
-								<p class="list-group-item-text small">{{prestador.email}}</p>
-								<p class="list-group-item-text small">{{prestador.telefone}}</p>
+								<p class="list-group-item-text small">{{servico.prestador.endereco.logradouro}}
+									{{servico.prestador.endereco.complemento}},
+									{{servico.prestador.endereco.cidade}}, {{prestador.endereco.estado}} -
+									{{servico.prestador.endereco.cep}}</p>
+								<p class="list-group-item-text small">{{servico.prestador.email}}</p>
+								<p class="list-group-item-text small">{{servico.prestador.telefone}}</p>
 							</a>
 						</div>
 						<pagination total-items="bigTotalItems" data-ng-model="bigCurrentPage"
