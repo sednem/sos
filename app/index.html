@@ -39,37 +39,61 @@
           </a>
         </div>
         <div class="collapse navbar-collapse navbar-right">
-        <ul class="nav navbar-nav">
-			<li class="dropdown" data-ng-show="user.logado">		   
-				<h4>					 			
-					<span class="dropdown-toggle label label-default" data-toggle="dropdown">Bem vindo,{{user.email}}
-						<a href="">	
-							<i class="glyphicon glyphicon-user white"></i>				
-						</a>		
-					</span>		
-				</h4> 
-				<ul class="dropdown-menu">
-          <li><a href="" data-ng-click="avaliacoes()">Avaliações de Usuários</a></li>
-					<li><a href="" data-ng-click="editPrest()">Editar Prestador</a></li>
-					<li><a href="" data-ng-click="atualizarSenha()">Atualizar Senha</a></li>
-					<li><a href="" data-ng-click="removePrest()">Excluir Conta</a></li>
-				</ul>
-			</li>
-			<li data-ng-show="user.logado"><a href="" data-ng-click="logout()">Logout <span class="glyphicon glyphicon-log-out"></span></a></li>
-            <li data-ng-hide="user.logado"><a href="" data-ng-click="openLogin()">Login <span class="glyphicon glyphicon-log-in"></span></a></li>
-            <li data-ng-hide="user.logado"><a href="" data-ng-click="openCadastro()">Cadastre-se <span class="glyphicon glyphicon-user"></span></a></li>
+          <ul class="nav navbar-nav">
+            <li data-ng-hide="user.logado">
+              <a href="" data-ng-click="openLogin()">
+                Login <span class="glyphicon glyphicon-log-in"></span>
+              </a>
+            </li>
+            <li data-ng-hide="user.logado">
+              <a href="" data-ng-click="openCadastro()">
+                Cadastre-se <span class="glyphicon glyphicon-user"></span>
+              </a>
+            </li>
             <li>
               <button class='btn btn-warning navbar-btn' data-ng-click="openAnuncio()">
                 <span class="glyphicon glyphicon-bullhorn"></span> Anuncie aqui!
               </button>
             </li>
-             <li>&nbsp;&nbsp;</li>
             <li data-ng-show="user.logado">
-              <button class='btn btn-info navbar-btn' data-ng-click="openPrestadorAnuncios()">
-                <span class="glyphicon glyphicon-folder-close"></span> Ver An&uacute;ncios!
-              </button>
+              <a>Bem vindo(a), {{user.email}}</a>
             </li>
-            
+            <li data-ng-show="user.logado" dropdown>
+                <a href class="dropdown-toggle">
+                  <span class="glyphicon glyphicon-sm glyphicon-cog"></span>
+                </a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a>{{user.email}} <span class="glyphicon glyphicon-sm glyphicon-user"></span></a></li>
+                  <li role="presentation" class="divider"></li>
+                  <li>
+                    <a href data-ng-click="openPrestadorAnuncios()">
+                      Ver An&uacute;ncios <span class="glyphicon glyphicon-folder-close"></span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href data-ng-click="avaliacoes()">
+                      Avaliações de Usuários <span class="glyphicon glyphicon-stats"></span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href data-ng-click="editPrest()">
+                      Editar Prestador  <span class="glyphicon glyphicon-edit">
+                    </a>
+                  </li>
+                  <li>
+                    <a href data-ng-click="atualizarSenha()">
+                      Atualizar Senha <span class="glyphicon glyphicon-lock"></span>
+                    </a>
+                  </li>
+                  <li>
+                    <a href data-ng-click="removePrest()">
+                      Excluir Conta <span class="glyphicon glyphicon-remove-sign"></span>
+                    </a>
+                  </li>
+                  <li role="presentation" class="divider"></li>
+                  <li><a href data-ng-click="logout()">Logout <span class="glyphicon glyphicon-log-out"></span></a></li>
+                </ul>
+            </li>
           </ul>
         </div>
         <!--/.nav-collapse -->

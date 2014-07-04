@@ -943,7 +943,7 @@ SoSCtrls.controller('ForumPrestCtrl', [ '$scope', '$route', '$http', '$location'
 				nomeUsuario: ''
 		};
 		$scope.forum = new Array();
-		$scope.orderProp = '-id';
+		$scope.orderProp = '-prestador.media';
 		$scope.respostaText='';
 
 		$scope.email = $routeParams.email;
