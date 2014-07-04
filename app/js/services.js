@@ -95,6 +95,18 @@ SoServices.factory('ServicePrestadores', ['$http', 'Alerts',
 			    error(function(data, status, headers, config) {
 			     	Alerts.addAlert('ServicePrestadores: Erro -> ' + status +' '+ data, 'danger');
 			    });
+			},
+			getAvaliacoes: function(email, successCallback) {
+       			$http(
+				{
+					method: 'GET',
+					url: 'http://soservices.vsnepomuceno.cloudbees.net/avaliacao/email?email='+email,
+					headers: {'Content-Type': 'application/json'}
+				}).
+		    	success(successCallback).
+			    error(function(data, status, headers, config) {
+			     	Alerts.addAlert('ServicePrestadores: Erro -> ' + status +' '+ data, 'danger');
+			    });
 			}		
 		}
 	}

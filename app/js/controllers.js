@@ -1,9 +1,7 @@
 'use strict';
 
 /* Global Object */
-//var sosMap;
-//var mapOptions;
-var geo = new google.maps.Geocoder; //Posicao inicial do mapa
+var geo = new google.maps.Geocoder;
 
 /* Controllers */
 var SoSCtrls = angular.module('sosWeb.controllers', ['ui.bootstrap','ui.map','ui.event']);
@@ -19,22 +17,22 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico,
 	$scope.raio;
 	$scope.user = Authentication.currentUser();
 	$scope.prestador = {
-			email: '',
-			cpf: '',
-			telefone: '',
-			logradouro: '',
-			numero: 0,
-			complemento: '',
-			cep: '',
-			cidade: '',
-			estado: ''
+		email: '',
+		cpf: '',
+		telefone: '',
+		logradouro: '',
+		numero: 0,
+		complemento: '',
+		cep: '',
+		cidade: '',
+		estado: ''
 	};
 	
 	$scope.servico = {
-			descricao: '',
-			valor: 0.0,
-			nome_tipo_servico: '',
-			usuario_email: ''
+		descricao: '',
+		valor: 0.0,
+		nome_tipo_servico: '',
+		usuario_email: ''
 	};
 	
 
@@ -385,10 +383,6 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeP
 								function(data) {
 									$scope.servicos = data;
 
-									//TODO: Alterar variaveis quando realizar link com paginacao
-									$scope.bigTotalItems = $scope.servicos.length;
-									$scope.bigCurrentPage = 1;
-
 									// alert('Chamando carrega mapa..');
 									$scope.carregarMapa(ll);
 								}
@@ -411,18 +405,17 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeP
 			$scope.myMarkers = new Array();
 			//Adiciona marcadores para cada prestador encontrado
 
-
 			//TODO Remover apos atualizar do servico
 			$scope.prestadores = new Array();
-			ServicePrestadores.getPrestadores( //API esta em metros e nao KM.
+			ServicePrestadores.getPrestadores(
 				function(data) {
 					$scope.prestadores = data;
 
 					/* Inicio manter esta parte*/
 					var i;
 					for (i = 0; i < $scope.servicos.length; ++i) {
-
 						$scope.servicos[i].prestador = $scope.prestadores[i];
+						$scope.servicos[i].prestador.mediaAvaliacao = 3.5;
 
 						var newMarker = 
 							$scope.myMarkers.push(
@@ -475,8 +468,7 @@ var LoginCtrl = function ($scope, $http, $modalInstance, Authentication, Alerts,
   $scope.user.email = '';
   $scope.progress = false;
 			
-  $scope.logar = function () {	 
-	  
+  $scope.logar = function () {	  
 		if ( $scope.user.email != '' && $scope.user.email != null &&
 				 $scope.user.senha != '' && $scope.user.senha != null) {
 			$http({
@@ -646,7 +638,7 @@ var anuncioCtrl = function ($scope, $http,$modalInstance, Alerts, servico, tipos
 				Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
 			});
 		}
-	};
+	};media
 	
 	$scope.cancel = function () {
 		 $modalInstance.dismiss('cancel');
@@ -897,8 +889,8 @@ var atualizarSenhaCtrl = function ($scope, $http, $modalInstance, Alerts, apiKey
  
  /* Ctrl avaliacoes de prestadores */
 SoSCtrls.controller('AvaliacoesPrestCtrl', [ '$scope', '$route', '$http',
-	'$location', '$modal', '$routeParams', 'Alerts',
-	function($scope, $route, $http, $location, $modal, $routeParams, Alerts) {
+	'$location', '$modal', '$routeParams', 'Alerts', 'ServicePrestadores',
+	function($scope, $route, $http, $location, $modal, $routeParams, Alerts, ServicePrestadores) {
 			
 		$scope.email = $routeParams.email;
 		$scope.apiKey = $routeParams.apiKey;
@@ -913,22 +905,19 @@ SoSCtrls.controller('AvaliacoesPrestCtrl', [ '$scope', '$route', '$http',
 		$scope.orderProp = '-id';
 		$scope.media = 0.0;
 		$scope.replicaText='';
-		
-		$http({
-			method: 'GET',
-			url: 'http://soservices.vsnepomuceno.cloudbees.net/avaliacao/email?email='+ $scope.email}).
-			success(function(data, status, headers, config) {
+
+		ServicePrestadores.getAvaliacoes($scope.email,
+			function(data) {
 				$scope.avaliacoes = data;
 				$scope.prestador = data.usuario;
 				
+				//TODO Refatorar para media ser retornada pela API como propriedade do prestador
 				for (var i =0; i < $scope.avaliacoes.length; i++) {
 					$scope.media += parseFloat($scope.avaliacoes[i].nota);
 				}
 				$scope.media /= $scope.avaliacoes.length;
-			}).
-			error(function(data, status, headers, config) {
-			 	Alerts.addAlert('Erro: ' + status +' '+ data, 'danger');
-			});
+			}
+		);
 		
 		$scope.responder = function(id, replicaText) {
 			if (replicaText != '' && replicaText != null) {

@@ -39,16 +39,23 @@
 						<div ng-repeat="marker in myMarkers" ui-map-marker="marker"
 						  ui-event="{'map-click': 'openMarkerInfo(marker)'}">
 						</div>
-						<div ui-map-info-window="myInfoWindow">
+						<div ui-map-info-window="myInfoWindow" style="max-width: 200px;">
 							<div data-ng-hide="currentMarkerIsService">
 								{{endereco}}
 							</div>
 							<div data-ng-show="currentMarkerIsService">
-								<p>{{currentMarker.servico.prestador.nome}}</p>
-								<p><a href="mailto:{{currentMarker.servico.prestador.email}}">{{currentMarker.servico.prestador.email}}</a>
-								- {{currentMarker.servico.prestador.telefone}}</p>
-								<p>{{currentMarker.servico.descricao}}</p>
-								<p data-ng-show="currentMarker.servico.tipoServico.valorado">R$ {{currentMarker.servico.valor}}</p>
+								<p>
+									{{currentMarker.servico.prestador.nome}}
+									<a href="#">(Ver detalhes)</a>
+									<br>
+									<a href="mailto:{{currentMarker.servico.prestador.email}}">{{currentMarker.servico.prestador.email}}</a> - {{currentMarker.servico.prestador.telefone}}
+									<br>
+								</p>
+								<p>
+									<span data-ng-show="currentMarker.servico.tipoServico.valorado">R$ {{currentMarker.servico.valor}}</span>
+									<br>
+									{{currentMarker.servico.descricao}}
+								</p>
 							</div>
 						</div>
 
@@ -98,14 +105,13 @@
 							</div>
 						</div>
 
-						<h3>{{tipoServico}}</h3>	
-
 						<div class="list-group">
-							<a href class="list-group-item"
-								ng-click="openMarkerInfo(myMarkers[servico.markerIndex])"
+							<span class="list-group-item"
 								data-ng-repeat="servico in servicos | filter:query | orderBy:orderProp">
-								<h4 class="list-group-item-heading">{{servico.prestador.nome}}</h4> 
-								<rating data-ng-model="servico.prestador.avaliacao" max="maxRate" readonly="true"></rating>
+								<a href ng-click="openMarkerInfo(myMarkers[servico.markerIndex])">
+									<h4 class="list-group-item-heading">{{servico.prestador.nome}}</h4> 
+								</a>
+								<rating data-ng-model="servico.prestador.mediaAvaliacao" max="maxRate" readonly="true"></rating> (<a href>Ver avaliações</a>)
 								<!-- TODO recuperar avaliacao -->
 								<p class="list-group-item-text small">{{servico.prestador.endereco.logradouro}}
 									{{servico.prestador.endereco.complemento}},
@@ -113,11 +119,8 @@
 									{{servico.prestador.endereco.cep}}</p>
 								<p class="list-group-item-text small">{{servico.prestador.email}}</p>
 								<p class="list-group-item-text small">{{servico.prestador.telefone}}</p>
-							</a>
+							</span>
 						</div>
-						<pagination total-items="bigTotalItems" data-ng-model="bigCurrentPage"
-							items-per-page="itemsPerPage" num-pages="numPages"
-							class="pagination-sm" style="margin: 0;"></pagination>
 					</div>
 				</div>
 			</div>
