@@ -11,7 +11,7 @@ SoServices.value('version', '0.0.0');
 
 SoServices.factory('ServiceTpServico', ['$http', 'Alerts',
 	function($http, Alerts){
-		var url = 'http://soservices.vsnepomuceno.cloudbees.net/tipo-servico';
+		var url = 'http://localhost:8080/sos-api/tipo-servico';
 		return {
 			getTiposServicos: function() {
        			return $http.get(url).
@@ -48,7 +48,7 @@ SoServices.factory('ServicePrestadores', ['$http', 'Alerts',
        			$http(
 				{
 					method: 'GET',
-					url: 'http://soservices.vsnepomuceno.cloudbees.net/servico/query?'+
+					url: 'http://localhost:8080/sos-api/servico/query?'+
 					'tipo_servico_id='+idTipoServico+
 					'&latitude='+lat+
 					'&longitude='+lng+
@@ -64,7 +64,7 @@ SoServices.factory('ServicePrestadores', ['$http', 'Alerts',
        			$http(
 				{
 					method: 'GET',
-					url: 'http://soservices.vsnepomuceno.cloudbees.net/servico/email?email='+email,
+					url: 'http://localhost:8080/sos-api/servico/email?email='+email,
 					headers: {'Content-Type': 'application/json'}
 				}).
 		    	success(successCallback).
@@ -76,7 +76,7 @@ SoServices.factory('ServicePrestadores', ['$http', 'Alerts',
        			$http(
 				{
 					method: 'GET',
-					url: 'http://soservices.vsnepomuceno.cloudbees.net/prestador',
+					url: 'http://localhost:8080/sos-api/prestador',
 					headers: {'Content-Type': 'application/json'}
 				}).
 		    	success(successCallback).
@@ -88,7 +88,7 @@ SoServices.factory('ServicePrestadores', ['$http', 'Alerts',
        			$http(
 				{
 					method: 'GET',
-					url: 'http://soservices.vsnepomuceno.cloudbees.net/prestador/email?email='+email,
+					url: 'http://localhost:8080/sos-api/prestador/email?email='+email,
 					headers: {'Content-Type': 'application/json'}
 				}).
 		    	success(successCallback).
@@ -100,7 +100,7 @@ SoServices.factory('ServicePrestadores', ['$http', 'Alerts',
        			$http(
 				{
 					method: 'GET',
-					url: 'http://soservices.vsnepomuceno.cloudbees.net/avaliacao/email?email='+email,
+					url: 'http://localhost:8080/sos-api/avaliacao/email?email='+email,
 					headers: {'Content-Type': 'application/json'}
 				}).
 		    	success(successCallback).
