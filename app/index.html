@@ -101,7 +101,7 @@
     </div>
     <!-- Begin page content -->
     <div class="center-container bg-one">
-      <alert data-ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
+      <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="alert.close()">{{ alert.msg }}</alert>
       <div class="center-row" data-ng-view></div>
     </div>
     <div id="footer">

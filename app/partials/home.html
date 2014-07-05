@@ -4,7 +4,8 @@
 		<input type="text" data-ng-model="tipoServico" typeahead="tipo.nome for tipo in tiposServicos | filter:$viewValue | limitTo:8" class="form-control input-lg" placeholder="Serviço" required>
 	</div>
 	<div class="col-md-5 form-group">
-		<input id="endereco" type="text" class="form-control input-lg" placeholder="{{labels.endereco}}" data-ng-model="endereco" googleplace required>
+		<input id="endereco" type="text" class="form-control input-lg" placeholder="{{labels.endereco}}"
+			data-ng-model="endereco" googleplace required>
 	</div>
 	<div class="col-md-2 form-group">
 		<select id="raio" class="form-control input-lg" data-ng-model="raio" required>

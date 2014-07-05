@@ -11,6 +11,7 @@ SoSCtrls.controller('MainCtrl', ['$scope', '$route', '$http', '$location', '$mod
 	'Alerts', 'ServiceTpServico', 'ServicePrestadores',  'Authentication', '$log',
 function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico,
 	ServicePrestadores, Authentication, $log) {
+
 	$scope.gPlace;
 	$scope.tipoServico;
 	$scope.endereco;
@@ -60,10 +61,6 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico,
 		"endereco": "Endereço",
 		"buscar": "Buscar",
 	};
-
-	//Alerts na pagina principal
-	$scope.alerts = Alerts.getAll();
-	$scope.closeAlert = function(index) {Alerts.removeAlert(index);};
 
 	$scope.openAnuncio = function () {
 		if($scope.user.logado){
@@ -129,7 +126,7 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico,
 			$location.path('/home');
 
 		}).error(function(data, status, headers, config) {
-			Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+			Alerts.add('Erro: ' + status + ' ' + data, 'danger');
 		});	  
 	};
 	
@@ -153,7 +150,7 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico,
 				Authentication.login($scope.user);
 				Alerts.closeAll();
 				$scope.$apply();
-				Alerts.addAlert('UsuÃ¡rio cadastrado com sucesso!', 'success');
+				Alerts.add('Usuário cadastrado com sucesso!', 'success');
 				
 			}
 		}, function() {
@@ -177,7 +174,7 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico,
 			  }
 			});
 			modalInstance.result.then(function () {
-				Alerts.addAlert('Prestador cadastrado com sucesso!', 'success');
+				Alerts.add('Prestador cadastrado com sucesso!', 'success');
 				$scope.openCadastroAnuncio();
 			}, 
 			function () {
@@ -205,7 +202,7 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico,
 			});
 			modalInstance.result.then(function () {
 				$route.reload();
-				Alerts.addAlert('Anuncio cadastrado com sucesso!', 'success');
+				Alerts.add('Anuncio cadastrado com sucesso!', 'success');
 			}, 
 			function () {
 
@@ -239,7 +236,7 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico,
 					$location.path('/home');
 
 				}).error(function(data, status, headers, config) {
-					Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+					Alerts.add('Erro: ' + status + ' ' + data, 'danger');
 				});  
 			}, 
 			function () {	});		
@@ -252,7 +249,7 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico,
 					if (data.cpf != data.email) {
 						$scope.openEditPrestador(data);
 					} else {
-						Alerts.addAlert('Você ainda não é um prestador, cadastre um anúncio!', 'warning');
+						Alerts.add('Você ainda não é um prestador, cadastre um anúncio!', 'warning');
 					}
 			});
 	};
@@ -282,7 +279,7 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico,
 			  }
 			});
 			modalInstance.result.then(function () {
-				Alerts.addAlert('Prestador atualizado com sucesso!', 'success');
+				Alerts.add('Prestador atualizado com sucesso!', 'success');
 			}, 
 			function () {
 
@@ -304,7 +301,7 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico,
 			}
 			});
 			modalInstance.result.then(function () {
-				Alerts.addAlert('Senha atualizada com sucesso!', 'success');
+				Alerts.add('Senha atualizada com sucesso!', 'success');
 			}, 
 			function () {
 
@@ -320,19 +317,20 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico,
  					$location.path('/avaliacoesPrest/email/'+$scope.user.email+
  							'/apiKey/'+$scope.user.apiKey);
  				} else {
- 					Alerts.addAlert('Voc^e ainda não é um prestador, cadastre um anúncio!', 'warning');
+ 					Alerts.add('Voc^e ainda não é um prestador, cadastre um anúncio!', 'warning');
  				}
  			}).
  			error(function(data, status, headers, config) {		
- 				Alerts.addAlert('Erro: ' + status +' '+ data, 'danger');
+ 				Alerts.add('Erro: ' + status +' '+ data, 'danger');
  			});	
  	};
 }]);
 
 /* Ctrl Busca de prestadores */
-SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeParams',
+SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$location', '$routeParams',
 	'Alerts', 'ServicePrestadores', 'ServiceTpServico',
-	function($scope, $http, $location, $routeParams, Alerts, ServicePrestadores, ServiceTpServico) {
+	function($scope, $location, $routeParams, Alerts, ServicePrestadores, ServiceTpServico) {
+
 	 	$scope.tipoServico = $routeParams.tipoServico;
 		$scope.endereco = $routeParams.endereco;
 		$scope.raio = $routeParams.raio;
@@ -345,15 +343,6 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeP
 		$scope.orderProp = '-avaliacao';
 		$scope.orderBy = function (orderProp) {
 			$scope.orderProp = orderProp;
-		};
-
-		//Pagination
-		$scope.itemsPerPage = 1;
-		$scope.setPage = function (pageNo) {
-			$scope.currentPage = pageNo;
-		};
-		$scope.pageChanged = function() {
-			$scope.currentPage
 		};
 
 		//Inicializa o mapa
@@ -390,7 +379,7 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeP
 						}
 					);
 			  	} else {
-			  		Alerts.addAlert(
+			  		Alerts.add(
 			  			"Geocode was not successful for the following reason: " + status, 'danger');
 			  	}
 			});
@@ -431,21 +420,33 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$http', '$location', '$routeP
 
 		}
 
-		if($scope.tipoServico && $scope.endereco && $scope.raio){
-			$scope.getPesquisadores();
-		}
-
 		$scope.openMarkerInfo = function(marker) {
 			$scope.currentMarker = marker;
 			$scope.currentMarkerIsService = (typeof $scope.currentMarker.servico !== 'undefined');
 			$scope.myInfoWindow.open($scope.sosMap, marker);
 		};
+
+		$scope.exibirDetalhesServico = function(servico){
+			$location.path('/servico/'+servico.id);
+		}
+
+		if($scope.tipoServico && $scope.endereco && $scope.raio){
+			$scope.getPesquisadores();
+		}
 	}
 ]);
 
-//Controler Example
-SoSCtrls.controller('MyCtrl2', ['$scope', function($scope) {
-}]);
+//Controler Servico
+SoSCtrls.controller('ServicoCtrl', ['$scope', '$routeParams','ServiceServicos',
+	function($scope, $routeParams, ServiceServicos) {
+		$scope.idServico = $routeParams.idServico;
+		$scope.servico = [];
+		ServiceServicos.getServico($scope.idServico,
+			function(data) {
+				$scope.servico = data;
+		});
+	}
+]);
 
 //Controla o dialog de "sign in" / "sign up"
 var LoginCtrl = function ($scope, $http, $modalInstance, Authentication, Alerts, user) {
@@ -468,7 +469,7 @@ var LoginCtrl = function ($scope, $http, $modalInstance, Authentication, Alerts,
 				$modalInstance.close(data);
 	
 			}).error(function(data, status, headers, config) {
-				Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+				Alerts.add('Erro: ' + status + ' ' + data, 'danger');
 			});	
 		} 
   };
@@ -485,7 +486,7 @@ var LoginCtrl = function ($scope, $http, $modalInstance, Authentication, Alerts,
 			success(function(data, status, headers, config) {
 				$modalInstance.close(data);
 			}).error(function(data, status, headers, config) {
-				Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+				Alerts.add('Erro: ' + status + ' ' + data, 'danger');
 			});  
 		});   
   };
@@ -536,10 +537,10 @@ var cadastrarCtrl = function ($scope, $http, $modalInstance, Alerts, user) {
 				$modalInstance.close(data);
 			
 			}).error(function(data, status, headers, config) {
-				Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+				Alerts.add('Erro: ' + status + ' ' + data, 'danger');
 			});
 		 }else {
-				Alerts.addAlert('Senha e confirmaÃ§&atilde;o diferentes!');
+				Alerts.add('Senha e confirmaÃ§&atilde;o diferentes!');
 		  }
 	  }
   };
@@ -573,7 +574,7 @@ var cadastroPrestadorCtrl = function ($scope, $http, $modalInstance, Alerts, pre
 				success(function(data, status, headers, config) {
 					$modalInstance.close(data);			
 				}).error(function(data, status, headers, config) {
-					Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+					Alerts.add('Erro: ' + status + ' ' + data, 'danger');
 				});
 		}
 	};	
@@ -588,11 +589,11 @@ var cadastroPrestadorCtrl = function ($scope, $http, $modalInstance, Alerts, pre
  					$location.path('/avaliacoesPrest/email/'+$scope.user.email+
  							'/apiKey/'+$scope.user.apiKey);
  				} else {
- 					Alerts.addAlert('Você ainda não é um prestador, cadastre um anúncio!', 'warning');
+ 					Alerts.add('Você ainda não é um prestador, cadastre um anúncio!', 'warning');
  				}
  			}).
  			error(function(data, status, headers, config) {		
- 				Alerts.addAlert('Erro: ' + status +' '+ data, 'danger');
+ 				Alerts.add('Erro: ' + status +' '+ data, 'danger');
  			});	
  	};
   $scope.cancel = function () {
@@ -621,7 +622,7 @@ var anuncioCtrl = function ($scope, $http,$modalInstance, Alerts, servico, tipos
 				$modalInstance.close(data);
 			
 			}).error(function(data, status, headers, config) {
-				Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+				Alerts.add('Erro: ' + status + ' ' + data, 'danger');
 			});
 		}
 	};
@@ -671,7 +672,7 @@ SoSCtrls.controller('PrestadoresAnunciosCtrl', [ '$scope', '$route', '$http', '$
 
 			}).
 			error(function(data, status, headers, config) {
-			 	Alerts.addAlert('Erro: ' + status +' '+ data, 'danger');
+			 	Alerts.add('Erro: ' + status +' '+ data, 'danger');
 			});
 		
 		$scope.editar = function (id, tipoServico, valor, descricao) {
@@ -700,9 +701,9 @@ SoSCtrls.controller('PrestadoresAnunciosCtrl', [ '$scope', '$route', '$http', '$
 					}).
 					success(function(data, status, headers, config) {
 						$route.reload();
-						Alerts.addAlert('ServiÃ§o removido com sucesso', 'success');
+						Alerts.add('ServiÃ§o removido com sucesso', 'success');
 					}).error(function(data, status, headers, config) {
-						Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+						Alerts.add('Erro: ' + status + ' ' + data, 'danger');
 					}); 
 				}, 
 				function () {	});						
@@ -727,7 +728,7 @@ SoSCtrls.controller('PrestadoresAnunciosCtrl', [ '$scope', '$route', '$http', '$
 				});
 				modalInstance.result.then(function () {
 					$route.reload();
-					Alerts.addAlert('Anuncio atualizado com sucesso!', 'success');
+					Alerts.add('Anuncio atualizado com sucesso!', 'success');
 				}, 
 				function () {
 
@@ -761,7 +762,7 @@ var editarAnuncioCtrl = function ($scope, $http,$modalInstance, Alerts, servico,
 				$modalInstance.close(data);
 			
 			}).error(function(data, status, headers, config) {
-				Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+				Alerts.add('Erro: ' + status + ' ' + data, 'danger');
 			});
 		}
 	};
@@ -806,7 +807,7 @@ var editPrestadorCtrl = function ($scope, $http, $modalInstance, Alerts, prestad
 			success(function(data, status, headers, config) {
 				$modalInstance.close(data);			
 			}).error(function(data, status, headers, config) {
-				Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+				Alerts.add('Erro: ' + status + ' ' + data, 'danger');
 			});
 	  }
   };
@@ -860,10 +861,10 @@ var atualizarSenhaCtrl = function ($scope, $http, $modalInstance, Alerts, apiKey
 					}).success(function(data, status, headers, config) {
 						$modalInstance.close(data);
 					}).error(function(data, status, headers, config) {
-						Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+						Alerts.add('Erro: ' + status + ' ' + data, 'danger');
 					});
 			}else {
-				Alerts.addAlert('Senha e confirmação diferentes!');
+				Alerts.add('Senha e confirmação diferentes!');
 			}
 		}
 	};
@@ -922,10 +923,10 @@ SoSCtrls.controller('AvaliacoesPrestCtrl', [ '$scope', '$route', '$http',
 					}).success(function(data, status, headers, config) {
 						$route.reload();
 					}).error(function(data, status, headers, config) {
-						Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+						Alerts.add('Erro: ' + status + ' ' + data, 'danger');
 					});
 			} else {
-				Alerts.addAlert('Replica deve ser preenchida!');
+				Alerts.add('Replica deve ser preenchida!');
 			}
 		};
 	} 
@@ -957,7 +958,7 @@ SoSCtrls.controller('ForumPrestCtrl', [ '$scope', '$route', '$http', '$location'
 				$scope.forum = data;						
 			}).
 			error(function(data, status, headers, config) {
-			 	Alerts.addAlert('Erro: ' + status +' '+ data, 'danger');
+			 	Alerts.add('Erro: ' + status +' '+ data, 'danger');
 			});
 		
 		
@@ -978,10 +979,10 @@ SoSCtrls.controller('ForumPrestCtrl', [ '$scope', '$route', '$http', '$location'
 					}).success(function(data, status, headers, config) {
 						$route.reload();
 					}).error(function(data, status, headers, config) {
-						Alerts.addAlert('Erro: ' + status + ' ' + data, 'danger');
+						Alerts.add('Erro: ' + status + ' ' + data, 'danger');
 					});
 			} else {
-				Alerts.addAlert('Resposta deve ser preenchida!');
+				Alerts.add('Resposta deve ser preenchida!');
 			}
 		};
 	} 

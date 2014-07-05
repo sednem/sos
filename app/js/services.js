@@ -16,7 +16,7 @@ SoServices.factory('ServiceTpServico', ['$http', 'Alerts',
 			getTiposServicos: function() {
        			return $http.get(url).
 				error(function(data, status) {
-			     	Alerts.addAlert('ServiceTpServico Erro: ' + status +' '+ data, 'danger');
+			     	Alerts.add('ServiceTpServico Erro: ' + status +' '+ data, 'danger');
 			    }).
 			    then(function(result) {
            			return result.data;
@@ -25,7 +25,7 @@ SoServices.factory('ServiceTpServico', ['$http', 'Alerts',
      		getIdByName: function(strName) {
        			return $http.get(url).
 				error(function(data, status) {
-			     	Alerts.addAlert('ServiceTpServico Erro: ' + status +' '+ data, 'danger');
+			     	Alerts.add('ServiceTpServico Erro: ' + status +' '+ data, 'danger');
 			    }).
 			    then(function(result) {
 			    	var tiposServicos = result.data;
@@ -57,7 +57,7 @@ SoServices.factory('ServicePrestadores', ['$http', 'Alerts',
 				}).
 		    	success(successCallback).
 			    error(function(data, status, headers, config) {
-			     	Alerts.addAlert('ServicePrestadores: Erro -> ' + status +' '+ data, 'danger');
+			     	Alerts.add('ServicePrestadores: Erro -> ' + status +' '+ data, 'danger');
 			    });
      		},
 			getServicosPrestador: function(email, successCallback) {
@@ -69,7 +69,7 @@ SoServices.factory('ServicePrestadores', ['$http', 'Alerts',
 				}).
 		    	success(successCallback).
 			    error(function(data, status, headers, config) {
-			     	Alerts.addAlert('ServicePrestadores: Erro -> ' + headers +' '+ status, 'danger');
+			     	Alerts.add('ServicePrestadores: Erro -> ' + headers +' '+ status, 'danger');
 			    });
      		},
 			getPrestadores: function(successCallback) {
@@ -81,7 +81,7 @@ SoServices.factory('ServicePrestadores', ['$http', 'Alerts',
 				}).
 		    	success(successCallback).
 			    error(function(data, status, headers, config) {
-			     	Alerts.addAlert('ServicePrestadores: Erro -> ' + status +' '+ data, 'danger');
+			     	Alerts.add('ServicePrestadores: Erro -> ' + status +' '+ data, 'danger');
 			    });
 			},
 			getPrestador: function(email, successCallback) {
@@ -93,7 +93,7 @@ SoServices.factory('ServicePrestadores', ['$http', 'Alerts',
 				}).
 		    	success(successCallback).
 			    error(function(data, status, headers, config) {
-			     	Alerts.addAlert('ServicePrestadores: Erro -> ' + status +' '+ data, 'danger');
+			     	Alerts.add('ServicePrestadores: Erro -> ' + status +' '+ data, 'danger');
 			    });
 			},
 			getAvaliacoes: function(email, successCallback) {
@@ -105,37 +105,74 @@ SoServices.factory('ServicePrestadores', ['$http', 'Alerts',
 				}).
 		    	success(successCallback).
 			    error(function(data, status, headers, config) {
-			     	Alerts.addAlert('ServicePrestadores: Erro -> ' + status +' '+ data, 'danger');
+			     	Alerts.add('ServicePrestadores: Erro -> ' + status +' '+ data, 'danger');
 			    });
 			}		
 		}
 	}
 ]);
 
-SoServices.service('Alerts', function () { //Alerts/Messages	
-	var alerts = [];
-	this.addAlert = function (strMsg, type) {
-		alerts.push({"msg": strMsg, "type": type});
-	};
+SoServices.service('ServiceServicos', ['$http', 'Alerts',
+	function($http, Alerts){
+		return {
+			getServicos: function(successCallback) {
+       			$http(
+				{
+					method: 'GET',
+					url: 'http://localhost:8080/sos-api/servico',
+					headers: {'Content-Type': 'application/json'}
+				}).
+		    	success(successCallback).
+			    error(function(data, status, headers, config) {
+			     	Alerts.add('ServicePrestadores: Erro -> ' + status +' '+ data, 'danger');
+			    });
+     		},
+			getServico: function(idServico, successCallback) {
+       			$http(
+				{
+					method: 'GET',
+					url: 'http://localhost:8080/sos-api/servico/'+idServico,
+					headers: {'Content-Type': 'application/json'}
+				}).
+		    	success(successCallback).
+			    error(function(data, status, headers, config) {
+			     	Alerts.add('ServicePrestadores: Erro -> ' + status +' '+ data, 'danger');
+			    });
+     		}		
+		}
+	}
+]);
 
-	this.removeAlert = function(index) {
-		alerts.splice(index, 1);
-	};
+SoServices.service('Alerts', ['$rootScope', '$timeout',
+	function($rootScope, $timeout) {
+		var alertService;
+		$rootScope.alerts = [];
+		return alertService = {
+			add: function(msg, type) {
+				$timeout(
+					function(){alertService.closeAlertIdx(0);},
+					5000);
 
-	this.getAll = function() {
-		return alerts;
-	};
-	
-	this.closeAll = function() {
-		while (alerts.length > 0) {
-			alerts.splice(0, 1);
-		}		
-	};
-
-	// this.addAlert('Teste Danger', 'danger');
-	// this.addAlert('Teste Success', 'success');
-	// this.addAlert('Teste Info', 'info');
-});
+			    return $rootScope.alerts.push({
+					type: type,
+					msg: msg,
+					close: function() {
+						return alertService.closeAlert(this);
+					}
+			    });
+			},
+			closeAlert: function(alert) {
+				return this.closeAlertIdx($rootScope.alerts.indexOf(alert));
+			},
+			closeAlertIdx: function(index) {
+				return $rootScope.alerts.splice(index, 1);
+			},
+			clear: function(){
+				$rootScope.alerts = [];
+			}
+		};
+	}
+]);
 
 SoServices.factory('Authentication', function($localStorage, $rootScope, $q){		
 	
