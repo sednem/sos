@@ -174,6 +174,39 @@ SoServices.service('Alerts', ['$rootScope', '$timeout',
 	}
 ]);
 
+// SoServices.service('GMap', ['$rootScope',
+// 	function($rootScope) {
+// 		var GMap;
+// 		$rootScope.currentMarker = '';
+// 		$rootScope.myInfoWindow = '';
+// 		return GMap = {
+// 			openMarkerInfo : function(marker) {
+// 				$rootScope.currentMarker = marker;
+// 				$rootScope.currentMarkerIsService = (typeof $scope.currentMarker.servico !== 'undefined');
+// 				$rootScope.myInfoWindow.open($scope.sosMap, marker);
+// 			}
+// 		};
+// 	}
+// ]);
+
+SoServices.service('ServiceForum', ['$http', 'Alerts',
+	function($http, Alerts){
+		return {
+			getForum : function(idServico, successCallback) {
+       			$http({
+					method: 'GET',
+					url: 'http://localhost:8080/sos-api/forum/servico/'+idServico,
+					headers: {'Content-Type': 'application/json'}
+				}).
+				success(successCallback).
+				error(function(data, status, headers, config) {
+			     	Alerts.add('ServiceForum: Erro -> ' + status +' '+ data, 'danger');
+				});
+     		}	
+		}
+	}
+]);
+
 SoServices.factory('Authentication', function($localStorage, $rootScope, $q){		
 	
 	var userAuth = {

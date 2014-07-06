@@ -437,14 +437,49 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$location', '$routeParams',
 ]);
 
 //Controler Servico
-SoSCtrls.controller('ServicoCtrl', ['$scope', '$routeParams','ServiceServicos',
-	function($scope, $routeParams, ServiceServicos) {
+SoSCtrls.controller('ServicoCtrl', ['$scope', '$routeParams','ServiceServicos', 'ServiceForum',
+	function($scope, $routeParams, ServiceServicos, ServiceForum) {
 		$scope.idServico = $routeParams.idServico;
 		$scope.servico = [];
+		$scope.posts = [];
+
+		$scope.mapOptions = {
+			center: new google.maps.LatLng(
+				-7.9712137, -34.839565100000016),
+			zoom: 14,
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+		};
+
 		ServiceServicos.getServico($scope.idServico,
 			function(data) {
 				$scope.servico = data;
-		});
+
+				//Inicializa o mapa
+				var ll = 
+					new google.maps.LatLng(
+						$scope.servico.prestador.endereco.latitude,
+						$scope.servico.prestador.endereco.longitude);
+
+				$scope.mapOptions = {
+					center: ll,
+					zoom: 14,
+					mapTypeId: google.maps.MapTypeId.ROADMAP
+				};
+
+				$scope.marker = new google.maps.Marker({
+						map: $scope.map,
+						position: ll
+					});
+
+				$scope.map.panTo(ll); //Centraliza o mapa
+			}
+		);
+
+		ServiceForum.getForum($scope.idServico,
+			function(data) {
+				$scope.posts = data.posts;
+			}
+		);		
 	}
 ]);
 
@@ -934,8 +969,8 @@ SoSCtrls.controller('AvaliacoesPrestCtrl', [ '$scope', '$route', '$http',
 
 /* Ctrl Busca de prestadores */
 SoSCtrls.controller('ForumPrestCtrl', [ '$scope', '$route', '$http', '$location',
-	'$modal', '$routeParams', 'Alerts',
-	function($scope, $route, $http, $location, $modal, $routeParams, Alerts) {
+	'$modal', '$routeParams', 'Alerts', 'ServiceForum',
+	function($scope, $route, $http, $location, $modal, $routeParams, Alerts, ServiceForum) {
 			
 		$scope.post = {
 				id: 0,
@@ -951,16 +986,12 @@ SoSCtrls.controller('ForumPrestCtrl', [ '$scope', '$route', '$http', '$location'
 		$scope.apiKey = $routeParams.apiKey;
 		$scope.servicoId = $routeParams.servicoId;
 		
-		$http({
-			method: 'GET',
-			url: 'http://localhost:8080/sos-api/forum/servico?id='+$scope.servicoId}).
-			success(function(data, status, headers, config) {
-				$scope.forum = data;						
-			}).
-			error(function(data, status, headers, config) {
-			 	Alerts.add('Erro: ' + status +' '+ data, 'danger');
-			});
-		
+
+		ServiceForum.getForum($scope.servicoId,
+			function(data) {
+				$scope.forum = data;
+			}
+		);		
 		
 		$scope.responder = function(id, respostaText) {
 			if (respostaText != '' && respostaText != null) {
