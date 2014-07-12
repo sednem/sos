@@ -275,7 +275,7 @@ SoServices.factory('Authentication', function($localStorage, $rootScope, $q){
 		    apiKey: '',
 		    logado: false,
 		    confirmarsenha: null,
-		    id:''
+		    facebookId:'' 
 	};
 	
 	var logged = false;
@@ -372,7 +372,7 @@ SoServices.factory('Authentication', function($localStorage, $rootScope, $q){
     		userAuth = angular.fromJson($localStorage.currentUserJson);
     		userAuth.nome = response.name;
     		userAuth.email = response.email;
-    		userAuth.id = response.id;
+    		userAuth.facebookId = response.id;
     		$localStorage.currentUserJson = angular.toJson(userAuth);
     		$rootScope.$apply(function(){
   	          deferred.resolve(faceUser);
