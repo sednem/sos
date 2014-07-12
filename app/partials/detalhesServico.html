@@ -38,12 +38,13 @@
 						<div class="form-group">
 					      	<label class="col-sm-2 control-label">Reputa&ccedil;&atilde;o:</label>
 					      	<span data-ng-show="servico.prestador.nota">
-					      		<rating data-ng-model="servico.prestador.nota" max="10" readonly="true"></rating>
+					      		<rating data-ng-model="servico.prestador.nota" max="5" readonly="true"></rating>
 					      		(<a href ng-click="openAvaliacoes()">Ver avalia&ccedil;&otilde;es</a>
 					      		 / <a href="#/prestador/{{servico.prestador.email}}">Avaliar</a>)
 					      	</span>
 					      	<span data-ng-hide="servico.prestador.nota">
 					      		<em>O prestador ainda n&atilde;o possui avalia&ccedil;&otilde;es</em>
+					      		(<a href="#/prestador/{{servico.prestador.email}}">Seja o primeiro a avaliar</a>)
 					      	</span>
 					    </div>
 					    <div class="form-group">

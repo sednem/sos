@@ -67,7 +67,7 @@
 								<div class="input-group">
 									<div class="input-group-addon">
 										<span data-ng-show="user.logado">
-											<rating data-ng-model="avaliacao.nota" max="10"></rating>
+											<rating data-ng-model="avaliacao.nota" max="5"></rating>
 											<br>
 											{{avaliacao.nota}}
 										</span>
@@ -90,7 +90,7 @@
 									<p>
 										<strong>{{avaliacao.usuarioAvaliador.nome}}</strong>
 										<br>
-										<rating data-ng-model="avaliacao.nota" max="10" readonly="true"></rating>
+										<rating data-ng-model="avaliacao.nota" max="5" readonly="true"></rating>
 									</p>
 									<p><em>{{avaliacao.depoimento}}</em><p>
 								</span>
