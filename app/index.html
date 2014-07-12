@@ -56,11 +56,13 @@
               </button>
             </li>
             <li data-ng-show="user.logado">
-              <a>Bem vindo(a), {{user.email}}</a>
+              <a>Bem vindo(a), {{user.nome}}</a>
             </li>
             <li data-ng-show="user.logado" dropdown>
                 <a href class="dropdown-toggle">
-                  <span class="glyphicon glyphicon-sm glyphicon-cog"></span>
+                  <img data-ng-hide="user.facebookId" src="img/profile.png" width="38" height="38" alt="{{user.nome}}" class="img-thumbnail">
+                  <img data-ng-show="user.facebookId" src="http://graph.facebook.com/{{user.facebookId}}/picture?type=square" width="38" height="38" alt="{{user.nome}}" class="img-thumbnail">
+                  <!-- <span class="glyphicon glyphicon-sm glyphicon-cog"></span> -->
                 </a>
                 <ul class="dropdown-menu" role="menu">
                   <li><a>{{user.email}} <span class="glyphicon glyphicon-sm glyphicon-user"></span></a></li>

@@ -11,7 +11,7 @@ SoServices.value('version', '0.0.0');
 
 SoServices.factory('ServiceTpServico', ['$http', 'Alerts',
 	function($http, Alerts){
-		var url = 'http://soservices.vsnepomuceno.cloudbees.net/tipo-servico';
+		var url = 'http://localhost:8080/sos-api/tipo-servico';
 		return {
 			getTiposServicos: function() {
        			return $http.get(url).
@@ -48,7 +48,7 @@ SoServices.factory('ServicePrestadores', ['$http', 'Alerts',
        			$http(
 				{
 					method: 'GET',
-					url: 'http://soservices.vsnepomuceno.cloudbees.net/servico/query?'+
+					url: 'http://localhost:8080/sos-api/servico/query?'+
 					'tipo_servico_id='+idTipoServico+
 					'&latitude='+lat+
 					'&longitude='+lng+
@@ -64,7 +64,7 @@ SoServices.factory('ServicePrestadores', ['$http', 'Alerts',
        			$http(
 				{
 					method: 'GET',
-					url: 'http://soservices.vsnepomuceno.cloudbees.net/servico/email?email='+email,
+					url: 'http://localhost:8080/sos-api/servico/email?email='+email,
 					headers: {'Content-Type': 'application/json'}
 				}).
 		    	success(successCallback).
@@ -76,7 +76,7 @@ SoServices.factory('ServicePrestadores', ['$http', 'Alerts',
        			$http(
 				{
 					method: 'GET',
-					url: 'http://soservices.vsnepomuceno.cloudbees.net/prestador',
+					url: 'http://localhost:8080/sos-api/prestador',
 					headers: {'Content-Type': 'application/json'}
 				}).
 		    	success(successCallback).
@@ -88,7 +88,7 @@ SoServices.factory('ServicePrestadores', ['$http', 'Alerts',
        			$http(
 				{
 					method: 'GET',
-					url: 'http://soservices.vsnepomuceno.cloudbees.net/prestador/email?email='+email,
+					url: 'http://localhost:8080/sos-api/prestador/email?email='+email,
 					headers: {'Content-Type': 'application/json'}
 				}).
 		    	success(successCallback).
@@ -100,7 +100,7 @@ SoServices.factory('ServicePrestadores', ['$http', 'Alerts',
        			$http(
 				{
 					method: 'GET',
-					url: 'http://soservices.vsnepomuceno.cloudbees.net/avaliacao/email?email='+email,
+					url: 'http://localhost:8080/sos-api/avaliacao/email?email='+email,
 					headers: {'Content-Type': 'application/json'}
 				}).
 		    	success(successCallback).
@@ -119,7 +119,7 @@ SoServices.service('ServiceServicos', ['$http', 'Alerts',
        			$http(
 				{
 					method: 'GET',
-					url: 'http://soservices.vsnepomuceno.cloudbees.net/servico',
+					url: 'http://localhost:8080/sos-api/servico',
 					headers: {'Content-Type': 'application/json'}
 				}).
 		    	success(successCallback).
@@ -131,7 +131,7 @@ SoServices.service('ServiceServicos', ['$http', 'Alerts',
        			$http(
 				{
 					method: 'GET',
-					url: 'http://soservices.vsnepomuceno.cloudbees.net/servico/'+idServico,
+					url: 'http://localhost:8080/sos-api/servico/'+idServico,
 					headers: {'Content-Type': 'application/json'}
 				}).
 		    	success(successCallback).
@@ -150,7 +150,7 @@ SoServices.service('ServiceAvaliacoes', ['$http', 'Alerts',
        			$http(
 				{
 					method: 'POST',
-					url: 'http://soservices.vsnepomuceno.cloudbees.net/avaliacao/avaliar',
+					url: 'http://localhost:8080/sos-api/avaliacao/avaliar',
 					data: avaliacao,
 					headers: {
 						'Content-Type': 'application/json',
@@ -166,7 +166,7 @@ SoServices.service('ServiceAvaliacoes', ['$http', 'Alerts',
        			$http(
 				{
 					method: 'PUT',
-					url: 'http://soservices.vsnepomuceno.cloudbees.net/avaliacao/replica?id='+idAvaliacao,
+					url: 'http://localhost:8080/sos-api/avaliacao/replica?id='+idAvaliacao,
 					data : replica,
 					headers: {
 						'Content-Type': 'application/json',
@@ -234,34 +234,32 @@ SoServices.service('ServiceForum', ['$http', 'Alerts',
 			getForum : function(idServico, successCallback) {
        			$http({
 					method: 'GET',
-					url: 'http://soservices.vsnepomuceno.cloudbees.net/forum/servico/'+idServico,
+					url: 'http://localhost:8080/sos-api/forum/servico/'+idServico,
 					headers: {'Content-Type': 'application/json'}
 				}).
 				success(successCallback).
 				error(function(data, status, headers, config) {
 			     	Alerts.add('ServiceForum: Erro -> ' + status +' '+ data, 'danger');
 				});
-     		}/*,
-			post : function(idServico, idPrestador, strPergunta, apiKey, successCallback) {
-
-				alert('post: ' + idServico + ' '+ idPrestador + ' ' + strPergunta + ' ' + apiKey);	
-    			//$http({
-				// 	method: 'GET',
-				// 	url: 'http://soservices.vsnepomuceno.cloudbees.net/servico/'+idServico+'/post',
-				// 	data: {
-				// 		idPrestador: idPrestador,
-				// 		pergunta: strPergunta 
-				// 	}
-				// 	headers: {
-				// 		'Content-Type': 'application/json', 
-				// 		'token-api': apiKey
-				// 	}
-				// }).
-				// success(successCallback).
-				// error(function(data, status, headers, config) {
-			 	//     	Alerts.add('ServiceForum: Erro -> ' + status +' '+ data, 'danger');
-				// });
-     		}*/
+     		},
+			post : function(idServico, emailUsuario, strPergunta, apiKey, successCallback) {
+    			$http({
+					method: 'POST',
+					url: 'http://localhost:8080/sos-api/forum/servico/'+idServico+'',
+					data: {
+						email_usuario: emailUsuario,
+						pergunta: strPergunta 
+					},
+					headers: {
+						'Content-Type': 'application/json', 
+						'token-api': apiKey
+					}
+				}).
+				success(successCallback).
+				error(function(data, status, headers, config) {
+			 	    	Alerts.add('ServiceForum: Erro -> ' + status +' '+ data, 'danger');
+				});
+     		}
 		}
 	}
 ]);

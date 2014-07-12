@@ -50,9 +50,10 @@
 						    </div>
 						    <div class="form-group">
 						      	<label class="col-sm-2 control-label">Endere&ccedil;o:</label>
-						      	{{servico.prestador.endereco.logradouro}}
+						      	{{servico.prestador.endereco.logradouro}}, 
+								{{servico.prestador.endereco.numero}}
 								{{servico.prestador.endereco.complemento}},
-								{{servico.prestador.endereco.cidade}}, {{prestador.endereco.estado}} -
+								{{servico.prestador.endereco.cidade}}, {{servico.prestador.endereco.estado}} -
 								{{servico.prestador.endereco.cep}}
 						    </div>
 							<div class="form-group">
@@ -65,7 +66,8 @@
 						    </div>
 						</div>
 						<div class="col-md-2">
-							<img src="img/profile.png" width="100" height="100" alt="{{servico.prestador.nome}}" class="img-thumbnail">
+							<img data-ng-hide="servico.prestador.facebookId" src="img/profile.png" width="80" height="80" alt="{{servico.prestador.nome}}" class="img-thumbnail">
+							<img data-ng-show="servico.prestador.facebookId" src="http://graph.facebook.com/{{servico.prestador.facebookId}}/picture?type=square" width="80" height="80" alt="{{servico.prestador.nome}}" class="img-thumbnail">							
 						</div>
 					</div>
 				</div>
@@ -84,7 +86,7 @@
 									</div>
 
 									<textarea class="form-control" rows="2" data-ng-show="user.logado"
-										style="resize:none" ng-model="mensagem"
+										style="resize:none" ng-model="pergunta"
 										id="pergunta" placeholder="Escreva sua pergunta..."></textarea>
 									<textarea class="form-control" rows="1" readonly id="pergunta"
 										data-ng-hide="user.logado" data-ng-click="openLogin()"
@@ -93,18 +95,29 @@
 										Enviar Pergunta
 									</a>
 							    </div>
+							    <div data-ng-show="mensagem != ''">
+							    	<p class="bg-success">{{mensagem}}</p>
+							    </div>
 							</span>
 							<span class="list-group-item"
 								data-ng-repeat="post in posts | orderBy:-id">
 								<span>
-									<span class="glyphicon glyphicon-sm glyphicon-inbox"></span>
-									{{post.usuario.nome}}: {{post.mensagem}}
+									<div class="row">
+										<div class="col-md-10">
+											<span class="glyphicon glyphicon-sm glyphicon-inbox"></span>
+											{{post.usuario.nome}}: {{post.mensagem}}
+										</div>
+										<div class="col-md-2">
+											<img data-ng-hide="post.usuario.facebookId" src="img/profile.png" width="50" height="50" alt="{{post.usuario.nome}}" class="img-thumbnail">
+											<img data-ng-show="post.usuario.facebookId" src="http://graph.facebook.com/{{post.usuario.facebookId}}/picture?type=square" width="50" height="50" alt="{{post.usuario.nome}}" class="img-thumbnail">
+										</div>
+									</div>
 								</span>
-								<blockquote>
+								<blockquote data-ng-show="post.resposta">
 									<span style="font-size: 10pt;">
 										<p>
-										<span class="glyphicon glyphicon-sm glyphicon-comment"></span>
-										{{post.resposta}}
+											<span class="glyphicon glyphicon-sm glyphicon-comment"></span>
+											{{post.resposta}}
 										</p>
 									</span>
 								</blockquote>

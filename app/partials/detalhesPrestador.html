@@ -10,6 +10,7 @@
 						</span>
 					</div>
 					<div class="panel-body">
+					<div class="col-md-10">
 						<div class="form-group">
 					      	<label class="col-sm-2 control-label">Nome:</label>
 					      	{{prestador.nome}}
@@ -28,8 +29,14 @@
 						<div class="form-group">
 					      	<label class="col-sm-2 control-label">Telefone:</label>
 					      	{{prestador.telefone}}
-					    </div>
+					    </div>				
+				    </div>	 
+				    <div class="col-md-2">
+						<img data-ng-hide="prestador.facebookId" src="img/profile.png" width="80" height="80" alt="{{prestador.nome}}" class="img-thumbnail">
+						<img data-ng-show="prestador.facebookId" src="http://graph.facebook.com/{{prestador.facebookId}}/picture?type=square" width="80" height="80" alt="{{prestador.nome}}" class="img-thumbnail">							
+					</div>   
 					</div>
+					
 				</div>
 				<div class="panel panel-default">
 					<div class="panel-heading clearfix">
@@ -83,15 +90,26 @@
 										Enviar Avalia&ccedil;&atilde;o
 									</a>
 							    </div>
+							    <div data-ng-show="mensagem != ''">
+							    	<p class="bg-success">{{mensagem}}</p>
+							    </div>
 							</span>
 							<span class="list-group-item"
 								data-ng-repeat="avaliacao in avaliacoes | orderBy:depoimento">
 								<span>
-									<p>
-										<strong>{{avaliacao.usuarioAvaliador.nome}}</strong>
-										<br>
-										<rating data-ng-model="avaliacao.nota" max="5" readonly="true"></rating>
-									</p>
+									<div class="row">
+										<div class="col-md-10">
+											<p>
+												<strong>{{avaliacao.usuarioAvaliador.nome}}</strong>
+												<br>
+												<rating data-ng-model="avaliacao.nota" max="5" readonly="true"></rating>
+											</p>
+										</div>
+										<div class="col-md-2">
+											<img data-ng-hide="avaliacao.usuarioAvaliador.facebookId" src="img/profile.png" width="50" height="50" alt="{{avaliacao.usuarioAvaliador.nome}}" class="img-thumbnail">
+											<img data-ng-show="avaliacao.usuarioAvaliador.facebookId" src="http://graph.facebook.com/{{avaliacao.usuarioAvaliador.facebookId}}/picture?type=square" width="50" height="50" alt="{{avaliacao.usuarioAvaliador.nome}}" class="img-thumbnail">
+										</div>
+									</div>
 									<p><em>{{avaliacao.depoimento}}</em><p>
 								</span>
 								<blockquote data-ng-show="avaliacao.replica">

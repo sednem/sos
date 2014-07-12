@@ -108,14 +108,22 @@
 						<div class="list-group">
 							<span class="list-group-item"
 								data-ng-repeat="servico in servicos | filter:query | orderBy:orderProp">
-								<a href ng-click="openMarkerInfo(myMarkers[servico.markerIndex])">
-									<h4 class="list-group-item-heading">{{servico.prestador.nome}}</h4> 
-								</a>
-								<rating data-ng-model="servico.prestador.nota" max="maxRate" readonly="true"></rating> (<a href ng-click="exibirAvaliacoes(myMarkers[servico.markerIndex])">Ver avaliações</a>)
-								<!-- TODO recuperar avaliacao -->
-								<p class="list-group-item-text small">{{servico.prestador.endereco.logradouro}}
+								<div class="row">
+									<div class="col-md-9">
+										<a href ng-click="openMarkerInfo(myMarkers[servico.markerIndex])">
+											<h4 class="list-group-item-heading">{{servico.prestador.nome}}</h4> 
+										</a>
+										<rating data-ng-model="servico.prestador.nota" max="maxRate" readonly="true"></rating> (<a href ng-click="exibirAvaliacoes(myMarkers[servico.markerIndex])">Ver avaliações</a>)
+									</div>
+									<div class="col-md-3">
+										<img data-ng-hide="servico.prestador.facebookId" src="img/profile.png" width="50" height="50" alt="{{servico.prestador.nome}}" class="img-thumbnail">
+										<img data-ng-show="servico.prestador.facebookId" src="http://graph.facebook.com/{{servico.prestador.facebookId}}/picture?type=square" width="50" height="50" alt="{{servico.prestador.nome}}" class="img-thumbnail">
+									</div>
+								</div>
+								<p class="list-group-item-text small">{{servico.prestador.endereco.logradouro}}, 
+								    {{servico.prestador.endereco.numero}}
 									{{servico.prestador.endereco.complemento}},
-									{{servico.prestador.endereco.cidade}}, {{prestador.endereco.estado}} -
+									{{servico.prestador.endereco.cidade}}, {{servico.prestador.endereco.estado}} - 
 									{{servico.prestador.endereco.cep}}</p>
 								<p class="list-group-item-text small">{{servico.prestador.email}}</p>
 								<p class="list-group-item-text small">{{servico.prestador.telefone}}</p>
