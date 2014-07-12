@@ -143,6 +143,45 @@ SoServices.service('ServiceServicos', ['$http', 'Alerts',
 	}
 ]);
 
+SoServices.service('ServiceAvaliacoes', ['$http', 'Alerts',
+	function($http, Alerts){
+		return {
+			avaliarPrestador: function(avaliacao, apiKey, successCallback) {
+       			$http(
+				{
+					method: 'POST',
+					url: 'http://localhost:8080/sos-api/avaliacao/avaliar',
+					data: avaliacao,
+					headers: {
+						'Content-Type': 'application/json',
+						'token-api' : apiKey
+					}
+				}).
+		    	success(successCallback).
+			    error(function(data, status, headers, config) {
+			     	Alerts.add('ServiceAvaliacoes: Erro -> ' + status +' '+ data, 'danger');
+			    });
+     		},
+			responderAvaliacao: function(idAvaliacao, apiKey, replica, successCallback) {
+       			$http(
+				{
+					method: 'PUT',
+					url: 'http://localhost:8080/sos-api/avaliacao/replica?id='+idAvaliacao,
+					data : replica,
+					headers: {
+						'Content-Type': 'application/json',
+						'token-api' : apiKey
+					}
+				}).
+		    	success(successCallback).
+			    error(function(data, status, headers, config) {
+			     	Alerts.add('ServiceAvaliacoes: Erro -> ' + status +' '+ data, 'danger');
+			    });
+     		}		
+		}
+	}
+]);
+
 SoServices.service('Alerts', ['$rootScope', '$timeout',
 	function($rootScope, $timeout) {
 		var alertService;
@@ -202,7 +241,27 @@ SoServices.service('ServiceForum', ['$http', 'Alerts',
 				error(function(data, status, headers, config) {
 			     	Alerts.add('ServiceForum: Erro -> ' + status +' '+ data, 'danger');
 				});
-     		}	
+     		}/*,
+			post : function(idServico, idPrestador, strPergunta, apiKey, successCallback) {
+
+				alert('post: ' + idServico + ' '+ idPrestador + ' ' + strPergunta + ' ' + apiKey);	
+    			//$http({
+				// 	method: 'GET',
+				// 	url: 'http://localhost:8080/sos-api/servico/'+idServico+'/post',
+				// 	data: {
+				// 		idPrestador: idPrestador,
+				// 		pergunta: strPergunta 
+				// 	}
+				// 	headers: {
+				// 		'Content-Type': 'application/json', 
+				// 		'token-api': apiKey
+				// 	}
+				// }).
+				// success(successCallback).
+				// error(function(data, status, headers, config) {
+			 	//     	Alerts.add('ServiceForum: Erro -> ' + status +' '+ data, 'danger');
+				// });
+     		}*/
 		}
 	}
 ]);

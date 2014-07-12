@@ -1,18 +1,122 @@
-
-						<!-- this is the confusing part. we have to point the map marker directive
-						  at an existing google.maps.Marker object, so it can hook up events -->
-						<div ui-map-marker="marker"
-						  ui-event="{'map-click': 'openMarkerInfo(marker)'}">
-						</div>
-						<div ui-map-info-window="infoWindow" style="max-width: 200px;">
-							<div data-ng-show="currentMarkerIsService">
+<!-- Pagina de busca -->
+<div class="bg-one">
+	<div class="container well text-justify" style="margin-top: 15px; width: 99%;">
+		<div class="row">
+			<div class="col-md-8">
+				<div class="panel panel-default">
+					<div class="panel-heading clearfix">
+						<span class="panel-title pull-left" style="paddidata-ng-top: 7.5px;">
+							<strong>Informa&ccedil;&otilde;s do Prestador</strong>
+						</span>
+					</div>
+					<div class="panel-body">
+						<div class="form-group">
+					      	<label class="col-sm-2 control-label">Nome:</label>
+					      	{{prestador.nome}}
+					    </div>
+					    <div class="form-group">
+					      	<label class="col-sm-2 control-label">Endere&ccedil;o:</label>
+					      	{{prestador.endereco.logradouro}}
+							{{prestador.endereco.complemento}},
+							{{prestador.endereco.cidade}}, {{prestador.endereco.estado}} -
+							{{prestador.endereco.cep}}
+					    </div>
+						<div class="form-group">
+					      	<label class="col-sm-2 control-label">E-mail:</label>
+					      	{{prestador.email}}
+					    </div>
+						<div class="form-group">
+					      	<label class="col-sm-2 control-label">Telefone:</label>
+					      	{{prestador.telefone}}
+					    </div>
+					</div>
+				</div>
+				<div class="panel panel-default">
+					<div class="panel-heading clearfix">
+						<span class="panel-title pull-left" style="paddidata-ng-top: 7.5px;">
+							<strong>Servi&ccedil;os do Prestador</strong>
+						</span>
+					</div>
+					<div class="panel-body">
+						<div class="list-group">
+							<span class="list-group-item"
+								data-ng-repeat="servico in servicos | orderBy:id">
 								<p>
-									{{servico.prestador.nome}}
+									<strong>{{servico.tipoServico.nome}}</strong>
 									<br>
-									{{servico.prestador.email}} - {{servico.prestador.telefone}}
+									<span data-ng-show="servico.tipoServico.valorado">
+										R$ {{servico.valor}}
+									</span>
 								</p>
 								<p>
-									<span data-ng-show="servico.tipoServico.valorado"><strong>R$ {{servico.valor}}</strong></span>
+									<em>{{servico.descricao}}</em>
 								</p>
-							</div>
+							</span>
 						</div>
+					</div>
+				</div>
+				<div class="panel panel-default" id="avaliacoes">
+					<div class="panel-heading clearfix">
+						<span class="panel-title pull-left" style="paddidata-ng-top: 7.5px;">
+							<strong>Avalia&ccedil;&otilde;es</strong>
+						</span>
+					</div>
+					<div class="panel-body">
+						<div class="list-group">
+							<span class="list-group-item">
+								<div class="input-group">
+									<div class="input-group-addon">
+										<span data-ng-show="user.logado">
+											<rating data-ng-model="avaliacao.nota" max="10"></rating>
+											<br>
+											{{avaliacao.nota}}
+										</span>
+									</div>
+
+									<textarea class="form-control" rows="2" data-ng-show="user.logado"
+										style="resize:none" ng-model="avaliacao.depoimento"
+										id="pergunta" placeholder="Avalie {{prestador.nome}}..."></textarea>
+									<textarea class="form-control" rows="1" readonly id="pergunta"
+										data-ng-hide="user.logado" data-ng-click="openLogin()"
+										placeholder="Necessário efetuar o login para avaliar {{prestador.nome}}..."></textarea>
+									<a href class="input-group-addon" style="text-decoration: none" data-ng-show="user.logado" data-ng-click="enviarAvaliacao()">
+										Enviar Avalia&ccedil;&atilde;o
+									</a>
+							    </div>
+							</span>
+							<span class="list-group-item"
+								data-ng-repeat="avaliacao in avaliacoes | orderBy:depoimento">
+								<span>
+									<p>
+										<strong>{{avaliacao.usuarioAvaliador.nome}}</strong>
+										<br>
+										<rating data-ng-model="avaliacao.nota" max="10" readonly="true"></rating>
+									</p>
+									<p><em>{{avaliacao.depoimento}}</em><p>
+								</span>
+								<blockquote data-ng-show="avaliacao.replica">
+									<span style="font-size: 10pt;">
+										<p>
+											<span class="glyphicon glyphicon-sm glyphicon-comment"></span>
+											<strong>{{prestador.nome}}</strong><br>								
+											<em>{{avaliacao.replica}}</em>
+										</p>
+									</span>
+								</blockquote>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="panel panel-default">
+					<div class="panel-body" style="padding: 0;" data-ng-show="mapOptions != ''">
+						<div ui-map-marker="marker"></div>
+
+						<div id="map_canvas" ui-map="map" ui-options="mapOptions"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

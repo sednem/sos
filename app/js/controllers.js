@@ -44,10 +44,13 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico,
 			'/raio/'+$scope.raio);
 	};
 	
-	
 	$scope.openPrestadorAnuncios = function() {
 		$location.path('/prest/email/'+$scope.user.email+
 				'/apiKey/'+$scope.user.apiKey);
+	};
+	
+	$scope.openDetalhesPrestador = function(strEmail) {
+		$location.path('/prestador/'+$scope.user.email);
 	};
 
 	$scope.tiposServicos = new Array();
@@ -96,7 +99,7 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico,
 				$scope.user.senha='';
 				$scope.user.apiKey = data.apiKey;
 				Authentication.login($scope.user);
-				Alerts.closeAll();
+				//Alerts.closeAll();
 				$scope.$apply();
 				if (fromAnuncio) {
 					$scope.openAnuncio();
@@ -148,7 +151,7 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico,
 				$scope.user.confirmarsenha='';
 				$scope.user.apiKey = data.apiKey;
 				Authentication.login($scope.user);
-				Alerts.closeAll();
+				//Alerts.closeAll();
 				$scope.$apply();
 				Alerts.add('Usuário cadastrado com sucesso!', 'success');
 				
@@ -160,25 +163,23 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico,
 	$scope.openCadastroPrestador = function () {
 		var modalInstance;
 		modalInstance = $modal.open({
-			  templateUrl: 'partials/cadastrarPrestador.html',
-			  controller: 'cadastroPrestadorCtrl',
-			  resolve: {
-					prestador: function () {
-						$scope.prestador.email = $scope.user.email;
-						return $scope.prestador;
-					},
-					apiKey: function () {
-						return $scope.user.apiKey;
-					}
-					
-			  }
-			});
-			modalInstance.result.then(function () {
-				Alerts.add('Prestador cadastrado com sucesso!', 'success');
-				$scope.openCadastroAnuncio();
-			}, 
-			function () {
-
+			templateUrl: 'partials/cadastrarPrestador.html',
+			controller: 'cadastroPrestadorCtrl',
+			resolve: {
+				prestador: function () {
+					$scope.prestador.email = $scope.user.email;
+					return $scope.prestador;
+				},
+				apiKey: function () {
+					return $scope.user.apiKey;
+				}				
+			}
+		});	
+		modalInstance.result.then(function () {
+			Alerts.add('Prestador cadastrado com sucesso!', 'success');
+			$scope.openCadastroAnuncio();
+		}, 
+		function () {
 		});
 	};
 	
@@ -437,8 +438,9 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$location', '$routeParams',
 ]);
 
 //Controler Servico
-SoSCtrls.controller('ServicoCtrl', ['$scope', '$routeParams','ServiceServicos', 'ServiceForum',
-	function($scope, $routeParams, ServiceServicos, ServiceForum) {
+SoSCtrls.controller('ServicoCtrl', ['$scope', '$routeParams', '$modal',
+	'ServiceServicos', 'ServiceForum', 'ServicePrestadores',
+	function($scope, $routeParams, $modal, ServiceServicos, ServiceForum, ServicePrestadores) {
 		$scope.idServico = $routeParams.idServico;
 		$scope.servico = [];
 		$scope.posts = [];
@@ -479,7 +481,141 @@ SoSCtrls.controller('ServicoCtrl', ['$scope', '$routeParams','ServiceServicos', 
 			function(data) {
 				$scope.posts = data.posts;
 			}
-		);		
+		);
+
+		$scope.post = function() {
+			alert('TODO chamar servico para post -> Parametros -> idServico: ' + $scope.idServico +
+					' idPrestador: ' + $scope.servico.prestador.id +
+					' mensagem: ' + $scope.mensagem +
+					' apiKey: ' + $scope.user.apiKey);
+		};
+	
+		$scope.openAvaliacoes = function () {
+
+			var modalInstance;
+			ServicePrestadores.getAvaliacoes($scope.servico.prestador.email,
+				function(data) {
+					$scope.avaliacoes = data;
+
+					modalInstance = $modal.open({
+						  templateUrl: 'partials/avaliacoes.html',
+						  controller: 'AvaliacoesCtrl',
+						  resolve: {				
+							avaliacoes: function () {
+							  return $scope.avaliacoes;
+							}
+						  }
+					});
+
+					modalInstance.result.then(
+					function () {
+						Alerts.add('Prestador cadastrado com sucesso!', 'success');
+						$scope.openCadastroAnuncio();
+					});
+				}
+			);
+		};
+	}
+]);
+
+//Controler Servico
+SoSCtrls.controller('AvaliacoesCtrl', ['$scope', '$modalInstance', 'avaliacoes', 'ServicePrestadores',
+	function($scope, $modalInstance, avaliacoes, ServicePrestadores) {
+		$scope.avaliacoes = avaliacoes;
+		$scope.prestador = $scope.avaliacoes[0].usuario;
+
+		ServicePrestadores.getPrestador($scope.prestador.email,
+			function(data) {
+				$scope.prestador = data;
+		});
+	}
+]);
+
+//Controler Servico
+SoSCtrls.controller('PrestadorCtrl', ['$scope', '$routeParams', 'Alerts',
+	'ServicePrestadores', 'ServiceAvaliacoes',
+	function($scope, $routeParams, Alerts, ServicePrestadores, ServiceAvaliacoes) {
+		$scope.emailPrestador = $routeParams.emailPrestador;
+		$scope.prestador = '';
+		$scope.avaliacoes = [];
+		$scope.servicos = [];
+
+		$scope.avaliacao = {
+			nota: 0,
+			usuario_id: '',
+			usuario_avaliador_email: $scope.user.email
+		};
+
+		$scope.mapOptions = {
+			center: new google.maps.LatLng(
+				-7.9712137, -34.839565100000016),
+			zoom: 14,
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+		};
+
+		$scope.consultarServicos = function () {
+			ServicePrestadores.getServicosPrestador($scope.emailPrestador,
+				function(data) {
+					$scope.servicos =  data;
+				}
+			);
+		}
+
+		$scope.consultarAvaliacoes = function () {
+			ServicePrestadores.getAvaliacoes($scope.emailPrestador,
+				function(data) {
+					$scope.avaliacoes =  data;
+				}
+			);	
+		}
+
+		$scope.enviarAvaliacao = function () {
+
+			$scope.avaliacao.usuario_avaliador_email = $scope.user.email;
+			$scope.avaliacao.usuario_id = $scope.prestador.id;
+
+			ServiceAvaliacoes.avaliarPrestador($scope.avaliacao, $scope.user.apiKey,
+				function(data) {
+					$scope.avaliacao = {
+						nota: 0,
+						usuario_id: $scope.prestador.id,
+						usuario_avaliador_email: $scope.user.email
+					};
+
+					$scope.consultarServicos();
+					$scope.consultarAvaliacoes();	
+			     	Alerts.add('Avaliação enviada com sucesso.', 'success');
+			     	alert('Avaliação enviada com sucesso.');
+				}
+			);	
+		}
+
+		ServicePrestadores.getPrestador($scope.emailPrestador,
+			function(data) {
+				$scope.prestador = data;
+				//Inicializa o mapa
+				var ll = 
+					new google.maps.LatLng(
+						$scope.prestador.endereco.latitude,
+						$scope.prestador.endereco.longitude);
+
+				$scope.mapOptions = {
+					center: ll,
+					zoom: 14,
+					mapTypeId: google.maps.MapTypeId.ROADMAP
+				};
+
+				$scope.marker = new google.maps.Marker({
+						map: $scope.map,
+						position: ll
+					});
+
+				$scope.map.panTo(ll); //Centraliza o mapa
+
+				$scope.consultarServicos();
+				$scope.consultarAvaliacoes();		
+			}
+		);
 	}
 ]);
 
@@ -911,8 +1047,8 @@ var atualizarSenhaCtrl = function ($scope, $http, $modalInstance, Alerts, apiKey
  
  /* Ctrl avaliacoes de prestadores */
 SoSCtrls.controller('AvaliacoesPrestCtrl', [ '$scope', '$route', '$http',
-	'$location', '$modal', '$routeParams', 'Alerts', 'ServicePrestadores',
-	function($scope, $route, $http, $location, $modal, $routeParams, Alerts, ServicePrestadores) {
+	'$location', '$modal', '$routeParams', 'Alerts', 'ServicePrestadores', 'ServiceAvaliacoes',
+	function($scope, $route, $http, $location, $modal, $routeParams, Alerts, ServicePrestadores, ServiceAvaliacoes) {
 			
 		$scope.email = $routeParams.email;
 		$scope.apiKey = $routeParams.apiKey;
@@ -947,19 +1083,15 @@ SoSCtrls.controller('AvaliacoesPrestCtrl', [ '$scope', '$route', '$http',
 						replica: replicaText,	
 						email: $scope.email
 				};
-				$http({
-					method : 'PUT',
-					url : 'http://localhost:8080/sos-api/avaliacao/replica?id='+id,
-					data : $scope.replica,
-					headers : {
-						'Content-Type' : 'application/json',
-						'token-api' : $scope.apiKey
-					}
-					}).success(function(data, status, headers, config) {
+
+				ServiceAvaliacoes.responderAvaliacao(
+					id,
+					$scope.apiKey,
+					$scope.replica,
+					function(data) {
 						$route.reload();
-					}).error(function(data, status, headers, config) {
-						Alerts.add('Erro: ' + status + ' ' + data, 'danger');
-					});
+					}
+				);
 			} else {
 				Alerts.add('Replica deve ser preenchida!');
 			}

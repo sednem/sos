@@ -1,0 +1,37 @@
+<div>
+	<div class="modal-header">
+		<h3>Avalia&ccedil;&otilde;es de {{prestador.nome}}</h3>
+	</div>
+	<form ng-submit="submit()">
+		<div class="modal-body">
+			<p>
+				<strong>
+					M&eacute;dia: <rating data-ng-model="prestador.nota" max="10" readonly="true"></rating>
+					 ({{prestador.nota}})				
+				</strong>
+			</p>
+			<div class="list-group">
+				<span class="list-group-item"
+					data-ng-repeat="avaliacao in avaliacoes | orderBy:-id">
+					<span>
+						<p>
+							<strong>{{avaliacao.usuarioAvaliador.nome}}</strong>
+							<br>
+							<rating data-ng-model="avaliacao.nota" max="10" readonly="true"></rating>
+						</p>
+						<p><em>{{avaliacao.depoimento}}</em><p>
+					</span>
+					<blockquote data-ng-show="avaliacao.replica">
+						<span style="font-size: 10pt;">
+							<p>
+								<span class="glyphicon glyphicon-sm glyphicon-comment"></span>
+								<strong>{{prestador.nome}}</strong><br>								
+								<em>{{avaliacao.replica}}</em>
+							</p>
+						</span>
+					</blockquote>
+				</span>
+			</div>
+		</div>
+	</form>
+</div>
