@@ -47,7 +47,7 @@
 					<div class="panel-body">
 						<div class="list-group">
 							<span class="list-group-item"
-								data-ng-repeat="servico in servicos | orderBy:id">
+								data-ng-repeat="servico in servicos | orderBy:-id">
 								<p>
 									<strong>{{servico.tipoServico.nome}}</strong>
 									<a href="#/servico/{{servico.id}}" tooltip="Tire suas d&utilde;vidas sobre o servi&ccedil;o">
@@ -65,9 +65,13 @@
 						</div>
 					</div>
 				</div>
-				<div class="panel panel-default" id="avaliacoes">
+				<div class="panel panel-default">
 					<div class="panel-heading clearfix">
-						<span class="panel-title pull-left" style="paddidata-ng-top: 7.5px;">
+						<span class="panel-title pull-left" style="paddidata-ng-top: 7.5px; width: 100%;">
+							<span data-ng-show="prestador.nota" style="float:right;">
+								<rating data-ng-model="prestador.nota" readonly="true" max="5"></rating>
+								({{prestador.nota}})
+							</span>
 							<strong>Avalia&ccedil;&otilde;es</strong>
 						</span>
 					</div>

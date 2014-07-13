@@ -37,6 +37,10 @@
 					</div>
 					<div class="panel-body">
 						<div class="list-group">
+							<button class='btn btn-warning navbar-btn' data-ng-click="openAnuncio()"
+								data-ng-show="(servicos.length == 0)">
+								<span class="glyphicon glyphicon-bullhorn"></span> Anuncie aqui!
+							</button>
 							<div class="list-group-item" data-ng-repeat="servico in servicos | filter:query | orderBy:orderProp">
 								<p>
 									<strong>{{servico.tipoServico.nome}}</strong>

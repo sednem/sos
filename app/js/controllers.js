@@ -119,6 +119,7 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico,
 	};
 	
 	$scope.logout = function () {
+		Dialog.waitDialogOpen();
 		$http({
 			method : 'DELETE',
 			url : 'http://soservices.vsnepomuceno.cloudbees.net/token/logout/'+$scope.user.email,
@@ -133,11 +134,13 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico,
 			$scope.user.apiKey = '';
 			$scope.user.id = '';
 			Authentication.logout($scope.user);
+			Dialog.waitDialogClose();
 			$scope.$apply();
 			$location.path('/home');
 
 		}).error(function(data, status, headers, config) {
 			Alerts.add('Erro: ' + status + ' ' + data, 'danger');
+			Dialog.waitDialogClose();
 		});	  
 	};
 	
@@ -453,9 +456,13 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$location', '$routeParams',
 		//TODO refatorar duplicação de método
 		$scope.exibirAvaliacoes= function(servico){
 			var modalInstance;
+
+			Dialog.waitDialogOpen();
 			ServicePrestadores.getAvaliacoes(servico.prestador.email,
 				function(data) {
 					$scope.avaliacoes = data;
+					Dialog.waitDialogClose();
+
 					modalInstance = $modal.open({
 						  templateUrl: 'partials/avaliacoes.html',
 						  controller: 'AvaliacoesCtrl',
@@ -554,10 +561,12 @@ SoSCtrls.controller('ServicoCtrl', ['$scope', '$routeParams', '$modal',
 		//TODO refatorar duplicação de método
 		$scope.openAvaliacoes = function () {
 			var modalInstance;
+
+			Dialog.waitDialogOpen();
 			ServicePrestadores.getAvaliacoes($scope.servico.prestador.email,
 				function(data) {
 					$scope.avaliacoes = data;
-
+					Dialog.waitDialogClose();
 					modalInstance = $modal.open({
 						  templateUrl: 'partials/avaliacoes.html',
 						  controller: 'AvaliacoesCtrl',
@@ -661,6 +670,9 @@ SoSCtrls.controller('PrestadorCtrl', ['$scope', '$routeParams', 'Alerts',
 		ServicePrestadores.getPrestador($scope.emailPrestador,
 			function(data) {
 				$scope.prestador = data;
+				if($scope.prestador.nota){
+					$scope.prestador.nota = parseFloat($scope.prestador.nota).toFixed(1);					
+				}
 				Dialog.waitDialogClose();
 				//Inicializa o mapa
 				var ll = 
@@ -757,7 +769,7 @@ var LoginCtrl = function ($scope, $http, $modalInstance, Authentication, Alerts,
 };
 
 //Controla o dialog de cadastro
-var cadastrarCtrl = function ($scope, $http, $modalInstance, Alerts, user) {
+var cadastrarCtrl = function ($scope, $http, $modalInstance, Alerts, user, Dialog) {
 	
   $scope.user = user;
 			
@@ -768,6 +780,7 @@ var cadastrarCtrl = function ($scope, $http, $modalInstance, Alerts, user) {
 			 $scope.user.senha != '' && $scope.user.senha != '' && 
 			 $scope.user.confirmarsenha != '' && $scope.user.confirmarsenha != null ) {
 		 if (angular.equals($scope.user.senha, $scope.user.confirmarsenha) ) {
+		 	Dialog.waitDialogOpen();
 			$http({
 				method : 'POST',
 				url : 'http://soservices.vsnepomuceno.cloudbees.net/prestador/usuario',
@@ -775,9 +788,11 @@ var cadastrarCtrl = function ($scope, $http, $modalInstance, Alerts, user) {
 				headers: {'Content-Type': 'application/json'}
 			}).
 			success(function(data, status, headers, config) {
+				Dialog.waitDialogClose();
 				$modalInstance.close(data);
 			
 			}).error(function(data, status, headers, config) {
+				Dialog.waitDialogClose();
 				Alerts.add('Erro: ' + status + ' ' + data, 'danger');
 			});
 		 }else {
@@ -793,7 +808,7 @@ var cadastrarCtrl = function ($scope, $http, $modalInstance, Alerts, user) {
 };
 
 //Controla o dialog de cadastro
-var cadastroPrestadorCtrl = function ($scope, $http, $modalInstance, Alerts, prestador, apiKey) {
+var cadastroPrestadorCtrl = function ($scope, $http, $modalInstance, Alerts, prestador, apiKey, Dialog) {
 	
   	$scope.prestador = prestador;
 	$scope.apiKey = apiKey;
@@ -805,6 +820,7 @@ var cadastroPrestadorCtrl = function ($scope, $http, $modalInstance, Alerts, pre
 			$scope.prestador.cep != '' && $scope.prestador.cep != null &&
 			$scope.prestador.cidade != '' && $scope.prestador.cidade != null &&
 			$scope.prestador.estado != '' && $scope.prestador.estado != null) {
+				Dialog.waitDialogOpen();
 				$http({
 					method : 'PUT',
 					url : 'http://soservices.vsnepomuceno.cloudbees.net/prestador',
@@ -813,8 +829,10 @@ var cadastroPrestadorCtrl = function ($scope, $http, $modalInstance, Alerts, pre
 								'token-api': $scope.apiKey}
 				}).
 				success(function(data, status, headers, config) {
+					Dialog.waitDialogClose();
 					$modalInstance.close(data);			
 				}).error(function(data, status, headers, config) {
+					Dialog.waitDialogClose();
 					Alerts.add('Erro: ' + status + ' ' + data, 'danger');
 				});
 		}
@@ -845,12 +863,13 @@ var cadastroPrestadorCtrl = function ($scope, $http, $modalInstance, Alerts, pre
 
 
 //Controla o dialog de anuncio de servicos
-var anuncioCtrl = function ($scope, $http,$modalInstance, Alerts, servico, tiposServicos, apiKey) {
+var anuncioCtrl = function ($scope, $http,$modalInstance, Alerts, servico, tiposServicos, apiKey, Dialog) {
 	$scope.servico = servico;
 	$scope.tiposServicos = tiposServicos;
 	$scope.apiKey = apiKey;
 	
 	$scope.cadastrar = function () {
+		Dialog.waitDialogOpen();
 		if ($scope.servico.descricao != '' && $scope.servico.nome_tipo_servico != '') {
 			$http({
 				method : 'POST',
@@ -860,9 +879,12 @@ var anuncioCtrl = function ($scope, $http,$modalInstance, Alerts, servico, tipos
 							'token-api': $scope.apiKey}
 			}).
 			success(function(data, status, headers, config) {
+				Dialog.waitDialogClose();
 				$modalInstance.close(data);
+				$route.reload();
 			
 			}).error(function(data, status, headers, config) {
+				Dialog.waitDialogClose();
 				Alerts.add('Erro: ' + status + ' ' + data, 'danger');
 			});
 		}
@@ -1024,7 +1046,7 @@ var confirmCtrl = function ($scope, $http,$modalInstance, Alerts) {
 };
 
 //Controla o dialog de cadastro
-var editPrestadorCtrl = function ($scope, $http, $modalInstance, Alerts, prestador, apiKey) {
+var editPrestadorCtrl = function ($scope, $http, $modalInstance, Alerts, prestador, apiKey, Dialog) {
 	
   $scope.prestador = prestador;
   $scope.apiKey = apiKey;
@@ -1036,7 +1058,9 @@ var editPrestadorCtrl = function ($scope, $http, $modalInstance, Alerts, prestad
 			 $scope.prestador.cep != '' && $scope.prestador.cep != null &&
 			 $scope.prestador.cidade != '' && $scope.prestador.cidade != null &&
 			 $scope.prestador.estado != '' && $scope.prestador.estado != null) {
-		 $http({
+			
+			Dialog.waitDialogOpen();
+			$http({
 				method : 'PUT',
 				url : 'http://soservices.vsnepomuceno.cloudbees.net/prestador',
 				data : $scope.prestador,
@@ -1044,8 +1068,10 @@ var editPrestadorCtrl = function ($scope, $http, $modalInstance, Alerts, prestad
 							'token-api': $scope.apiKey}
 			}).
 			success(function(data, status, headers, config) {
+				Dialog.waitDialogClose();
 				$modalInstance.close(data);			
 			}).error(function(data, status, headers, config) {
+				Dialog.waitDialogClose();
 				Alerts.add('Erro: ' + status + ' ' + data, 'danger');
 			});
 	  }

@@ -14,6 +14,9 @@
 				<span class="list-group-item"
 					data-ng-repeat="avaliacao in avaliacoes | orderBy:-id">
 					<span>
+
+						<img data-ng-hide="avaliacao.usuarioAvaliador.facebookId" src="img/profile.png" width="50" height="50" alt="{{avaliacao.usuarioAvaliador.nome}}" class="thumbnail" style="float: right;">
+						<img data-ng-show="avaliacao.usuarioAvaliador.facebookId" src="http://graph.facebook.com/{{avaliacao.usuarioAvaliador.facebookId}}/picture?type=square" width="50" height="50" alt="{{avaliacao.usuarioAvaliador.nome}}" class="thumbnail" style="float: right;">
 						<p>
 							<strong>{{avaliacao.usuarioAvaliador.nome}}</strong>
 							<br>
