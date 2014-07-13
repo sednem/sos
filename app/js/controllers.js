@@ -576,15 +576,18 @@ SoSCtrls.controller('ServicoCtrl', ['$scope', '$routeParams', '$modal',
 ]);
 
 //Controler Servico
-SoSCtrls.controller('AvaliacoesCtrl', ['$scope', '$modalInstance', 'avaliacoes', 'ServicePrestadores',
-	function($scope, $modalInstance, avaliacoes, ServicePrestadores) {
+SoSCtrls.controller('AvaliacoesCtrl', ['$scope', '$modalInstance',
+	'avaliacoes', 'ServicePrestadores', 'Dialog',
+	function($scope, $modalInstance, avaliacoes, ServicePrestadores, Dialog) {
 		$scope.avaliacoes = avaliacoes;
 		$scope.prestador = $scope.avaliacoes[0].usuario;
 
+		Dialog.waitDialogOpen();
 		ServicePrestadores.getPrestador($scope.prestador.email,
 			function(data) {
 				$scope.prestador = data;
 				$scope.prestador.nota = parseFloat($scope.prestador.nota).toFixed(1);
+				Dialog.waitDialogClose();
 		});
 	}
 ]);
@@ -1111,9 +1114,10 @@ var atualizarSenhaCtrl = function ($scope, $http, $modalInstance, Alerts, apiKey
  };
  
  /* Ctrl avaliacoes de prestadores */
-SoSCtrls.controller('AvaliacoesPrestCtrl', [ '$scope', '$route', '$http',
-	'$location', '$modal', '$routeParams', 'Alerts', 'ServicePrestadores', 'ServiceAvaliacoes',
-	function($scope, $route, $http, $location, $modal, $routeParams, Alerts, ServicePrestadores, ServiceAvaliacoes) {
+SoSCtrls.controller('AvaliacoesPrestCtrl', [ '$scope', '$route', '$http', '$location',
+	'$modal', '$routeParams', 'Alerts', 'ServicePrestadores', 'ServiceAvaliacoes', 'Dialog',
+	function($scope, $route, $http, $location, $modal, $routeParams, Alerts,
+		ServicePrestadores, ServiceAvaliacoes, Dialog) {
 			
 		$scope.email = $routeParams.email;
 		$scope.apiKey = $routeParams.apiKey;
@@ -1129,22 +1133,28 @@ SoSCtrls.controller('AvaliacoesPrestCtrl', [ '$scope', '$route', '$http',
 		$scope.media = 0.0;
 		$scope.replicaText='';
 
-		ServicePrestadores.getAvaliacoes($scope.email,
-			function(data) {
-				$scope.avaliacoes = data;
-				$scope.prestador = data.usuario;
-				
-				//TODO Refatorar para media ser retornada pela API como propriedade do prestador
-				for (var i =0; i < $scope.avaliacoes.length; i++) {
-					$scope.media += parseFloat($scope.avaliacoes[i].nota);
+		$scope.consultarAvaliacoes = function() {
+			Dialog.waitDialogOpen();
+
+			ServicePrestadores.getAvaliacoes($scope.email,
+				function(data) {
+					$scope.avaliacoes = data;
+					$scope.prestador = data.usuario;
+					
+					//TODO Refatorar para media ser retornada pela API como propriedade do prestador
+					for (var i =0; i < $scope.avaliacoes.length; i++) {
+						$scope.media += parseFloat($scope.avaliacoes[i].nota);
+					}
+					$scope.media /= $scope.avaliacoes.length;
+					$scope.media = parseFloat($scope.media).toFixed(1);
+					Dialog.waitDialogClose();
 				}
-				$scope.media /= $scope.avaliacoes.length;
-				$scope.media = parseFloat($scope.media).toFixed(1);
-			}
-		);
+			);
+		}
 		
 		$scope.responder = function(id, replicaText) {
 			if (replicaText != '' && replicaText != null) {
+				Dialog.waitDialogOpen();
 				$scope.replica = {
 						replica: replicaText,	
 						email: $scope.email
@@ -1155,13 +1165,15 @@ SoSCtrls.controller('AvaliacoesPrestCtrl', [ '$scope', '$route', '$http',
 					$scope.apiKey,
 					$scope.replica,
 					function(data) {
-						$route.reload();
+						$scope.consultarAvaliacoes();
 					}
 				);
 			} else {
 				Alerts.add('Replica deve ser preenchida!');
 			}
 		};
+
+		$scope.consultarAvaliacoes();
 	} 
 ]);
 

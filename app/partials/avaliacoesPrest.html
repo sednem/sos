@@ -1,48 +1,80 @@
-
-<div class="container text-justify">
-
-	<div data-ng-show="(avaliacoes.length > 0)" class="row">
-
-		<div class="col-lg-12">
-			<h1 class="page-header">
-				Avalia&ccedil;&otilde;es dos Usu&aacute;rios <br><small>Avalia&ccedil;&atilde;o M&eacute;dia: 
-				<rating data-ng-model="media" readonly="true" max="5"></rating> - {{media}}</small>
-			</h1>
-		</div>
-
-	</div>
-	<div data-ng-show="(avaliacoes.length == 0)" class="row">
-
-		<div class="col-lg-12">
-			<h1 class="page-header">
-				Voc&ecirc; ainda n&atilde;o possui avalia&ccedil;&otilde;es!!
-			</h1>
-		</div>
-
-	</div>
-	
-	<div class="list-group">
-		<div class="list-group-item row"
-			data-ng-repeat="avaliacao in avaliacoes | filter:query | orderBy:orderProp">
-		   		<div class="col-lg-1 col-md-1"></div>
-				<div class="col-lg-10 col-md-10">
-					<h3>{{avaliacao.usuarioAvaliador.nome}}</h3>
-					<h4>Depoimento: {{avaliacao.depoimento}}</h4>
-					<h4>Avalia&ccedil;&atilde;o: <rating data-ng-model="avaliacao.nota" max="5" readonly="true"></rating></h4>
-					<h4 data-ng-show="(avaliacao.replica != '')">Replica: {{avaliacao.replica}}</p></h4>
-					<div data-ng-show="(avaliacao.replica === '')" class="row">
-						<div class="col-xs-12">
-							<h4>Replica:</h4>
-							<textarea ng-model="replicaText" rows="3" class="form-control" required></textarea>
-							<br>
+<!-- Pagina de busca -->
+<div class="bg-one">
+	<div class="container well" style="margin-top: 15px; width: 99%;">
+		<div class="row">
+			<div class="col-md-2">
+				<ul class="list-group">
+					<a href data-ng-click="openPrestadorAnuncios()" class="list-group-item">
+						<span class="glyphicon glyphicon-folder-close"></span> An&uacute;ncios
+					</a>
+					<a href data-ng-click="avaliacoes()" class="list-group-item">
+						<span class="glyphicon glyphicon-stats"></span> Avaliações 
+					</a>
+					<a href data-ng-click="editPrest()" class="list-group-item">
+						<span class="glyphicon glyphicon-edit"></span> Editar Prestador
+					</a>
+					<a href data-ng-click="atualizarSenha()" class="list-group-item">
+						<span class="glyphicon glyphicon-lock"></span> Atualizar Senha
+					</a>
+					<a href data-ng-click="removePrest()" class="list-group-item">
+						<span class="glyphicon glyphicon-remove-sign"></span> Excluir Conta
+					</a>
+					<a href data-ng-click="logout()" class="list-group-item">
+						<span class="glyphicon glyphicon-log-out"></span> Logout
+					</a>
+				</ul>
+			</div>
+			<div class="col-md-10">
+				<div class="panel panel-default">
+					<div class="panel-heading clearfix">
+						<span data-ng-show="(avaliacoes.length > 0)">
+							<strong>Avalia&ccedil;&otilde;es dos Usu&aacute;rios</strong><br>
+							<small>
+								Avalia&ccedil;&atilde;o M&eacute;dia:
+								<rating data-ng-model="media" readonly="true" max="5"></rating>
+								({{media}})
+							</small>
+						</span>
+						<span data-ng-show="(avaliacoes.length == 0)">
+							<strong>Voc&ecirc; ainda n&atilde;o possui avalia&ccedil;&otilde;es!!</strong>
+						</span>
+					</div>
+					<div class="panel-body">
+						<div class="list-group">
+							<div class="list-group-item" data-ng-repeat="avaliacao in avaliacoes | filter:query | orderBy:orderProp">
+								<p>
+									<img data-ng-hide="avaliacao.usuarioAvaliador.facebookId" src="img/profile.png" width="50" height="50" alt="{{avaliacao.usuarioAvaliador.nome}}" class="thumbnail" style="float: right;">
+									<img data-ng-show="avaliacao.usuarioAvaliador.facebookId" src="http://graph.facebook.com/{{avaliacao.usuarioAvaliador.facebookId}}/picture?type=square" width="50" height="50" alt="{{avaliacao.usuarioAvaliador.nome}}" class="thumbnail" style="float: right;">
+									<span class="glyphicon glyphicon-sm glyphicon-inbox"></span>
+									<strong>{{avaliacao.usuarioAvaliador.nome}}:</strong><br>
+									<rating data-ng-model="avaliacao.nota" max="5" readonly="true"></rating>
+								</p>
+								<p>
+									<em>{{avaliacao.depoimento}}</em>
+								</p>
+								<p data-ng-show="(avaliacao.replica != '')">
+									<blockquote data-ng-show="(avaliacao.replica != '')">
+										<span style="font-size: 10pt;">
+											<span class="glyphicon glyphicon-sm glyphicon-comment"></span>
+											{{avaliacao.replica}}
+										</span>
+									</blockquote>
+								</p>
+								<div data-ng-show="(avaliacao.replica === '')" class="row">
+									<div class="col-xs-12">
+										<strong>Resposta:</strong>
+										<textarea ng-model="replicaText" rows="3" class="form-control" required></textarea>
+										<br>
+									</div>
+								</div>
+							    <button data-ng-show="(avaliacao.replica === '')" class="btn btn-primary"
+							        data-ng-click="responder(avaliacao.id, replicaText)">Responder <span
+									class="glyphicon glyphicon-chevron-right"></span></button>
+							</div>
 						</div>
 					</div>
-				    <button data-ng-show="(avaliacao.replica === '')" class="btn btn-primary"
-				        data-ng-click="responder(avaliacao.id, replicaText)">Responder <span
-						class="glyphicon glyphicon-chevron-right"></span></button> 
-					
 				</div>
-			<hr>
+			</div>
 		</div>
 	</div>
 </div>
