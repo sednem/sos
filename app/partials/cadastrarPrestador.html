@@ -1,6 +1,7 @@
 <div>
 	<div class="modal-header">
-		<h3>Torne-se um prestador!</h3>
+		<h3 data-ng-hide="edit">Torne-se um prestador!</h3>
+		<h3 data-ng-show="edit">Atualize seus dados!</h3>
 	</div>
 	<form ng-submit="submit()">
 		<div class="modal-body">

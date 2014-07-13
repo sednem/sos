@@ -59,46 +59,42 @@
               <a>Bem vindo(a), {{user.nome}}</a>
             </li>
             <li data-ng-show="user.logado" dropdown>
-                <a href class="dropdown-toggle">
-                  <span class="glyphicon glyphicon-sm glyphicon-cog"></span>
+                <a href class="dropdown-toggle" style="padding-top: 5px; padding-bottom: 0;">
+                    <img data-ng-hide="user.facebookId" src="img/profile.png" class="thumbnail super-small-photo" alt="{{user.nome}}">
+                    <img data-ng-show="user.facebookId" src="http://graph.facebook.com/{{user.facebookId}}/picture?type=square" class="thumbnail super-small-photo" alt="{{user.nome}}">
                 </a>
                 <ul class="dropdown-menu" role="menu">
                   <li>
-                    <a>
-                      {{user.email}}
-                      <img data-ng-hide="user.facebookId" src="img/profile.png" width="38" height="38" alt="{{user.nome}}" class="img-thumbnail">
-                      <img data-ng-show="user.facebookId" src="http://graph.facebook.com/{{user.facebookId}}/picture?type=square" width="38" height="38" alt="{{user.nome}}" class="img-thumbnail">
-                      <!--span class="glyphicon glyphicon-sm glyphicon-user"></span-->
-                    </a>
-                  </li>
-                  <li role="presentation" class="divider"></li>
-                  <li>
                     <a href data-ng-click="openPrestadorAnuncios()">
-                      Ver An&uacute;ncios <span class="glyphicon glyphicon-folder-close"></span>
+                      <span class="glyphicon glyphicon-folder-close"></span> An&uacute;ncios
                     </a>
                   </li>
                   <li>
                     <a href data-ng-click="avaliacoes()">
-                      Avaliações de Usuários <span class="glyphicon glyphicon-stats"></span>
+                      <span class="glyphicon glyphicon-stats"></span> Avaliações de Usuários
                     </a>
                   </li>
                   <li>
                     <a href data-ng-click="editPrest()">
-                      Editar Prestador  <span class="glyphicon glyphicon-edit">
+                      <span class="glyphicon glyphicon-edit"></span> Editar Prestador
                     </a>
                   </li>
                   <li>
                     <a href data-ng-click="atualizarSenha()">
-                      Atualizar Senha <span class="glyphicon glyphicon-lock"></span>
+                      <span class="glyphicon glyphicon-lock"></span> Atualizar Senha
                     </a>
                   </li>
                   <li>
                     <a href data-ng-click="removePrest()">
-                      Excluir Conta <span class="glyphicon glyphicon-remove-sign"></span>
+                      <span class="glyphicon glyphicon-remove-sign"></span> Excluir Conta
                     </a>
                   </li>
                   <li role="presentation" class="divider"></li>
-                  <li><a href data-ng-click="logout()">Logout <span class="glyphicon glyphicon-log-out"></span></a></li>
+                  <li>
+                    <a href data-ng-click="logout()">
+                      <span class="glyphicon glyphicon-log-out"></span> Logout
+                    </a>
+                  </li>
                 </ul>
             </li>
           </ul>

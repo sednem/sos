@@ -106,11 +106,12 @@
 								data-ng-repeat="post in posts | orderBy:-id">
 								<span>
 									<div class="row">
-										<div class="col-md-10">
+										<div class="col-md-11">
 											<span class="glyphicon glyphicon-sm glyphicon-inbox"></span>
-											{{post.usuario.nome}}: {{post.mensagem}}
+											{{post.usuario.nome}}:<br>
+											<em>{{post.mensagem}}</em>
 										</div>
-										<div class="col-md-2">
+										<div class="col-md-1">
 											<img data-ng-hide="post.usuario.facebookId" src="img/profile.png" width="50" height="50" alt="{{post.usuario.nome}}" class="img-thumbnail">
 											<img data-ng-show="post.usuario.facebookId" src="http://graph.facebook.com/{{post.usuario.facebookId}}/picture?type=square" width="50" height="50" alt="{{post.usuario.nome}}" class="img-thumbnail">
 										</div>

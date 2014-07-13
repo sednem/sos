@@ -383,3 +383,24 @@ SoServices.factory('Authentication', function($localStorage, $rootScope, $q){
     }
   };
 });
+
+
+SoServices.service('Dialog', ['$rootScope', '$modal',
+      	function($rootScope, $modal) {
+      		return {
+	      		//Controla o dialog de espera
+	      		waitDialogOpen: function () {
+	      			return $modal.open({
+	                    templateUrl: 'partials/wait.html',
+	                    controller: 'waitDialogCtrl',
+	                    resolve: {	                       
+	                    }
+	                }); // end modal.open
+	      		},
+	
+	      		 waitDialogClose : function () {
+	      			$rootScope.$broadcast('dialogs.wait.complete');	
+	      		}
+      		};
+      	}
+  ]);

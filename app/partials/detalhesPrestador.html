@@ -101,19 +101,19 @@
 								data-ng-repeat="avaliacao in avaliacoes | orderBy:depoimento">
 								<span>
 									<div class="row">
-										<div class="col-md-10">
+										<div class="col-md-12">
 											<p>
-												<strong>{{avaliacao.usuarioAvaliador.nome}}</strong>
-												<br>
-												<rating data-ng-model="avaliacao.nota" max="5" readonly="true"></rating>
+												<img data-ng-hide="avaliacao.usuarioAvaliador.facebookId" src="img/profile.png" width="50" height="50" alt="{{avaliacao.usuarioAvaliador.nome}}" class="thumbnail" style="float: right;">
+												<img data-ng-show="avaliacao.usuarioAvaliador.facebookId" src="http://graph.facebook.com/{{avaliacao.usuarioAvaliador.facebookId}}/picture?type=square" width="50" height="50" alt="{{avaliacao.usuarioAvaliador.nome}}" class="thumbnail" style="float: right;">
+												<span>
+													<strong>{{avaliacao.usuarioAvaliador.nome}}</strong>
+													<br>
+													<rating data-ng-model="avaliacao.nota" max="5" readonly="true"></rating>
+												</span>
 											</p>
-										</div>
-										<div class="col-md-2">
-											<img data-ng-hide="avaliacao.usuarioAvaliador.facebookId" src="img/profile.png" width="50" height="50" alt="{{avaliacao.usuarioAvaliador.nome}}" class="img-thumbnail">
-											<img data-ng-show="avaliacao.usuarioAvaliador.facebookId" src="http://graph.facebook.com/{{avaliacao.usuarioAvaliador.facebookId}}/picture?type=square" width="50" height="50" alt="{{avaliacao.usuarioAvaliador.nome}}" class="img-thumbnail">
+											<p><em>{{avaliacao.depoimento}}</em><p>
 										</div>
 									</div>
-									<p><em>{{avaliacao.depoimento}}</em><p>
 								</span>
 								<blockquote data-ng-show="avaliacao.replica">
 									<span style="font-size: 10pt;">

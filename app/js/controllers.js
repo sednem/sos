@@ -8,9 +8,9 @@ var SoSCtrls = angular.module('sosWeb.controllers', ['ui.bootstrap','ui.map','ui
 
 /* Main page Ctrl */
 SoSCtrls.controller('MainCtrl', ['$scope', '$route', '$http', '$location', '$modal',
-	'Alerts', 'ServiceTpServico', 'ServicePrestadores',  'Authentication', '$log',
+	'Alerts', 'ServiceTpServico', 'ServicePrestadores',  'Authentication', '$log', 'Dialog',
 function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico,
-	ServicePrestadores, Authentication, $log) {
+	ServicePrestadores, Authentication, $log, Dialog) {
 
 	$scope.gPlace;
 	$scope.tipoServico;
@@ -678,15 +678,17 @@ SoSCtrls.controller('PrestadorCtrl', ['$scope', '$routeParams', 'Alerts',
 ]);
 
 //Controla o dialog de "sign in" / "sign up"
-var LoginCtrl = function ($scope, $http, $modalInstance, Authentication, Alerts, user) {
+var LoginCtrl = function ($scope, $http, $modalInstance, Authentication, Alerts, user, Dialog) {
 	
   $scope.user = user;
   $scope.user.email = '';
   $scope.progress = false;
 			
   $scope.logar = function () {	  
+	    
 		if ( $scope.user.email != '' && $scope.user.email != null &&
 				 $scope.user.senha != '' && $scope.user.senha != null) {
+			Dialog.waitDialogOpen();
 			$http({
 				method : 'POST',
 				url : 'http://soservices.vsnepomuceno.cloudbees.net/token/login',
@@ -696,7 +698,9 @@ var LoginCtrl = function ($scope, $http, $modalInstance, Authentication, Alerts,
 			success(function(data, status, headers, config) {
 				Authentication.login($scope.user);
 				$modalInstance.close(data);
+				Dialog.waitDialogClose();
 			}).error(function(data, status, headers, config) {
+				Dialog.waitDialogClose();
 				Alerts.add('Erro: ' + status + ' ' + data, 'danger');
 			});	
 		} 
@@ -1208,3 +1212,17 @@ SoSCtrls.controller('ForumPrestCtrl', [ '$scope', '$route', '$http', '$location'
 		};
 	} 
 ]);
+
+
+SoSCtrls.controller('waitDialogCtrl', ['$scope', '$modalInstance', '$timeout',
+          function ($scope, $modalInstance, $timeout) {
+ 
+    // close wait dialog
+    $scope.$on('dialogs.wait.complete', function () {
+        $timeout(function () {
+            $modalInstance.close();
+        });
+    }); 
+ 
+   
+}]) 
