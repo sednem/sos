@@ -7,7 +7,7 @@
 // In this case it is a simple value service.
 var SoServices = angular.module('sosWeb.services', ['ngResource', 'ngStorage']);
 
-SoServices.value('version', '0.0.0');
+SoServices.value('version', '0.0.1');
 
 SoServices.factory('ServiceTpServico', ['$http', 'Alerts',
 	function($http, Alerts){
