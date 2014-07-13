@@ -46,8 +46,12 @@
 							<div data-ng-show="currentMarkerIsService">
 								<p>
 									{{currentMarker.servico.prestador.nome}}
-									<a href data-ng-click="exibirDetalhesServico(currentMarker.servico)">
-										(Ver detalhes)
+									<a href="#/prestador/{{currentMarker.servico.prestador.email}}" tooltip="Informações sobre o prestador">
+										<span class="glyphicon glyphicon-info-sign"></span>
+									</a>
+									
+									<a href="#/servico/{{currentMarker.servico.id}}" tooltip="Tire suas dúvidas sobre o serviço">
+										<span class="glyphicon glyphicon-question-sign"></span>
 									</a>
 									<br>
 									{{currentMarker.servico.prestador.email}} - {{currentMarker.servico.prestador.telefone}}
@@ -110,23 +114,36 @@
 								data-ng-repeat="servico in servicos | filter:query | orderBy:orderProp">
 								<div class="row">
 									<div class="col-md-9">
-										<a href ng-click="openMarkerInfo(myMarkers[servico.markerIndex])">
-											<h4 class="list-group-item-heading">{{servico.prestador.nome}}</h4> 
+										<a href ng-click="openMarkerInfo(myMarkers[servico.markerIndex])" tooltip="Exibir no mapa">
+											<h4 class="list-group-item-heading">
+												{{servico.prestador.nome}}
+												<a href="#/prestador/{{servico.prestador.email}}" tooltip="Informações sobre o prestador">
+													<span class="glyphicon glyphicon-info-sign"></span>
+												</a>									
+												<a href="#/servico/{{servico.id}}" tooltip="Tire suas dúvidas sobre o serviço">
+													<span class="glyphicon glyphicon-question-sign"></span>
+												</a>
+											</h4> 
 										</a>
-										<rating data-ng-model="servico.prestador.nota" max="maxRate" readonly="true"></rating> (<a href ng-click="exibirAvaliacoes(myMarkers[servico.markerIndex])">Ver avaliações</a>)
+										<span data-ng-show="servico.prestador.nota">
+											<rating data-ng-model="servico.prestador.nota" max="maxRate" readonly="true"></rating> (<a href ng-click="exibirAvaliacoes(servico)">Ver avaliações</a>)	
+										</span>
+										<span data-ng-hide="servico.prestador.nota" style="text-align: left;">
+											Sem avaliações (<a href="#/prestador/{{servico.prestador.email}}">Seja o primeiro</a>)
+										</span>
+										<p class="list-group-item-text small">{{servico.prestador.endereco.logradouro}}, 
+										    {{servico.prestador.endereco.numero}}
+											{{servico.prestador.endereco.complemento}},
+											{{servico.prestador.endereco.cidade}}, {{servico.prestador.endereco.estado}} - 
+											{{servico.prestador.endereco.cep}}</p>
+										<p class="list-group-item-text small">{{servico.prestador.email}}</p>
+										<p class="list-group-item-text small">{{servico.prestador.telefone}}</p>
 									</div>
 									<div class="col-md-3">
 										<img data-ng-hide="servico.prestador.facebookId" src="img/profile.png" width="50" height="50" alt="{{servico.prestador.nome}}" class="img-thumbnail">
 										<img data-ng-show="servico.prestador.facebookId" src="http://graph.facebook.com/{{servico.prestador.facebookId}}/picture?type=square" width="50" height="50" alt="{{servico.prestador.nome}}" class="img-thumbnail">
 									</div>
 								</div>
-								<p class="list-group-item-text small">{{servico.prestador.endereco.logradouro}}, 
-								    {{servico.prestador.endereco.numero}}
-									{{servico.prestador.endereco.complemento}},
-									{{servico.prestador.endereco.cidade}}, {{servico.prestador.endereco.estado}} - 
-									{{servico.prestador.endereco.cep}}</p>
-								<p class="list-group-item-text small">{{servico.prestador.email}}</p>
-								<p class="list-group-item-text small">{{servico.prestador.telefone}}</p>
 							</span>	
 						</div>
 					</div>
