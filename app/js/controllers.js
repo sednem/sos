@@ -322,7 +322,7 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico,
  					$location.path('/avaliacoesPrest/email/'+$scope.user.email+
  							'/apiKey/'+$scope.user.apiKey);
  				} else {
- 					Alerts.add('Voc^e ainda não é um prestador, cadastre um anúncio!', 'warning');
+ 					Alerts.add('Você ainda não é um prestador, cadastre um anúncio!', 'warning');
  				}
  			}).
  			error(function(data, status, headers, config) {		

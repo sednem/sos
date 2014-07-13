@@ -269,10 +269,10 @@ SoServices.factory('Authentication', function($localStorage, $rootScope, $q){
 	var userAuth = {
 			nome: '',
 		    email: '',
-		    senha: null,
+		    senha: '',
 		    apiKey: '',
 		    logado: false,
-		    confirmarsenha: null,
+		    confirmarsenha: '',
 		    facebookId:'' 
 	};
 	
