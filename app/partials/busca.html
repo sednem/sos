@@ -93,6 +93,16 @@
 										Nome <span class="glyphicon glyphicon-sort-by-alphabet-alt" />
 									</a>
 								</li>
+								<li>
+									<a href data-ng-click="orderBy('prestador.distancia')" class="small">
+										Distância <span class="glyphicon glyphicon-sort-by-alphabet"></span>
+									</a>
+								</li>
+								<li>
+									<a href data-ng-click="orderBy('prestador.nota')" class="small">
+										Avaliação <span class="glyphicon glyphicon-sort-by-alphabet"></span>
+									</a>
+								</li>
 								<li role="presentation" class="divider"></li>
 								<li><a href="#" class="small">Separated link</a></li>
 							</ul>
@@ -107,28 +117,32 @@
 									placeholder="{{labels.filtrar_resultado}}" />
 							</div>
 						</div>
-
 						<div class="list-group">
 							<span class="list-group-item"
 								data-ng-repeat="servico in servicos | filter:query | orderBy:orderProp">
 								<div class="row">
 									<div class="col-md-9">
-										<a href ng-click="openMarkerInfo(myMarkers[servico.markerIndex])" tooltip="Exibir no mapa">
-											<h4 class="list-group-item-heading">
-												{{servico.prestador.nome}}
-												<a href="#/prestador/{{servico.prestador.email}}" tooltip="Informações sobre o prestador">
-													<span class="glyphicon glyphicon-info-sign"></span>
-												</a>									
-												<a href="#/servico/{{servico.id}}" tooltip="Tire suas dúvidas sobre o serviço">
-													<span class="glyphicon glyphicon-question-sign"></span>
-												</a>
-											</h4> 
+										<a href ng-click="openMarkerInfo(myMarkers[servico.markerIndex])" tooltip="Exibir no mapa" style="small">
+											<em>
+												{{(servico.prestador.distancia/1000).toFixed(1)}} km de distância
+											</em>
 										</a>
+										<p class="list-group-item-heading">
+											<strong>{{servico.prestador.nome}}</strong>
+											<a href="#/prestador/{{servico.prestador.email}}" tooltip="Informações sobre o prestador">
+												<span class="glyphicon glyphicon-info-sign"></span>
+											</a>									
+											<a href="#/servico/{{servico.id}}" tooltip="Tire suas dúvidas sobre o serviço">
+												<span class="glyphicon glyphicon-question-sign"></span>
+											</a>
+										</p> 
 										<span data-ng-show="servico.prestador.nota">
 											<rating data-ng-model="servico.prestador.nota" max="maxRate" readonly="true"></rating> (<a href ng-click="exibirAvaliacoes(servico)">Ver avaliações</a>)	
 										</span>
 										<span data-ng-hide="servico.prestador.nota" style="text-align: left;">
-											Sem avaliações (<a href="#/prestador/{{servico.prestador.email}}">Seja o primeiro</a>)
+											<a href="#/prestador/{{servico.prestador.email}}" tooltip="Seja o primeiro a avaliar.">
+												Sem avaliações
+											</a>
 										</span>
 										<p class="list-group-item-text small">{{servico.prestador.endereco.logradouro}}, 
 										    {{servico.prestador.endereco.numero}}

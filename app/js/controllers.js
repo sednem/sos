@@ -354,7 +354,7 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$location', '$routeParams',
 		$scope.maxRate = 5;
 
 		//Filter and order
-		$scope.orderProp = '';
+		$scope.orderProp = 'prestador.distancia';
 		$scope.orderBy = function (orderProp) {
 			$scope.orderProp = orderProp;
 		};
@@ -719,9 +719,9 @@ var LoginCtrl = function ($scope, $http, $modalInstance, Authentication, Alerts,
 				headers: {'Content-Type': 'application/json'}
 			}).
 			success(function(data, status, headers, config) {
+				Dialog.waitDialogClose();
 				Authentication.login($scope.user);
 				$modalInstance.close(data);
-				Dialog.waitDialogClose();
 			}).error(function(data, status, headers, config) {
 				Dialog.waitDialogClose();
 				Alerts.add('Erro: ' + status + ' ' + data, 'danger');
@@ -739,8 +739,10 @@ var LoginCtrl = function ($scope, $http, $modalInstance, Authentication, Alerts,
 				headers: {'Content-Type': 'application/json'}
 			}).
 			success(function(data, status, headers, config) {
+				Dialog.waitDialogClose();
 				$modalInstance.close(data);
 			}).error(function(data, status, headers, config) {
+				Dialog.waitDialogClose();
 				Alerts.add('Erro: ' + status + ' ' + data, 'danger');
 			});  
 		});   
