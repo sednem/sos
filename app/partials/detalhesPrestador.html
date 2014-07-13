@@ -50,6 +50,9 @@
 								data-ng-repeat="servico in servicos | orderBy:id">
 								<p>
 									<strong>{{servico.tipoServico.nome}}</strong>
+									<a href="#/servico/{{servico.id}}" tooltip="Tire suas d&utilde;vidas sobre o servi&ccedil;o">
+										<span class="glyphicon glyphicon-question-sign"></span>
+									</a>
 									<br>
 									<span data-ng-show="servico.tipoServico.valorado">
 										R$ {{servico.valor}}
@@ -70,7 +73,7 @@
 					</div>
 					<div class="panel-body">
 						<div class="list-group">
-							<span class="list-group-item">
+							<span data-ng-show='user.email != prestador.email' class="list-group-item">
 								<div class="input-group">
 									<div class="input-group-addon">
 										<span data-ng-show="user.logado">

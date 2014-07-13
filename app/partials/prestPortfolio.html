@@ -38,8 +38,16 @@
 					<div class="panel-body">
 						<div class="list-group">
 							<div class="list-group-item" data-ng-repeat="servico in servicos | filter:query | orderBy:orderProp">
-								<p><strong>{{servico.tipoServico.nome}}</strong></p>
-								<p><strong>Valor:</strong> R$ {{servico.valor}}</p>
+								<p>
+									<strong>{{servico.tipoServico.nome}}</strong>
+									
+									<a href="#/servico/{{servico.id}}" tooltip="Ver p&aacute;gina do servi&ccedil;o">
+										<span class="glyphicon glyphicon-new-window"></span>
+									</a>
+								</p>
+								<p data-ng-show="servico.tipoServico.valorado">
+									<strong>Valor:</strong> R$ {{servico.valor}}
+								</p>
 								<p><em>{{servico.descricao}}</em></p>
 							    <button class="btn btn-primary" data-ng-click="editar(servico.id, servico.tipoServico.nome,servico.valor, servico.descricao)">Editar <span
 									class="glyphicon glyphicon-chevron-right"></span></button> 

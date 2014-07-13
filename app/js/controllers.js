@@ -339,8 +339,8 @@ function($scope, $route, $http, $location, $modal, Alerts, ServiceTpServico,
 
 /* Ctrl Busca de prestadores */
 SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$location', '$routeParams',
-	'$modal', 'Alerts', 'ServicePrestadores', 'ServiceTpServico',
-	function($scope, $location, $routeParams, $modal, Alerts, ServicePrestadores, ServiceTpServico) {
+	'$modal', 'Alerts', 'ServicePrestadores', 'ServiceTpServico', 'Dialog',
+	function($scope, $location, $routeParams, $modal, Alerts, ServicePrestadores, ServiceTpServico, Dialog) {
 
 	 	$scope.tipoServico = $routeParams.tipoServico;
 		$scope.endereco = $routeParams.endereco;
@@ -351,7 +351,7 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$location', '$routeParams',
 		$scope.maxRate = 5;
 
 		//Filter and order
-		$scope.orderProp = '-avaliacao';
+		$scope.orderProp = '';
 		$scope.orderBy = function (orderProp) {
 			$scope.orderProp = orderProp;
 		};
@@ -371,6 +371,7 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$location', '$routeParams',
 					$scope.endereco != null && $scope.endereco != '' &&
 					$scope.raio != null && $scope.raio != '') {
 				
+				Dialog.waitDialogOpen();
 				geo.geocode({'address':$scope.endereco},function(results, status){
 				  	if (status == google.maps.GeocoderStatus.OK) {
 						$scope.userLocation = results[0].geometry.location;
@@ -387,7 +388,7 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$location', '$routeParams',
 									($scope.raio * 1000), //API esta em metros e nao KM.
 									function(data) {
 										$scope.servicos = data;
-	
+										Dialog.waitDialogClose();
 										// alert('Chamando carrega mapa..');
 										$scope.carregarMapa(ll);
 									}
@@ -476,8 +477,8 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$location', '$routeParams',
 
 //Controler Servico
 SoSCtrls.controller('ServicoCtrl', ['$scope', '$routeParams', '$modal',
-	'ServiceServicos', 'ServiceForum', 'ServicePrestadores',
-	function($scope, $routeParams, $modal, ServiceServicos, ServiceForum, ServicePrestadores) {
+	'ServiceServicos', 'ServiceForum', 'ServicePrestadores', 'Dialog',
+	function($scope, $routeParams, $modal, ServiceServicos, ServiceForum, ServicePrestadores, Dialog) {
 		$scope.idServico = $routeParams.idServico;
 		$scope.servico = [];
 		$scope.posts = [];
@@ -492,6 +493,7 @@ SoSCtrls.controller('ServicoCtrl', ['$scope', '$routeParams', '$modal',
 			mapTypeId: google.maps.MapTypeId.ROADMAP
 		};
 
+		Dialog.waitDialogOpen();
 		ServiceServicos.getServico($scope.idServico,
 			function(data) {
 				$scope.servico = data;
@@ -514,6 +516,7 @@ SoSCtrls.controller('ServicoCtrl', ['$scope', '$routeParams', '$modal',
 					});
 
 				$scope.map.panTo(ll); //Centraliza o mapa
+				Dialog.waitDialogClose();
 			}
 		);
 
@@ -527,6 +530,7 @@ SoSCtrls.controller('ServicoCtrl', ['$scope', '$routeParams', '$modal',
 
 		$scope.post = function() {
 			if ($scope.pergunta != null && $scope.pergunta != '') {
+				Dialog.waitDialogOpen();
 				ServiceForum.post(
 					$scope.idServico,
 					$scope.user.email,
@@ -538,6 +542,7 @@ SoSCtrls.controller('ServicoCtrl', ['$scope', '$routeParams', '$modal',
 						$scope.mensagem = data;
 						$scope.consultarForum();
 						$scope.pergunta = '';
+						Dialog.waitDialogClose();
 					}
 				);
 			} else {
@@ -586,8 +591,8 @@ SoSCtrls.controller('AvaliacoesCtrl', ['$scope', '$modalInstance', 'avaliacoes',
 
 //Controler Servico
 SoSCtrls.controller('PrestadorCtrl', ['$scope', '$routeParams', 'Alerts',
-	'ServicePrestadores', 'ServiceAvaliacoes',
-	function($scope, $routeParams, Alerts, ServicePrestadores, ServiceAvaliacoes) {
+	'ServicePrestadores', 'ServiceAvaliacoes', 'Dialog',
+	function($scope, $routeParams, Alerts, ServicePrestadores, ServiceAvaliacoes, Dialog) {
 		$scope.emailPrestador = $routeParams.emailPrestador;
 		$scope.prestador = '';
 		$scope.mensagem = '';	
@@ -625,7 +630,7 @@ SoSCtrls.controller('PrestadorCtrl', ['$scope', '$routeParams', 'Alerts',
 		}
 
 		$scope.enviarAvaliacao = function () {
-
+			Dialog.waitDialogOpen();
 			$scope.avaliacao.usuario_avaliador_email = $scope.user.email;
 			$scope.avaliacao.usuario_id = $scope.prestador.id;
 			if ($scope.avaliacao.depoimento != null && $scope.avaliacao.depoimento != '') {
@@ -640,6 +645,7 @@ SoSCtrls.controller('PrestadorCtrl', ['$scope', '$routeParams', 'Alerts',
 						$scope.consultarServicos();
 						$scope.consultarAvaliacoes();
 						$scope.mensagem = data;
+						Dialog.waitDialogClose();
 					}
 				);				
 			} else {
@@ -648,9 +654,11 @@ SoSCtrls.controller('PrestadorCtrl', ['$scope', '$routeParams', 'Alerts',
 			}
 		}
 
+		Dialog.waitDialogOpen();
 		ServicePrestadores.getPrestador($scope.emailPrestador,
 			function(data) {
 				$scope.prestador = data;
+				Dialog.waitDialogClose();
 				//Inicializa o mapa
 				var ll = 
 					new google.maps.LatLng(
@@ -725,8 +733,7 @@ var LoginCtrl = function ($scope, $http, $modalInstance, Authentication, Alerts,
   
   $scope.logarFace = function() {
 	  $scope.isLogged = Authentication.checkLogged();
-	  $scope.progress = true;
-	  $scope.$apply();
+	  Dialog.waitDialogOpen();
 	  $scope.isLogged.then(function(result) { 
 		if (Authentication.isFaceLogged()) {
 			$scope.loginFace();
@@ -736,8 +743,7 @@ var LoginCtrl = function ($scope, $http, $modalInstance, Authentication, Alerts,
 				$scope.loginFace();
 			});			
 		}
-		$scope.progress = false;
-		$scope.$apply();		
+		Dialog.waitDialogClose();	
 	  });
 	};
 
@@ -872,9 +878,10 @@ var limparUsuario = function(user) {
 };
 
 /* Ctrl Anuncios */
-SoSCtrls.controller('PrestadoresAnunciosCtrl', [ '$scope', '$route', '$http', '$location', '$modal',
-		'$routeParams', 'Alerts', 'ServicePrestadores',
-	function($scope, $route, $http, $location, $modal, $routeParams, Alerts, ServicePrestadores) {
+SoSCtrls.controller('PrestadoresAnunciosCtrl', [ '$scope', '$route', '$http', '$location',
+	'$modal', '$routeParams', 'Alerts','ServiceTpServico', 'ServicePrestadores', 'Dialog',
+	function($scope, $route, $http, $location, $modal,
+		$routeParams, Alerts, ServiceTpServico, ServicePrestadores,Dialog) {
 		
 		$scope.servico = {
 				id: 0,
@@ -889,23 +896,20 @@ SoSCtrls.controller('PrestadoresAnunciosCtrl', [ '$scope', '$route', '$http', '$
 		$scope.orderProp = '-id';
 		$scope.servicos = new Array();
 
+
+		Dialog.waitDialogOpen();
 		ServicePrestadores.getServicosPrestador($scope.email,
 			function(data) {
 				$scope.servicos = data;
+				Dialog.waitDialogClose();
 			}
 		);
 
-		
-		$http({
-			method: 'GET',
-			url: 'http://soservices.vsnepomuceno.cloudbees.net/tipo-servico'}).
-			success(function(data, status, headers, config) {
+		ServiceTpServico.getTiposServicos(
+			function(data) {
 				$scope.tiposServicos = data;
-
-			}).
-			error(function(data, status, headers, config) {
-			 	Alerts.add('Erro: ' + status +' '+ data, 'danger');
-			});
+			}
+		);
 		
 		$scope.editar = function (id, tipoServico, valor, descricao) {
 			$scope.servico.id = id;
@@ -1163,8 +1167,9 @@ SoSCtrls.controller('AvaliacoesPrestCtrl', [ '$scope', '$route', '$http',
 
 /* Ctrl Busca de prestadores */
 SoSCtrls.controller('ForumPrestCtrl', [ '$scope', '$route', '$http', '$location',
-	'$modal', '$routeParams', 'Alerts', 'ServiceForum',
-	function($scope, $route, $http, $location, $modal, $routeParams, Alerts, ServiceForum) {
+	'$modal', '$routeParams', 'Alerts', 'Dialog', 'ServiceForum', 'ServiceServicos',
+	function($scope, $route, $http, $location, $modal, $routeParams,
+		Alerts, Dialog, ServiceForum, ServiceServicos) {
 			
 		$scope.post = {
 				id: 0,
@@ -1173,6 +1178,7 @@ SoSCtrls.controller('ForumPrestCtrl', [ '$scope', '$route', '$http', '$location'
 				nomeUsuario: ''
 		};
 		$scope.forum = new Array();
+		$scope.servico= new Array();
 		$scope.orderProp = '-prestador.media';
 		$scope.respostaText='';
 
@@ -1180,10 +1186,17 @@ SoSCtrls.controller('ForumPrestCtrl', [ '$scope', '$route', '$http', '$location'
 		$scope.apiKey = $routeParams.apiKey;
 		$scope.servicoId = $routeParams.servicoId;
 		
-
+		Dialog.waitDialogOpen();
 		ServiceForum.getForum($scope.servicoId,
 			function(data) {
 				$scope.forum = data;
+				Dialog.waitDialogClose();
+			}
+		);	
+
+		ServiceServicos.getServico($scope.servicoId,
+			function(data) {
+				$scope.servico = data;
 			}
 		);		
 		

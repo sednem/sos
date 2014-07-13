@@ -1,45 +1,84 @@
-
-<div class="container text-justify">
-
-	<div data-ng-show="(forum.posts.length > 0)" class="row">
-
-		<div class="col-lg-12">
-			<h1 class="page-header">
-				F&oacute;rum
-			</h1>
-		</div>
-	</div>
-	<div data-ng-show="(forum.posts.length == 0)" class="row">
-
-		<div class="col-lg-12">
-			<h1 class="page-header">
-				Voc&ecirc; ainda n&atilde;o possui mensagens!!
-			</h1>
-		</div>
-	</div>
-	
-	<div class="list-group">
-		<div class="list-group-item row"
-			data-ng-repeat="post in forum.posts | filter:query | orderBy:orderProp">
-		   		<div class="col-lg-1 col-md-1"></div>
-				<div class="col-lg-10 col-md-10">
-					<h3>{{post.usuario.nome}}</h3>
-					<h4>Mensagem: {{post.mensagem}}</h4>
-					<h4 data-ng-show="(post.resposta != '')">Resposta: {{post.resposta}}</p></h4>
-					<div data-ng-show="(post.resposta === '')" class="row">
-						<div class="col-xs-12">
-							<h4>Resposta:</h4>
-							<textarea ng-model="respostaText" rows="3" class="form-control" required></textarea>
+<!-- Pagina de busca -->
+<div class="bg-one">
+	<div class="container well" style="margin-top: 15px; width: 99%;">
+		<div class="row">
+			<div class="col-md-2">
+				<ul class="list-group">
+					<a href data-ng-click="openPrestadorAnuncios()" class="list-group-item">
+						<span class="glyphicon glyphicon-folder-close"></span> An&uacute;ncios
+					</a>
+					<a href data-ng-click="avaliacoes()" class="list-group-item">
+						<span class="glyphicon glyphicon-stats"></span> Avaliações 
+					</a>
+					<a href data-ng-click="editPrest()" class="list-group-item">
+						<span class="glyphicon glyphicon-edit"></span> Editar Prestador
+					</a>
+					<a href data-ng-click="atualizarSenha()" class="list-group-item">
+						<span class="glyphicon glyphicon-lock"></span> Atualizar Senha
+					</a>
+					<a href data-ng-click="removePrest()" class="list-group-item">
+						<span class="glyphicon glyphicon-remove-sign"></span> Excluir Conta
+					</a>
+					<a href data-ng-click="logout()" class="list-group-item">
+						<span class="glyphicon glyphicon-log-out"></span> Logout
+					</a>
+				</ul>
+			</div>
+			<div class="col-md-10">
+				<div class="panel panel-default">
+					<div class="panel-heading clearfix">
+						<button class="btn btn-default" onclick="window.history.back()"
+							style="float: right;">
+							Voltar
+						</button>
+						<span data-ng-show="(forum.posts.length > 0)">
+							<strong>F&oacute;rum</strong>
+							- {{servico.tipoServico.nome}}
+						</span>
+						<span data-ng-show="(forum.posts.length == 0)">
+							<strong>Voc&ecirc; ainda n&atilde;o possui mensagens!!</strong>
+						</span>
+					</div>
+					<div class="panel-body">
+						<div class="list-group">
+							<div class="list-group-item" data-ng-repeat="post in forum.posts | filter:query | orderBy:orderProp">
+								<p>
+									<img data-ng-hide="post.usuario.facebookId" src="img/profile.png" width="50" height="50" alt="{{post.usuario.nome}}" class="thumbnail" style="float: right;">
+									<img data-ng-show="post.usuario.facebookId" src="http://graph.facebook.com/{{post.usuario.facebookId}}/picture?type=square" width="50" height="50" alt="{{post.usuario.nome}}" class="thumbnail" style="float: right;">
+									<span class="glyphicon glyphicon-sm glyphicon-inbox"></span>
+									<strong>{{post.usuario.nome}}:</strong>
+								</p>
+								<p>
+									<em>{{post.mensagem}}</em>
+								</p>
+								<p data-ng-show="(post.resposta != '')">
+									<blockquote data-ng-show="post.resposta">
+										<span style="font-size: 10pt;">
+											<span class="glyphicon glyphicon-sm glyphicon-comment"></span>
+											{{post.resposta}}
+										</span>
+									</blockquote>
+								</p>
+								<div data-ng-show="(post.resposta === '')" class="row">
+									<div class="col-xs-12">
+										<strong>Resposta:</strong>
+										<textarea ng-model="respostaText" rows="3" class="form-control" required></textarea>
+										<br>
+									</div>
+								</div>
+							    <button data-ng-show="(post.resposta === '')" class="btn btn-primary"
+							        data-ng-click="responder(post.id, respostaText)">Responder <span
+									class="glyphicon glyphicon-chevron-right"></span></button>
+							</div>
 							<br>
+							<button class="btn btn-default" onclick="window.history.back()"
+								style="float: right;">
+								Voltar
+							</button>
 						</div>
 					</div>
-				    <button data-ng-show="(post.resposta === '')" class="btn btn-primary"
-				        data-ng-click="responder(post.id, respostaText)">Responder <span
-						class="glyphicon glyphicon-chevron-right"></span></button> 
-					
 				</div>
-			<hr>
+			</div>
 		</div>
 	</div>
-	
 </div>
