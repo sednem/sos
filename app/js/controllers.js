@@ -658,7 +658,7 @@ SoSCtrls.controller('PrestadorCtrl', ['$scope', '$routeParams', 'Alerts',
 					}
 				);				
 			} else {
-				Alerts.add("Preencha o depoimento!", 'success');
+				Alerts.add("Preencha o depoimento!", 'warning');
 			}
 		}
 
