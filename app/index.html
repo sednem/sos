@@ -104,14 +104,17 @@
     </div>
     <!-- Begin page content -->
     <div class="center-container bg-one">
-      <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="alert.close()">{{ alert.msg }}</alert>
+      <div class="float-alert-container">
+        <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="alert.close()"
+          class="float-alert">{{ alert.msg }}</alert>        
+      </div>
       <div class="center-row" data-ng-view></div>
     </div>
     <div id="footer">
       <div class="container">
         <img data-ng-src="img/sos.png" alt="System of Services" />
         <span class="text-muted" style="float: right"> 
-           v<span app-version></span>
+           v <span app-version></span>
         </span>
       </div>
     </div>

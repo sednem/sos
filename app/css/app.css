@@ -114,3 +114,17 @@ html,body {
 .progress{
   height: 40px;
 }
+
+.float-alert-container{
+  width:25%;
+  position: fixed;
+  right: 20px;
+  margin-top: 5px;
+  z-index: 1500;
+}
+
+.float-alert{
+  margin-bottom: 2px;
+  text-shadow: 1px 1px 3px;
+  opacity: 0.90;
+}

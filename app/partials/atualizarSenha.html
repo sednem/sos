@@ -4,25 +4,27 @@
 	</div>
 	<form ng-submit="submit()">
 		<div class="modal-body">
-			<div class="row">
-				<div class="col-xs-5">
-					<label>Senha Antiga:</label><br>
-					<input type="password" class="form-control"
-						ng-model="senha.senhaAntiga" />
-						<span class="control-label label-warning">Aviso: Caso n&atilde;o tenha uma senha definida, deixar em  branco!</span><br><br>
-				</div>
+			<div class="row col-xs-12">
+				<div class="form-group">
+				    <label for="oldPass">Senha Antiga:</label>
+				    <input type="password" class="form-control"	id="oldPass" ng-model="senha.senhaAntiga"
+				    	placeholder="Informe sua senha atual" popover-trigger="focus" popover-title="Aviso"
+						popover="Caso n&atilde;o tenha uma senha definida, deixar em  branco!"/>
+			  	</div>
 			</div>
-			<div class="row">
-				<div class="col-xs-5">
-					<label>Nova Senha:</label><br> <input type="password" class="form-control"
-						ng-model="senha.novaSenha" required /><br>
-				</div>
+			<div class="row col-xs-12">
+				<div class="form-group">
+				    <label for="newPass">Nova Senha:</label>
+				    <input type="password" class="form-control"	id="newPass" ng-model="senha.novaSenha"
+				    	placeholder="Informe a nova senha"/>
+			  	</div>
 			</div>
-			<div class="row">
-				<div class="col-xs-5">
-					<label>Confirmar Nova Senha:</label><br> <input type="password" class="form-control"
-						ng-model="senha.confirmarsenha" required />
-				</div>
+			<div class="row col-xs-12">
+				<div class="form-group">
+				    <label for="confNewPass">Confirmar Nova Senha:</label>
+				    <input type="password" class="form-control"	id="confNewPass" ng-model="senha.confirmarsenha"
+				    	placeholder="Informe novamente a senha para confirmação" required/>
+			  	</div>
 			</div>
 		</div>
 		<div class="modal-footer">

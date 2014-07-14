@@ -392,7 +392,6 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$location', '$routeParams',
 									function(data) {
 										$scope.servicos = data;
 										Dialog.waitDialogClose();
-										// alert('Chamando carrega mapa..');
 										$scope.carregarMapa(ll);
 									}
 								);
@@ -483,9 +482,10 @@ SoSCtrls.controller('PrestadoresCtrl', ['$scope', '$location', '$routeParams',
 ]);
 
 //Controler Servico
-SoSCtrls.controller('ServicoCtrl', ['$scope', '$routeParams', '$modal',
+SoSCtrls.controller('ServicoCtrl', ['$scope', '$routeParams', '$modal', 'Alerts',
 	'ServiceServicos', 'ServiceForum', 'ServicePrestadores', 'Dialog',
-	function($scope, $routeParams, $modal, ServiceServicos, ServiceForum, ServicePrestadores, Dialog) {
+	function($scope, $routeParams, $modal, Alerts,
+		ServiceServicos, ServiceForum, ServicePrestadores, Dialog) {
 		$scope.idServico = $routeParams.idServico;
 		$scope.servico = [];
 		$scope.posts = [];
@@ -545,16 +545,14 @@ SoSCtrls.controller('ServicoCtrl', ['$scope', '$routeParams', '$modal',
 					$scope.user.apiKey,
 					function(data) {
 						// alert(JSON.stringify(data));
-						$scope.mensagemWarn = false;
-						$scope.mensagem = data;
+						Alerts.add(data, 'success');
 						$scope.consultarForum();
 						$scope.pergunta = '';
 						Dialog.waitDialogClose();
 					}
 				);
 			} else {
-				$scope.mensagemWarn = true;
-				$scope.mensagem = 'Preencher a pergunta!';
+				Alerts.add('Preencher a pergunta!', 'warning');
 			}
 		};
 	
@@ -642,10 +640,10 @@ SoSCtrls.controller('PrestadorCtrl', ['$scope', '$routeParams', 'Alerts',
 		}
 
 		$scope.enviarAvaliacao = function () {
-			Dialog.waitDialogOpen();
 			$scope.avaliacao.usuario_avaliador_email = $scope.user.email;
 			$scope.avaliacao.usuario_id = $scope.prestador.id;
 			if ($scope.avaliacao.depoimento != null && $scope.avaliacao.depoimento != '') {
+				Dialog.waitDialogOpen();
 				ServiceAvaliacoes.avaliarPrestador($scope.avaliacao, $scope.user.apiKey,
 					function(data) {
 						$scope.avaliacao = {
@@ -653,16 +651,14 @@ SoSCtrls.controller('PrestadorCtrl', ['$scope', '$routeParams', 'Alerts',
 							usuario_id: $scope.prestador.id,
 							usuario_avaliador_email: $scope.user.email
 						};
-						$scope.mensagemWarn = false;
 						$scope.consultarServicos();
 						$scope.consultarAvaliacoes();
-						$scope.mensagem = data;
+						Alerts.add(data, 'success');
 						Dialog.waitDialogClose();
 					}
 				);				
 			} else {
-				$scope.mensagemWarn = true;
-				$scope.mensagem = "Preencha o depoimento!";
+				Alerts.add("Preencha o depoimento!", 'success');
 			}
 		}
 
@@ -871,8 +867,8 @@ var anuncioCtrl = function ($scope, $http,$modalInstance, Alerts, servico, tipos
 	$scope.apiKey = apiKey;
 	
 	$scope.cadastrar = function () {
-		Dialog.waitDialogOpen();
 		if ($scope.servico.descricao != '' && $scope.servico.nome_tipo_servico != '') {
+			Dialog.waitDialogOpen();
 			$http({
 				method : 'POST',
 				url : 'http://soservices.vsnepomuceno.cloudbees.net/servico',
@@ -1179,6 +1175,7 @@ SoSCtrls.controller('AvaliacoesPrestCtrl', [ '$scope', '$route', '$http', '$loca
 				}
 			);
 		}
+		$scope.consultarAvaliacoes();
 		
 		$scope.responder = function(id, replicaText) {
 			if (replicaText != '' && replicaText != null) {
@@ -1193,15 +1190,15 @@ SoSCtrls.controller('AvaliacoesPrestCtrl', [ '$scope', '$route', '$http', '$loca
 					$scope.apiKey,
 					$scope.replica,
 					function(data) {
+						Dialog.waitDialogClose();
 						$scope.consultarAvaliacoes();
+						Alerts.add(data, 'success');
 					}
 				);
 			} else {
-				Alerts.add('Replica deve ser preenchida!');
+				Alerts.add('Replica deve ser preenchida!', 'warning');
 			}
 		};
-
-		$scope.consultarAvaliacoes();
 	} 
 ]);
 
@@ -1226,13 +1223,16 @@ SoSCtrls.controller('ForumPrestCtrl', [ '$scope', '$route', '$http', '$location'
 		$scope.apiKey = $routeParams.apiKey;
 		$scope.servicoId = $routeParams.servicoId;
 		
-		Dialog.waitDialogOpen();
-		ServiceForum.getForum($scope.servicoId,
-			function(data) {
-				$scope.forum = data;
-				Dialog.waitDialogClose();
-			}
-		);	
+		$scope.consultarForum = function(){
+			Dialog.waitDialogOpen();
+			ServiceForum.getForum($scope.servicoId,
+				function(data) {
+					$scope.forum = data;
+					Dialog.waitDialogClose();
+				}
+			);	
+		}
+		$scope.consultarForum();
 
 		ServiceServicos.getServico($scope.servicoId,
 			function(data) {
@@ -1254,8 +1254,9 @@ SoSCtrls.controller('ForumPrestCtrl', [ '$scope', '$route', '$http', '$location'
 						'Content-Type' : 'application/json',
 						'token-api' : $scope.apiKey
 					}
-					}).success(function(data, status, headers, config) {
-						$route.reload();
+					}).success(function(data) {
+						Alerts.add(data, 'success');
+						$scope.consultarForum();
 					}).error(function(data, status, headers, config) {
 						Alerts.add('Erro: ' + status + ' ' + data, 'danger');
 					});
